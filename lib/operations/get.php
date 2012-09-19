@@ -373,9 +373,10 @@ class GetOperation extends Operation
 			throw new Exception\HTTP('Unable to create thumbnail for: %src', array('%src' => $this->request['src']), 404);
 		}
 
-		$server_location = \ICanBoogie\DOCUMENT_ROOT . $path;
+		$request = $this->request;
 		$response = $this->response;
 
+		$server_location = \ICanBoogie\DOCUMENT_ROOT . $path;
 		$stat = stat($server_location);
 		$etag = md5($path);
 
@@ -385,21 +386,27 @@ class GetOperation extends Operation
 
 		session_cache_limiter('public');
 
-		$response->headers['X-Generated-By'] = 'Icybee/Thumbnailer';
-		$response->headers['Etag'] = $etag;
-		$response->headers['Cache-Control'] = 'public';
+		$response->cache_control->cacheable = 'public';
+		$response->etag = $etag;
 		$response->expires = '+1 week';
+		$response->headers['X-Generated-By'] = 'Icybee/Thumbnailer';
 
-		if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && isset($_SERVER['HTTP_IF_NONE_MATCH'])
-		&& (strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) == $stat['mtime'] || trim($_SERVER['HTTP_IF_NONE_MATCH']) == $etag))
+		if ($request->cache_control->cacheable != 'no-cache')
 		{
-			$response->status = 304;
+			$if_none_match = $request->headers['If-None-Match'];
+			$if_modified_since = $request->headers['If-Modified-Since'];
 
-			#
-			# WARNING: do *not* send any data after that
-			#
+			if ($if_modified_since && $if_modified_since->timestamp >= $stat['mtime']
+			&& $if_none_match && trim($if_none_match) == $etag)
+			{
+				$response->status = 304;
 
-			return true;
+				#
+				# WARNING: do *not* send any data after that
+				#
+
+				return true;
+			}
 		}
 
 		$pos = strrpos($path, '.');

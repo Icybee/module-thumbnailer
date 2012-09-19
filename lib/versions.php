@@ -12,6 +12,7 @@
 namespace ICanBoogie\Modules\Thumbnailer;
 
 use ICanBoogie\Event;
+use ICanBoogie\OffsetNotWritable;
 
 const CACHE_VERSIONS = true;
 
@@ -223,14 +224,20 @@ class Versions implements \ArrayAccess, \IteratorAggregate
 		return $this->offsetExists($offset) ? $this->versions[$offset] : null;
 	}
 
+	/**
+	 * @throws OffsetNotWritable in attempt to set an offset.
+	 */
 	public function offsetSet($offset, $value)
 	{
-		throw new Exception\OffsetNotWritable(array($offset, $this));
+		throw new OffsetNotWritable(array($offset, $this));
 	}
 
+	/**
+	 * @throws OffsetNotWritable in attempt to unset an offset.
+	 */
 	public function offsetUnset($offset)
 	{
-		throw new Exception\OffsetNotWritable(array($offset, $this));
+		throw new OffsetNotWritable(array($offset, $this));
 	}
 
 	public function getIterator()
