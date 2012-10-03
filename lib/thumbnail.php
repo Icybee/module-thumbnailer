@@ -22,7 +22,7 @@ use Brickrouge\Element;
  * marqueur IMG de la miniature.
  *
  * La source peut être définie par l'URL d'une image ou une instance de la classe
- * ICanBoogie\ActiveRecord\Image. Les options peuvent être un tableau de paramètres ou le nom
+ * Icybee\Modules\Images\Image. Les options peuvent être un tableau de paramètres ou le nom
  * d'une version.
  *
  * @property $version array|null Il s'agit des paramètres correspondant à la version.
@@ -36,7 +36,7 @@ class Thumbnail extends \ICanBoogie\Object
 	/**
 	 * The source of the thumbnail.
 	 *
-	 * @var ICanBoogie\ActiveRecord\Image|int|string
+	 * @var Icybee\Modules\Images\Image|int|string
 	 */
 	public $src;
 
@@ -57,7 +57,7 @@ class Thumbnail extends \ICanBoogie\Object
 	/**
 	 * Constructor.
 	 *
-	 * @param ICanBoogie\ActiveRecord\Image|int|string The souce of the thumbnail.
+	 * @param Icybee\Modules\Images\Image|int|string The souce of the thumbnail.
 	 *
 	 * @param string|array $options The options to create the thumbnail can be provided as a
 	 * version name or an array of options. If a version name is provided, the `image` parameter

@@ -22,7 +22,7 @@ use Brickrouge\Text;
  *
  * The cache is always active.
  */
-class CacheManager extends \ICanBoogie\Object implements \ICanBoogie\Modules\System\Cache\CacheInterface
+class CacheManager extends \ICanBoogie\Object implements \Icybee\Modules\Cache\CacheManagerInterface
 {
 	public $title = "Miniatures";
 	public $description = "Miniatures générées à la volée par le module <q>Thumbnailer</q>.";
@@ -140,7 +140,7 @@ class CacheManager extends \ICanBoogie\Object implements \ICanBoogie\Modules\Sys
 
 	public function stat()
 	{
-		return \ICanBoogie\Modules\System\Cache\Module::get_files_stat(\ICanBoogie\REPOSITORY . 'thumbnailer');
+		return \Icybee\Modules\Cache\Module::get_files_stat(\ICanBoogie\REPOSITORY . 'thumbnailer');
 	}
 
 	public function clear()

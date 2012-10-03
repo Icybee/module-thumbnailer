@@ -27,8 +27,8 @@ Brickrouge.Widget.PopThumbnailVersion = new Class
 				this.popover.show();
 
 				/*
-				 * The adjust object is available after the `elementsready` event has been fired. The event
-				 * is fired when the popover is opened.
+				 * The adjust object is available after the `brickrouge.construct` event has been
+				 * fired. The event is fired when the popover is opened.
 				 */
 
 				//this.popover.adjust.addEvent('change', this.change.bind(this));

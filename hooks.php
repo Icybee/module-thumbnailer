@@ -11,8 +11,6 @@
 
 namespace ICanBoogie\Modules\Thumbnailer;
 
-use Icybee\ConfigOperation\BeforePropertiesEvent;
-
 use ICanBoogie\ActiveRecord;
 use ICanBoogie\Event;
 use ICanBoogie\Operation;
@@ -21,19 +19,20 @@ use Brickrouge\Element;
 use Brickrouge\Form;
 use Brickrouge\Widget;
 
-use ICanBoogie\Modules\System\Cache\Collection as CacheCollection;
+use Icybee\Modules\Cache\Collection as CacheCollection;
+use Icybee\Modules\Images\Image as ImageActiveRecord;
 
 class Hooks
 {
 	/**
 	 * Callback for the `thumbnail()` method added to the active records of the "images" module.
 	 *
-	 * @param ICanBoogie\ActiveRecord\Image $ar An active record of the "images" module.
+	 * @param Icybee\Modules\Images\Image $ar An active record of the "images" module.
 	 * @param string $version The version used to create the thumbnail, or a number of options
 	 * defined as CSS properties. e.g. 'w:300;h=200'.
 	 * @return string The URL of the thumbnail.
 	 */
-	static public function method_thumbnail(ActiveRecord\Image $ar, $version, $additionnal_options=null)
+	static public function method_thumbnail(ImageActiveRecord $ar, $version, $additionnal_options=null)
 	{
 		return new Thumbnail($ar, $version, $additionnal_options);
 	}
@@ -43,10 +42,10 @@ class Hooks
 	 *
 	 * The thumbnail is created using options of the 'primary' version.
 	 *
-	 * @param ICanBoogie\ActiveRecord\Image $ar An active record of the "images" module.
+	 * @param Icybee\Modules\Images\Image $ar An active record of the "images" module.
 	 * @return string The URL of the thumbnail.
 	 */
-	static public function method_get_thumbnail(ActiveRecord\Image $ar)
+	static public function method_get_thumbnail(ImageActiveRecord $ar)
 	{
 		return self::method_thumbnail($ar, 'primary');
 	}
@@ -167,10 +166,10 @@ class Hooks
 	/**
 	 * Adds our cache manager to the cache collection.
 	 *
-	 * @param CacheCollection\AlterEvent $event
+	 * @param CacheCollection\CollectEvent $event
 	 * @param CacheCollection $collection
 	 */
-	static public function on_alter_cache_collection(CacheCollection\AlterEvent $event, CacheCollection $collection)
+	static public function on_cache_collection_collect(CacheCollection\CollectEvent $event, CacheCollection $collection)
 	{
 		global $core;
 
