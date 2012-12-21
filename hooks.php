@@ -65,6 +65,11 @@ class Hooks
 
 		$c = $core->configs->synthesize('thumbnailer', 'merge');
 
+		if (!$c)
+		{
+			return;
+		}
+
 		$configs = array();
 
 		foreach ($c as $version_name => $config)
@@ -99,7 +104,7 @@ class Hooks
 			(
 				array
 				(
-					Form::LABEL => new Element('span', array(Element::INNER_HTML => $config['title'] . ' <small>(' . $version_name . ')</small>')),
+					Form::LABEL => new Element('span', array(Element::INNER_HTML => $config['title'] . '<br /><small>' . $version_name . '</small>')),
 					Element::DEFAULT_VALUE => $defaults,
 					Element::GROUP => 'thumbnailer',
 					Element::DESCRIPTION => $config['description'],

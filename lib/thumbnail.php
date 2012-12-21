@@ -11,10 +11,9 @@
 
 namespace ICanBoogie\Modules\Thumbnailer;
 
-use ICanBoogie;
-use ICanBoogie\ActiveRecord;
-
 use Brickrouge\Element;
+
+use Icybee\Modules\Images\Image as ImageActiveRecord;
 
 /**
  * Cette classes est une aide à la création de miniatures. Elle prend en paramètres une source et
@@ -22,8 +21,8 @@ use Brickrouge\Element;
  * marqueur IMG de la miniature.
  *
  * La source peut être définie par l'URL d'une image ou une instance de la classe
- * Icybee\Modules\Images\Image. Les options peuvent être un tableau de paramètres ou le nom
- * d'une version.
+ * {@link Icybee\Modules\Images\Image}. Les options peuvent être un tableau de paramètres ou le
+ * nom d'une version.
  *
  * @property $version array|null Il s'agit des paramètres correspondant à la version.
  * @property $w int|null Largeur de la miniature, extraite des options ou de la version.
@@ -99,7 +98,7 @@ class Thumbnail extends \ICanBoogie\Object
 		$this->src = $src;
 	}
 
-	protected static function decode_options($options)
+	static protected function decode_options($options)
 	{
 		preg_match_all('#([^:]+):\s*([^;]+);?#', $options, $matches, PREG_PATTERN_ORDER);
 
@@ -326,7 +325,7 @@ class Thumbnail extends \ICanBoogie\Object
 		$src = $this->url;
 		$alt = '';
 
-		if ($this->src instanceof Image)
+		if ($this->src instanceof ImageActiveRecord)
 		{
 			$alt = $this->src->alt;
 			$path = $this->src->path;

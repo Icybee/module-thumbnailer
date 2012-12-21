@@ -11,9 +11,6 @@
 
 namespace ICanBoogie\Modules\Thumbnailer;
 
-use ICanBoogie\Event;
-use ICanBoogie\OffsetNotWritable;
-
 const CACHE_VERSIONS = true;
 
 class Versions implements \ArrayAccess, \IteratorAggregate
@@ -60,7 +57,7 @@ class Versions implements \ArrayAccess, \IteratorAggregate
 	 *
 	 * @return Versions
 	 */
-	public static function get()
+	static public function get()
 	{
 		if (self::$instance)
 		{
@@ -100,13 +97,7 @@ class Versions implements \ArrayAccess, \IteratorAggregate
 	/**
 	 * Collects versions.
 	 *
-	 * After the versions have been collected the object fires the "alter" event, with the
-	 * following parameter:
-	 *
-	 * - (array) &versions: The versions to alter.
-	 *
-	 * @throws \UnexpectedValueException when the `title`, `type`, `module` or `renders`
-	 * properties are empty.
+	 * {@link Version\CollectEvent} is fired.
 	 *
 	 * @return array[string]array
 	 */
@@ -115,7 +106,10 @@ class Versions implements \ArrayAccess, \IteratorAggregate
 		global $core;
 
 		$versions = array();
-		$definitions = $core->registry->select('SUBSTR(name, LENGTH("thumbnailer.versions.") + 1) as name, value')->where('name LIKE ?', 'thumbnailer.versions.%')->pairs;
+		$definitions = $core->registry
+		->select('SUBSTR(name, LENGTH("thumbnailer.versions.") + 1) as name, value')
+		->where('name LIKE ?', 'thumbnailer.versions.%')
+		->pairs;
 
 		foreach ($definitions as $name => $options)
 		{
@@ -129,7 +123,7 @@ class Versions implements \ArrayAccess, \IteratorAggregate
 			$versions[$name] = self::normalize_options(json_decode($options, true));
 		}
 
-		Event::fire('alter', array('versions' => &$versions), $this);
+		new Versions\CollectEvent($this, array('versions' => &$versions));
 
 		return $versions;
 	}
@@ -141,7 +135,7 @@ class Versions implements \ArrayAccess, \IteratorAggregate
 	 *
 	 * @return array
 	 */
-	public static function normalize_options(array $options)
+	static public function normalize_options(array $options)
 	{
 		foreach (self::$shorthands as $shorthand => $full)
 		{
@@ -206,42 +200,67 @@ class Versions implements \ArrayAccess, \IteratorAggregate
 
 	/**
 	 * Checks if a version exists.
-	 *
-	 * @see ArrayAccess::offsetExists()
 	 */
-	public function offsetExists($offset)
+	public function offsetExists($version)
 	{
-		return isset($this->versions[$offset]);
+		return isset($this->versions[$version]);
 	}
 
 	/**
 	 * Returns the definition of a version.
+	 */
+	public function offsetGet($version)
+	{
+		return $this->offsetExists($version) ? $this->versions[$version] : null;
+	}
+
+	/**
+	 * Sets a version.
 	 *
-	 * @see ArrayAccess::offsetGet()
+	 * @param string $version Name of the version
+	 * @param array[string]mixed Options of the version.
 	 */
-	public function offsetGet($offset)
+	public function offsetSet($version, $options)
 	{
-		return $this->offsetExists($offset) ? $this->versions[$offset] : null;
+		$this->versions[$version] = static::normalize_options($options);
 	}
 
 	/**
-	 * @throws OffsetNotWritable in attempt to set an offset.
+	 * Deletes a version.
 	 */
-	public function offsetSet($offset, $value)
+	public function offsetUnset($version)
 	{
-		throw new OffsetNotWritable(array($offset, $this));
-	}
-
-	/**
-	 * @throws OffsetNotWritable in attempt to unset an offset.
-	 */
-	public function offsetUnset($offset)
-	{
-		throw new OffsetNotWritable(array($offset, $this));
+		unset($this->versions[$version]);
 	}
 
 	public function getIterator()
 	{
 		return new \ArrayIterator($this->versions);
+	}
+}
+
+namespace ICanBoogie\Modules\Thumbnailer\Versions;
+
+/**
+ * Event class for the `ICanBoogie\Modules\Thumbnailer\Versions::collect` event.
+ */
+class CollectEvent extends \ICanBoogie\Event
+{
+	/**
+	 * Reference to the thumbnail versions.
+	 *
+	 * @var array[string]array
+	 */
+	public $versions;
+
+	/**
+	 * The event is constructed with the type `collect`.
+	 *
+	 * @param \ICanBoogie\Modules\Thumbnailer\Versions $target
+	 * @param array $payload
+	 */
+	public function __construct(\ICanBoogie\Modules\Thumbnailer\Versions $target, array $payload)
+	{
+		parent::__construct($target, 'collect', $payload);
 	}
 }

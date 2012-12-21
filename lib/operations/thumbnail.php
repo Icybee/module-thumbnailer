@@ -11,7 +11,6 @@
 
 namespace ICanBoogie\Modules\Thumbnailer;
 
-use ICanBoogie\Exception\HTTP as HTTPException;
 use ICanBoogie\Operation;
 
 /**
@@ -71,7 +70,7 @@ class ThumbnailOperation extends GetOperation
 
 		if (empty($params['src']))
 		{
-			throw new HTTPException('Unable to locate image resource for the given identifier: %nid.', array('%nid' => $nid), 404);
+			throw new \ICanboogie\HTTP\HTTPError(\ICanBoogie\format('Unable to locate image resource for the given identifier: %nid.', array('%nid' => $nid)), 404);
 		}
 
 		return parent::process();

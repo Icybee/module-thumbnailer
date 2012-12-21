@@ -13,7 +13,9 @@ namespace ICanBoogie\Modules\Thumbnailer;
 
 use ICanBoogie\Exception;
 use ICanBoogie\FileCache;
-use ICanBoogie\Exception\HTTP as HTTPException;
+use ICanBoogie\HTTP\HTTPError;
+use ICanBoogie\HTTP\NotFound;
+use ICanBoogie\I18n;
 use ICanBoogie\Image;
 use ICanBoogie\Operation;
 
@@ -55,7 +57,7 @@ class GetOperation extends Operation
 
 			if (!$version_params)
 			{
-				throw new HTTPException('Unknown version %version.', array('version' => $version));
+				throw new HTTPError(I18n\t('Unknown version %version.', array('version' => $version)));
 			}
 
 			$params += $version_params;
@@ -116,7 +118,7 @@ class GetOperation extends Operation
 	 * the cache.
 	 *
 	 * @param array $params
-	 * @throws HTTPException
+	 * @throws HTTPError
 	 */
 	public function get(array $params=array())
 	{
@@ -131,7 +133,7 @@ class GetOperation extends Operation
 
 		if (!$src)
 		{
-			throw new HTTPException('Missing thumbnail source.', array(), 404);
+			throw new NotFound('Missing thumbnail source.');
 		}
 
 		$src = $path . $src;
@@ -147,7 +149,7 @@ class GetOperation extends Operation
 
 			if (!$default)
 			{
-				throw new HTTPException('Thumbnail source not found: %src', array('%src' => $src), 404);
+				throw new NotFound(I18n\t('Thumbnail source not found: %src', array('%src' => $src)));
 			}
 
 			$src = $path . $default;
@@ -155,7 +157,7 @@ class GetOperation extends Operation
 
 			if (!is_file($location))
 			{
-				throw new HTTPException('Thumbnail source (default) not found: %src', array('%src' => $src), 404);
+				throw new NotFound(I18n\t('Thumbnail source (default) not found: %src', array('%src' => $src)));
 			}
 		}
 
@@ -360,7 +362,7 @@ class GetOperation extends Operation
 	 * A HTTPException exception with code 404 is thrown if the function fails to obtain the
 	 * location of the image version.
 	 *
-	 * @throws HTTPException
+	 * @throws HTTPError
 	 */
 	protected function process()
 	{
@@ -370,7 +372,7 @@ class GetOperation extends Operation
 
 		if (!$path)
 		{
-			throw new Exception\HTTP('Unable to create thumbnail for: %src', array('%src' => $this->request['src']), 404);
+			throw new HTTPError(\ICanBoogie\format('Unable to create thumbnail for: %src', array('%src' => $this->request['src'])), 404);
 		}
 
 		$request = $this->request;
