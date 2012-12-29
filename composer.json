@@ -24,6 +24,6 @@
 		"icanboogie/image": "dev-master"
 	},
 	"autoload": {
-		"classmap": ["lib/", "includes/", "modules/"]
+		"classmap": [ "lib/" ]
 	}
 }
