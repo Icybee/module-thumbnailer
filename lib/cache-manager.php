@@ -12,6 +12,7 @@
 namespace ICanBoogie\Modules\Thumbnailer;
 
 use ICanBoogie\FileCache;
+use ICanBoogie\I18n;
 
 use Brickrouge\Element;
 use Brickrouge\Form;
@@ -48,8 +49,8 @@ class CacheManager extends \ICanBoogie\Object implements \Icybee\Modules\Cache\C
 
 		$registry = $core->registry;
 
-		$rc = t("La taille du cache ne dépasse pas :cache_sizeMo.", array('cache_size' => $registry['thumbnailer.cache_size'] ?: 8));
-		$rc .= ' ' . t("Le cache est nettoyé toutes les :cleanup_interval minutes.", array('cleanup_interval' => $registry['thumbnailer.cleanup_interval'] ?: 15));
+		$rc = I18n\t("La taille du cache ne dépasse pas :cache_sizeMo.", array('cache_size' => $registry['thumbnailer.cache_size'] ?: 8));
+		$rc .= ' ' . I18n\t("Le cache est nettoyé toutes les :cleanup_interval minutes.", array('cleanup_interval' => $registry['thumbnailer.cleanup_interval'] ?: 15));
 
 		return $rc;
 	}
