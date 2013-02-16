@@ -21,9 +21,9 @@
 	"require": {
 		"php": ">=5.3.0",
 		"icybee/module-installer": "*",
-		"icanboogie/image": "dev-master"
+		"icanboogie/image": "*"
 	},
 	"autoload": {
-		"classmap": [ "lib/" ]
+		"classmap": [ "" ]
 	}
 }
