@@ -59,56 +59,56 @@ return array
 
 	'api:thumbnail:image' => array
 	(
-		'pattern' => '/api/:module/:nid/thumbnail',
+		'pattern' => '/api/:module/<nid:\d+>/thumbnail',
 		'controller' => 'ICanBoogie\Modules\Thumbnailer\ThumbnailOperation',
 		'via' => Request::METHOD_GET
 	),
 
 	'api:thumbnail:image:w/h/m' => array
 	(
-		'pattern' => '/api/:module/:nid/<w:\d+>x<h:\d+>/:m',
+		'pattern' => '/api/:module/<nid:\d+>/<w:\d+>x<h:\d+>/:m',
 		'controller' => 'ICanBoogie\Modules\Thumbnailer\ThumbnailOperation',
 		'via' => Request::METHOD_GET
 	),
 
 	'api:thumbnail:image:w/h' => array
 	(
-		'pattern' => '/api/:module/:nid/<w:\d+>x<h:\d+>',
+		'pattern' => '/api/:module/<nid:\d+>/<w:\d+>x<h:\d+>',
 		'controller' => 'ICanBoogie\Modules\Thumbnailer\ThumbnailOperation',
 		'via' => Request::METHOD_GET
 	),
 
 	'api:thumbnail:image:w/m' => array
 	(
-		'pattern' => '/api/:module/:nid/<w:\d+>/:m',
+		'pattern' => '/api/:module/<nid:\d+>/<w:\d+>/:m',
 		'controller' => 'ICanBoogie\Modules\Thumbnailer\ThumbnailOperation',
 		'via' => Request::METHOD_GET
 	),
 
 	'api:thumbnail:image:w' => array
 	(
-		'pattern' => '/api/:module/:nid/<w:\d+>',
+		'pattern' => '/api/:module/<nid:\d+>/<w:\d+>',
 		'controller' => 'ICanBoogie\Modules\Thumbnailer\ThumbnailOperation',
 		'via' => Request::METHOD_GET
 	),
 
 	'api:thumbnail:image:h/m' => array
 	(
-		'pattern' => '/api/:module/:nid/x<h:\d+>/:method',
+		'pattern' => '/api/:module/<nid:\d+>/x<h:\d+>/:method',
 		'controller' => 'ICanBoogie\Modules\Thumbnailer\ThumbnailOperation',
 		'via' => Request::METHOD_GET
 	),
 
 	'api:thumbnail:image:h' => array
 	(
-		'pattern' => '/api/:module/:nid/x<h:\d+>',
+		'pattern' => '/api/:module/<nid:\d+>/x<h:\d+>',
 		'controller' => 'ICanBoogie\Modules\Thumbnailer\ThumbnailOperation',
 		'via' => Request::METHOD_GET
 	),
 
 	'api:thumbnail:image:version' => array
 	(
-		'pattern' => '/api/:module/:nid/thumbnails/:version',
+		'pattern' => '/api/:module/<nid:\d+>/thumbnails/:version',
 		'controller' => 'ICanBoogie\Modules\Thumbnailer\ThumbnailOperation',
 		'via' => Request::METHOD_GET
 	)

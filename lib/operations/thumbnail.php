@@ -70,7 +70,7 @@ class ThumbnailOperation extends GetOperation
 
 		if (empty($params['src']))
 		{
-			throw new \ICanboogie\HTTP\HTTPError(\ICanBoogie\format('Unable to locate image resource for the given identifier: %nid.', array('%nid' => $nid)), 404);
+			throw new \ICanBoogie\HTTP\HTTPError(\ICanBoogie\format('Unable to locate image resource for the given identifier: %nid.', array('%nid' => $nid)), 404);
 		}
 
 		return parent::process();

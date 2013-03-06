@@ -29,8 +29,6 @@ class Module extends \ICanBoogie\Module
 
 	/**
 	 * Creates the repository folder where generated thumbnails are saved.
-	 *
-	 * @see Module::install()
 	 */
 	public function install(Errors $errors)
 	{
@@ -50,13 +48,11 @@ class Module extends \ICanBoogie\Module
 			}
 		}
 
-		return 0 == count($errors);
+		return !count($errors);
 	}
 
 	/**
 	 * Check if the repository folder has been created.
-	 *
-	 * @see Module::is_installed()
 	 */
 	public function is_installed(Errors $errors)
 	{
@@ -67,6 +63,6 @@ class Module extends \ICanBoogie\Module
 			$errors[$this->id] = new FormattedString('The %directory directory is missing.', array('%directory' => \ICanBoogie\strip_root($path)));
 		}
 
-		return 0 == count($errors);
+		return !count($errors);
 	}
 }

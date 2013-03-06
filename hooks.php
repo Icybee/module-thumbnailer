@@ -129,7 +129,7 @@ class Hooks
 	 * Callback for the `properties:before` event, pre-parsing thumbnailer versions if they are
 	 * defined.
 	 *
-	 * @param \Icybee\ConfigOperation\BeforePropertiesEvent $ev
+	 * @param \Icybee\ConfigOperation\BeforePropertiesEvent $event
 	 */
 	static public function before_configoperation_properties(\Icybee\ConfigOperation\BeforePropertiesEvent $event)
 	{
