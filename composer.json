@@ -23,7 +23,10 @@
 		"icybee/module-installer": "*",
 		"icanboogie/image": "*"
 	},
+	"suggest": {
+		"icybee/module-cache": "Allows thumbnails cache management from Icybee admin."
+    }
 	"autoload": {
-		"classmap": [ "" ]
+		"classmap": [ "lib/" ]
 	}
 }

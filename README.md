@@ -12,8 +12,7 @@ unified cache system of the "Cache" module (cache).
 
 ### Requirements
 
-This module is for the CMS [Icybee](http://icybee.org/).
-
+The package requires PHP 5.3 or later.
 
 
 
