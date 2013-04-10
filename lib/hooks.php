@@ -87,7 +87,7 @@ class Hooks
 			return;
 		}
 
-		$core->document->css->add('assets/admin.css');
+		$core->document->css->add(DIR . '/assets/admin.css');
 
 		$children = array();
 
