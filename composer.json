@@ -1,8 +1,8 @@
 {
 	"name": "icybee/module-thumbnailer",
 	"type": "icybee-module",
-	"description": "Creates thumbnails on demand",
-	"keywords": ["thumbnail"],
+	"description": "Creates thumbnails on demand.",
+	"keywords": [ "thumbnail" ],
 	"homepage": "http://icybee.org/",
 	"license": "BSD-3-Clause",
 	"authors": [
@@ -21,7 +21,8 @@
 	"require": {
 		"php": ">=5.3.0",
 		"icybee/module-installer": "*",
-		"icanboogie/image": "*"
+		"icanboogie/image": "*",
+		"brickrouge/brickrouge": "*"
 	},
 	"suggest": {
 		"icybee/module-cache": "Allows thumbnails cache management from Icybee admin."
