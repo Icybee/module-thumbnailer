@@ -1,6 +1,7 @@
-# The "Thumbnailer" module (thumbnailer)
+# Thumbnailer
 
-Creates thumbnails from images and managed images using options or configured versions.
+The "Thumbnailer" module (`thumbnailer`) Creates thumbnails from images and managed
+images using options or configured versions.
 
 The module extends the _Image_ active record with the `thumbnail()` method and the `thumbnail`
 lazy getter, and provides an interface to configure and manage its cache that integrates with the

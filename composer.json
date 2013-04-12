@@ -21,12 +21,13 @@
 	"require": {
 		"php": ">=5.3.0",
 		"icybee/module-installer": "*",
+		"icanboogie/event": "*",
 		"icanboogie/image": "*",
 		"brickrouge/brickrouge": "*"
 	},
 	"suggest": {
 		"icybee/module-cache": "Allows thumbnails cache management from Icybee admin."
-    }
+    },
 	"autoload": {
 		"classmap": [ "lib/" ]
 	}
