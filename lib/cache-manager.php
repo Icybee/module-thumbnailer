@@ -25,8 +25,8 @@ use Brickrouge\Text;
  */
 class CacheManager extends \ICanBoogie\Object implements \Icybee\Modules\Cache\CacheManagerInterface
 {
-	public $title = "Miniatures";
-	public $description = "Miniatures générées à la volée par le module <q>Thumbnailer</q>.";
+	public $title = "Thumbnails";
+	public $description = "Thumbnails created on the fly by the <q>Thumbnailer</q> module.";
 	public $group = 'resources';
 	public $state = null;
 
@@ -49,8 +49,8 @@ class CacheManager extends \ICanBoogie\Object implements \Icybee\Modules\Cache\C
 
 		$registry = $core->registry;
 
-		$rc = I18n\t("La taille du cache ne dépasse pas :cache_sizeMo.", array('cache_size' => $registry['thumbnailer.cache_size'] ?: 8));
-		$rc .= ' ' . I18n\t("Le cache est nettoyé toutes les :cleanup_interval minutes.", array('cleanup_interval' => $registry['thumbnailer.cleanup_interval'] ?: 15));
+		$rc = I18n\t("The cache size does not exceed :cache_sizeMb.", array('cache_size' => $registry['thumbnailer.cache_size'] ?: 8));
+		$rc .= ' ' . I18n\t("The cache is cleaned every :cleanup_interval minutes.", array('cleanup_interval' => $registry['thumbnailer.cleanup_interval'] ?: 15));
 
 		return $rc;
 	}
@@ -72,8 +72,8 @@ class CacheManager extends \ICanBoogie\Object implements \Icybee\Modules\Cache\C
 					(
 						array
 						(
-							Form::LABEL => 'Taille maximale du cache',
-							Text::ADDON => 'Mo',
+							Form::LABEL => "Maximum cache size",
+							Text::ADDON => 'Mb',
 
 							'size' => 5,
 							'class' => 'measure',
@@ -85,7 +85,7 @@ class CacheManager extends \ICanBoogie\Object implements \Icybee\Modules\Cache\C
 					(
 						array
 						(
-							Form::LABEL => "Intervale entre deux nettoyages",
+							Form::LABEL => "Interval between cleanings",
 							Text::ADDON => 'minutes',
 
 							'size' => 5,
