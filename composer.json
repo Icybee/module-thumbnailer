@@ -1,6 +1,6 @@
 {
 	"name": "icybee/module-thumbnailer",
-	"type": "icybee-module",
+	"type": "icanboogie-module",
 	"description": "Creates thumbnails on demand.",
 	"keywords": [ "thumbnail" ],
 	"homepage": "http://icybee.org/",
@@ -20,7 +20,7 @@
 	"minimum-stability": "dev",
 	"require": {
 		"php": ">=5.3.0",
-		"icybee/module-installer": "*",
+		"icanboogie/module-installer": "*",
 		"icanboogie/event": "*",
 		"icanboogie/image": "*",
 		"brickrouge/brickrouge": "*"
