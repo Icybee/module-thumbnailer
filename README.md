@@ -1,11 +1,46 @@
-# Thumbnailer
+# Thumbnailer [![Build Status](https://travis-ci.org/Icybee/module-thumbnailer.png?branch=master)](https://travis-ci.org/Icybee/module-thumbnailer)
 
-The "Thumbnailer" module (`thumbnailer`) Creates thumbnails from images and managed
+The Thumbnailer module (`thumbnailer`) Creates thumbnails from images and managed
 images using options or configured versions.
 
 The module extends the _Image_ active record with the `thumbnail()` method and the `thumbnail`
 lazy getter, and provides an interface to configure and manage its cache that integrates with the
 unified cache system of the "Cache" module (cache).
+
+```php
+<?php
+
+namespace ICanBoogie\Modules\Thumbnailer;
+
+$versions = Versions::get();
+$versions['popover'] = 'w:420;h:340';
+# or
+$versions['popover'] = array
+(
+	'width' => 420,
+	'height' => 340
+);
+
+$thumbnail = new Thumbnail('/images/madonna.jpeg', 'popover');
+
+echo $thumbnail;      // <img src="/api/thumbnail/420x340/fill?s=%2Fimages%2Fmadonna.jpeg&amp;v=popover" alt="" width="420" height="340" class="thumbnail thumbnail--popover" />
+echo $thumbnail->url; // /api/thumbnail/420x340/fill?s=%2Fimages%2Fmadonna.jpeg&v=popover
+
+$thumbnail = new Thumbnail('/images/madonna.jpeg', 'w:64;h:64;f:png');
+
+echo $thumbnail;      // <img src="/api/thumbnail/64x64/fill?f=png&amp;s=%2Fimages%2Fmadonna.jpeg" alt="" width="64" height="64" class="thumbnail" />
+echo $thumbnail->url; // /api/thumbnail/64x64/fill?f=png&s=%2Fimages%2Fmadonna.jpeg
+
+# Support for the Images module 
+
+$thumbnail = new Thumbnail($core->models['images'][123], 'popover');
+
+echo $thumbnail;      // <img src="/api/images/123/thumbnails/popover" alt="" width="420" height="340" class="thumbnail thumbnail--popover" />
+echo $thumbnail->url; // /api/images/123/thumbnails/popover
+
+$core->models['images'][123]->thumbnail('popover');
+$core->models['images'][123]->thumbnail('popover')->url;
+```
 
 
 
@@ -21,7 +56,7 @@ The package requires PHP 5.3 or later.
 
 ## Installation
 
-The recommended way to install this package is through [composer](http://getcomposer.org/).
+The recommended way to install this package is through [Composer](http://getcomposer.org/).
 Create a `composer.json` file and run `php composer.phar install` command to install it:
 
 ```json
@@ -44,6 +79,20 @@ be cloned with the following command line:
 
 	$ git clone git://github.com/Icybee/module-thumbnailer.git thumbnailer
 	
+
+
+
+
+## Testing
+
+The test suite is ran with the `make test` command. [Composer](http://getcomposer.org/) is
+automatically installed as well as all the dependencies required to run the suite. The package
+directory can later be cleaned with the `make clean` command.
+
+The package is continuously tested by [Travis CI](http://about.travis-ci.org/).
+
+[![Build Status](https://travis-ci.org/Icybee/module-thumbnailer.png?branch=master)](https://travis-ci.org/Icybee/module-thumbnailer)
+
 
 
 
@@ -108,7 +157,7 @@ echo $image->thumbnail('w:64;h:64;m:fit');
 
 #### `Icybee\Modules\Images\Image::get_thumbnail`
 
-Adds the `thumbnail` lazy getter for the `primary` thumbnail version.
+Adds the `thumbnail` lazy getter for the `view` thumbnail version.
 
 
 

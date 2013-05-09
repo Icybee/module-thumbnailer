@@ -17,41 +17,6 @@ class Versions implements \ArrayAccess, \IteratorAggregate
 {
 	private static $instance;
 
-	public static $defaults = array
-	(
-		'background' => 'transparent',
-		'default' => null,
-		'format' => 'jpeg',
-		'filter' => null,
-		'height' => null,
-		'method' => 'fill',
-		'no-interlace' => false,
-		'no-upscale' => false,
-		'overlay' => null,
-		'path' => null,
-		'quality' => 85,
-		'src' => null,
-		'width' => null
-	);
-
-	public static $shorthands = array
-	(
-		'b' => 'background',
-		'd' => 'default',
-		'f' => 'format',
-		'ft' => 'filter',
-		'h' => 'height',
-		'm' => 'method',
-		'ni' => 'no-interlace',
-		'nu' => 'no-upscale',
-		'o' => 'overlay',
-		'p' => 'path',
-		'q' => 'quality',
-		's' => 'src',
-		'v' => 'version',
-		'w' => 'width'
-	);
-
 	/**
 	 * Returns a unique instance.
 	 *
@@ -74,6 +39,11 @@ class Versions implements \ArrayAccess, \IteratorAggregate
 	protected function __construct()
 	{
 		global $core;
+
+		if (empty($core))
+		{
+			return;
+		}
 
 		if (CACHE_VERSIONS)
 		{
@@ -120,82 +90,12 @@ class Versions implements \ArrayAccess, \IteratorAggregate
 				continue;
 			}
 
-			$versions[$name] = self::normalize_options(json_decode($options, true));
+			$versions[$name] = Version::normalize(json_decode($options, true));
 		}
 
 		new Versions\CollectEvent($this, array('versions' => &$versions));
 
 		return $versions;
-	}
-
-	/**
-	 * Normalizes thumbnail options.
-	 *
-	 * @param array $options
-	 *
-	 * @return array
-	 */
-	static public function normalize_options(array $options)
-	{
-		foreach (self::$shorthands as $shorthand => $full)
-		{
-			if (isset($options[$shorthand]))
-			{
-				$options[$full] = $options[$shorthand];
-			}
-		}
-
-		#
-		# add defaults so that all options are defined
-		#
-
-		$options += self::$defaults;
-
-		#
-		# The parameters are filtered and sorted, making extraneous parameters and parameters order
-		# non important.
-		#
-
-		$options = array_intersect_key($options, self::$defaults);
-
-		ksort($options);
-
-		return $options;
-	}
-
-	/**
-	 * Filter thumbnail options.
-	 *
-	 * Options than match default values are removed. The options are normalized using
-	 * {@link normalize_options()} before they are filtered.
-	 *
-	 * @param array $options
-	 *
-	 * @return array The filtered thumbnail options.
-	 */
-	static public function filter_options(array $options)
-	{
-		return array_diff_assoc(self::normalize_options($options), self::$defaults);
-	}
-
-	/**
-	 * Shorten option names.
-	 *
-	 * @param array $options
-	 *
-	 * @return array
-	 */
-	static public function shorten_options(array $options)
-	{
-		$shorten_options = array();
-		$shorthands = array_flip(self::$shorthands);
-
-		foreach (self::filter_options($options) as $name => $value)
-		{
-			$shorten_options[$shorthands[$name]] = $value;
-		}
-
-		return $shorten_options;
 	}
 
 	/**
@@ -208,10 +108,25 @@ class Versions implements \ArrayAccess, \IteratorAggregate
 
 	/**
 	 * Returns the definition of a version.
+	 *
+	 * @throws VersionNotDefined in attempt to get a version that is not defined.
 	 */
 	public function offsetGet($version)
 	{
-		return $this->offsetExists($version) ? $this->versions[$version] : null;
+		if (!$this->offsetExists($version))
+		{
+			throw new VersionNotDefined($version);
+		}
+
+		$v = $this->versions[$version];
+
+		if (!($v instanceof Version))
+		{
+			$v = new Version($v);
+			$this->versions[$version] = $v;
+		}
+
+		return $v;
 	}
 
 	/**
@@ -222,7 +137,7 @@ class Versions implements \ArrayAccess, \IteratorAggregate
 	 */
 	public function offsetSet($version, $options)
 	{
-		$this->versions[$version] = static::normalize_options($options);
+		$this->versions[$version] = $options;
 	}
 
 	/**
@@ -236,6 +151,35 @@ class Versions implements \ArrayAccess, \IteratorAggregate
 	public function getIterator()
 	{
 		return new \ArrayIterator($this->versions);
+	}
+}
+
+/*
+ * Exception
+ */
+
+/**
+ * Exception thrown when a thumbnail version is not defined.
+ *
+ * @property-read string $version The thumbnail version identifier.
+ */
+class VersionNotDefined extends \InvalidArgumentException
+{
+	private $version;
+
+	public function __construct($version, $code=500, \Exception $previous=null)
+	{
+		$this->version = $version;
+
+		parent::__construct("Version not defined: $version.", $code, $previous);
+	}
+
+	public function __get($property)
+	{
+		if ($property == 'version')
+		{
+			return $this->version;
+		}
 	}
 }
 

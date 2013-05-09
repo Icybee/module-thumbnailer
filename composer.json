@@ -25,6 +25,9 @@
 		"icanboogie/image": "*",
 		"brickrouge/brickrouge": "*"
 	},
+	"require-dev": {
+		"icybee/module-images": "*"
+	},
 	"suggest": {
 		"icybee/module-cache": "Allows thumbnails cache management from Icybee admin."
     },

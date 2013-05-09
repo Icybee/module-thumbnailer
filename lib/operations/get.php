@@ -51,21 +51,17 @@ class GetOperation extends Operation
 
 		if (isset($params['version']))
 		{
+			$version_name = $params['version'];
 			$versions = Versions::get();
-			$version = $params['version'];
-			$version_params = $versions[$version];
-
-			if (!$version_params)
-			{
-				throw new HTTPError(I18n\t('Unknown version %version.', array('version' => $version)));
-			}
-
-			$params += $version_params;
+			$version = $versions[$version_name];
+			$params += $version->to_array(Version::ARRAY_FILTER);
 
 			unset($params['version']);
 		}
 
-		$params = Versions::normalize_options($params);
+		#
+
+		$params = Version::normalize($params);
 
 		if (empty($params['background']))
 		{
@@ -354,9 +350,9 @@ class GetOperation extends Operation
 	}
 
 	/**
-	 * Operation interface to the @get() method.
+	 * Operation interface to the {@link get()} method.
 	 *
-	 * The function uses the @get() method to obtain the location of the image version.
+	 * The function uses the {@link get()} method to obtain the location of the image version.
 	 * A HTTP redirection is made to the location of the image.
 	 *
 	 * A HTTPException exception with code 404 is thrown if the function fails to obtain the

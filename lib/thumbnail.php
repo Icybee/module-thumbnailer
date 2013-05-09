@@ -33,12 +33,12 @@ class Thumbnail extends \ICanBoogie\Object
 	/**
 	 * The source of the thumbnail.
 	 *
-	 * @var Icybee\Modules\Images\Image|int|string
+	 * @var \ICanBoogie\ActiveRecord|int|string
 	 */
 	public $src;
 
 	/**
-	 * Options to created the thumbnail.
+	 * Options to create the thumbnail.
 	 *
 	 * @var array
 	 */
@@ -62,13 +62,13 @@ class Thumbnail extends \ICanBoogie\Object
 	 *
 	 * @param string|array $additionnal_options Additionnal options to create the thumbnail.
 	 */
-	public function __construct($src, $options, $additionnal_options=null)
+	public function __construct($src, $options=null, $additionnal_options=null)
 	{
 		if (is_string($options))
 		{
 			if (strpos($options, ':') !== false)
 			{
-				$options = self::decode_options($options);
+				$options = Version::unserialize($options);
 			}
 			else
 			{
@@ -85,22 +85,16 @@ class Thumbnail extends \ICanBoogie\Object
 		{
 			if (is_string($additionnal_options))
 			{
-				$additionnal_options = self::decode_options($additionnal_options);
+				$additionnal_options = Version::unserialize($additionnal_options);
 			}
 
 			$this->options = $additionnal_options + $this->options;
 		}
 
-		$this->options = Versions::filter_options($this->options);
+		#
 
+		$this->options = Version::normalize($this->options);
 		$this->src = $src;
-	}
-
-	static protected function decode_options($options)
-	{
-		preg_match_all('#([^:]+):\s*([^;]+);?#', $options, $matches, PREG_PATTERN_ORDER);
-
-		return array_combine($matches[1], $matches[2]);
 	}
 
 	private $_version;
@@ -118,14 +112,51 @@ class Thumbnail extends \ICanBoogie\Object
 			return;
 		}
 
-		$version = $core->registry['thumbnailer.versions.' . $this->version_name];
+		$versions = Versions::get();
 
-		if (!$version)
+		return $versions[$this->version_name];
+	}
+
+	private function get_option($property)
+	{
+		if (!empty($this->options[$property]))
+		{
+			return $this->options[$property];
+		}
+
+		if (!$this->version)
 		{
 			return;
 		}
 
-		return Versions::filter_options(json_decode($version, true));
+		return $this->version->$property;
+	}
+
+	private function set_option($option, $value)
+	{
+		if ($value === null)
+		{
+			unset($this->options[$option]);
+		}
+		else
+		{
+			$this->options[$option] = $value;
+		}
+	}
+
+	public function __get($property)
+	{
+		if (isset(Version::$shorthands[$property]))
+		{
+			$property = Version::$shorthands[$property];
+		}
+
+		if (array_key_exists($property, Version::$defaults))
+		{
+			return $this->get_option($property);
+		}
+
+		return parent::__get($property);
 	}
 
 	/**
@@ -137,17 +168,12 @@ class Thumbnail extends \ICanBoogie\Object
 	 */
 	protected function volatile_get_w()
 	{
-		if (!empty($this->options['width']))
-		{
-			return $this->options['width'];
-		}
+		return $this->get_option('width');
+	}
 
-		$version = $this->version;
-
-		if (!empty($version['width']))
-		{
-			return $version['width'];
-		}
+	protected function volatile_set_w($weight)
+	{
+		$this->set_option('weight', $weight);
 	}
 
 	/**
@@ -159,17 +185,12 @@ class Thumbnail extends \ICanBoogie\Object
 	 */
 	protected function volatile_get_h()
 	{
-		if (!empty($this->options['height']))
-		{
-			return $this->options['height'];
-		}
+		return $this->get_option('height');
+	}
 
-		$version = $this->version;
-
-		if (!empty($version['height']))
-		{
-			return $version['height'];
-		}
+	protected function volatile_set_h($height)
+	{
+		$this->set_option('height', $height);
 	}
 
 	/**
@@ -183,22 +204,12 @@ class Thumbnail extends \ICanBoogie\Object
 	 */
 	protected function volatile_get_method()
 	{
-		if (!empty($this->options['method']))
-		{
-			return $this->options['method'];
-		}
-
-		$version = $this->version;
-
-		if (!empty($version['method']))
-		{
-			return $version['method'];
-		}
+		return $this->get_option('method');
 	}
 
 	protected function volatile_set_method($method)
 	{
-		$this->options['method'] = $method;
+		$this->set_option('method', $method);
 	}
 
 	/**
@@ -211,7 +222,7 @@ class Thumbnail extends \ICanBoogie\Object
 		global $core;
 
 		$src = $this->src;
-		$options = $this->options;
+		$options = Version::filter($this->options);
 		$version_name = $this->version_name;
 		$url = '/api/';
 
@@ -258,7 +269,7 @@ class Thumbnail extends \ICanBoogie\Object
 		}
 		else
 		{
-			$url .= $src->constructor . '/' . $src->nid;
+			$url .= (empty($src->constructor) ? $src->model_id : $src->constructor) . '/' . $src->nid;
 
 			if ($version_name)
 			{
@@ -304,7 +315,7 @@ class Thumbnail extends \ICanBoogie\Object
 
 		if ($options)
 		{
-			$url .= '?'. http_build_query(Versions::shorten_options($options));
+			$url .= '?'. http_build_query(Version::shorten($options));
 		}
 
 		return $url;
@@ -332,7 +343,7 @@ class Thumbnail extends \ICanBoogie\Object
 
 		if ($this->version_name)
 		{
-			$class .= ' thumbnail--' . \ICanBoogie\normalize($this->version_name);
+			$class .= ' thumbnail--' . \Brickrouge\normalize($this->version_name);
 		}
 
 		$w = $this->w;
@@ -340,7 +351,7 @@ class Thumbnail extends \ICanBoogie\Object
 
 		if (is_string($path))
 		{
-			list($w, $h) = \ICanBoogie\Image::compute_final_size($w, $h, $this->method, \ICanBoogie\DOCUMENT_ROOT . $path);
+			list($w, $h) = \ICanBoogie\Image::compute_final_size($w, $h, $this->method, \Brickrouge\DOCUMENT_ROOT . $path);
 		}
 
 		return new Element
@@ -370,7 +381,7 @@ class Thumbnail extends \ICanBoogie\Object
 		}
 		catch (\Exception $e)
 		{
-			echo \ICanBoogie\Debug::format_alert($e);
+			echo \Brickrouge\render_exception($e);
 		}
 	}
 }
