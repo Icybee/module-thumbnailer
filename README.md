@@ -5,14 +5,15 @@ images using options or configured versions.
 
 The module extends the _Image_ active record with the `thumbnail()` method and the `thumbnail`
 lazy getter, and provides an interface to configure and manage its cache that integrates with the
-unified cache system of the "Cache" module (cache).
+unified cache system of the "Cache" module (cache). The module also extends the _core_ object
+with the `thumbnail_versions` lazy getter.
 
 ```php
 <?php
 
 namespace ICanBoogie\Modules\Thumbnailer;
 
-$versions = Versions::get();
+$versions = $core->thumbnailer_versions;
 $versions['popover'] = 'w:420;h:340';
 # or
 $versions['popover'] = array
@@ -46,7 +47,81 @@ $core->models['images'][123]->thumbnail('popover')->url;
 
 
 
-### Requirements
+## Event hooks
+
+
+
+
+
+### `ICanBoogie\Modules\System\Cache\Collection::alter`
+
+Adds our cache manager to the cache collection.
+
+
+
+
+
+### `Icybee\ConfigBlock::alter_children`
+
+Adds a _thumbnails_ section to the config block of modules defining thumbnail versions using the
+"thumbnails" config.
+
+
+
+
+
+### `Icybee\ConfigOperation::properties:before`
+
+Pre-parses defined thumbnail versions before the config is saved.
+
+
+
+
+
+## Prototype methods
+
+
+
+
+
+### `Icybee\Modules\Images\Image::thumbnail`
+
+Adds the `thumbnail()` method to the _Image_ active record.
+
+```php
+<?php
+
+$image = $core->models['images']->one;
+
+echo $image->thumbnail('my-version-name');
+echo $image->thumbnail('w:64;h:64;m:fit');
+```
+
+
+
+
+
+### `Icybee\Modules\Images\Image::get_thumbnail`
+
+Adds the `thumbnail` lazy getter for the `view` thumbnail version.
+
+
+
+
+
+### `ICanBoogie\Core\get_thumbnail_versions`
+
+Adds the `thumbnail_versions` lazy getter to the _core_ object. The getter returns a version 
+collection configured with the versions saved in the registry. Third parties may alter this
+collection with an event hook attached to the `ICanBoogie\Modules\Thumbnailer\Versions::alter`
+event.
+
+
+
+
+
+
+## Requirements
 
 The package requires PHP 5.3 or later.
 
@@ -104,60 +179,6 @@ The package is documented as part of the [Icybee](http://icybee.org/) CMS
 dependencies can be generated with the `make doc` command. The documentation is generated in
 the `docs` directory using [ApiGen](http://apigen.org/). The package directory can later by
 cleaned with the `make clean` command.
-
-
-
-
-
-### Event hooks
-
-#### `ICanBoogie\Modules\System\Cache\Collection::alter`
-
-Adds our cache manager to the cache collection.
-
-
-
-
-
-#### `Icybee\ConfigBlock::alter_children`
-
-Adds a _thumbnails_ section to the config block of modules defining thumbnail versions using the
-"thumbnails" config.
-
-
-
-
-
-#### `Icybee\ConfigOperation::properties:before`
-
-Pre-parses defined thumbnail versions before the config is saved.
-
-
-
-
-
-### Prototype methods
-
-#### `Icybee\Modules\Images\Image::thumbnail`
-
-Adds the `thumbnail()` method to the _Image_ active record.
-
-```php
-<?php
-
-$image = $core->models['images']->one;
-
-echo $image->thumbnail('my-version-name');
-echo $image->thumbnail('w:64;h:64;m:fit');
-```
-
-
-
-
-
-#### `Icybee\Modules\Images\Image::get_thumbnail`
-
-Adds the `thumbnail` lazy getter for the `view` thumbnail version.
 
 
 

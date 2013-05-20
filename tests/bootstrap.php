@@ -13,19 +13,28 @@ use ICanBoogie\Modules\Thumbnailer\Versions;
 
 require __DIR__ . '/../vendor/autoload.php';
 
-$versions = Versions::get();
-
-$versions['images-view'] = array
+$versions = new Versions
 (
-	'w' => 120,
-	'h' => 100
+	array
+	(
+		'images-view' => array
+		(
+			'w' => 120,
+			'h' => 100
+		),
+
+		'icon' => array
+		(
+			'w' => 64,
+			'h' => 64,
+			'background' => 'transparent',
+			'format' => 'jpeg',
+			'quality' => 85
+		)
+	)
 );
 
-$versions['icon'] = array
+$core = (object) array
 (
-	'w' => 64,
-	'h' => 64,
-	'background' => 'transparent',
-	'format' => 'jpeg',
-	'quality' => 85
+	'thumbnailer_versions' => $versions
 );

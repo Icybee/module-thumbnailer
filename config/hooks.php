@@ -15,6 +15,7 @@ return array
 
 	'prototypes' => array
 	(
+		'ICanBoogie\Core::get_thumbnailer_versions' => __NAMESPACE__ . '\Versions::prototype_get_thumbnailer_versions',
 		'Icybee\Modules\Images\Image::thumbnail' => $hooks . 'method_thumbnail',
 		'Icybee\Modules\Images\Image::get_thumbnail' => $hooks . 'method_get_thumbnail'
 	)

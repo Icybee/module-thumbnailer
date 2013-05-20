@@ -15,66 +15,47 @@ const CACHE_VERSIONS = true;
 
 class Versions implements \ArrayAccess, \IteratorAggregate
 {
-	private static $instance;
-
 	/**
-	 * Returns a unique instance.
+	 * Creates a {@link Versions} instance and initializes it with the defined versions.
 	 *
-	 * @return Versions
+	 * The event `ICanBoogie\Modules\Thumbnailer\Versions::alter` of class
+	 * {@link ICanBoogie\Modules\Thumbnailer\Versions\AlterEvent} is fired to allow third parties
+	 * to alter the instance.
+	 *
+	 * @param \ICanBoogie\Core $core
 	 */
-	static public function get()
+	static public function prototype_get_thumbnailer_versions(\ICanBoogie\Core $core)
 	{
-		if (self::$instance)
-		{
-			return self::$instance;
-		}
-
-		$class = get_called_class();
-
-		return self::$instance = new $class;
-	}
-
-	protected $versions;
-
-	protected function __construct()
-	{
-		global $core;
-
-		if (empty($core))
-		{
-			return;
-		}
-
 		if (CACHE_VERSIONS)
 		{
 			$versions = $core->vars['cached_thumbnailer_versions'];
 
 			if (!$versions)
 			{
-				$versions = $this->collect();
+				$versions = self::collect($core);
 
 				$core->vars['cached_thumbnailer_versions'] = $versions;
 			}
 		}
 		else
 		{
-			$versions = $this->collect();
+			$versions = self::collect($core);
 		}
 
-		$this->versions = $versions;
+		$instance = new static($versions);
+
+		new Versions\AlterEvent($instance);
+
+		return $instance;
 	}
 
 	/**
 	 * Collects versions.
 	 *
-	 * {@link Version\CollectEvent} is fired.
-	 *
 	 * @return array[string]array
 	 */
-	protected function collect()
+	static private function collect(\ICanBoogie\Core $core)
 	{
-		global $core;
-
 		$versions = array();
 		$definitions = $core->registry
 		->select('SUBSTR(name, LENGTH("thumbnailer.versions.") + 1) as name, value')
@@ -85,7 +66,7 @@ class Versions implements \ArrayAccess, \IteratorAggregate
 		{
 			if (!$options || !is_string($options) || $options{0} != '{')
 			{
-				\ICanBoogie\log_error('bad version: %name, :options', array('name' => $name, 'options' => $options));
+				\ICanBoogie\log_error('Bad version: %name, :options', array('name' => $name, 'options' => $options));
 
 				continue;
 			}
@@ -93,9 +74,66 @@ class Versions implements \ArrayAccess, \IteratorAggregate
 			$versions[$name] = Version::normalize(json_decode($options, true));
 		}
 
-		new Versions\CollectEvent($this, array('versions' => &$versions));
-
 		return $versions;
+	}
+
+	/**
+	 * Defined versions.
+	 *
+	 * @var array[string]mixed
+	 */
+	protected $versions;
+
+	/**
+	 * Initializes the specified versions.
+	 *
+	 * @param array $versions
+	 */
+	public function __construct(array $versions=array())
+	{
+		foreach ($versions as $name => $version)
+		{
+			$this[$name] = $version;
+		}
+	}
+
+	/**
+	 * Saves the versions.
+	 */
+	public function save()
+	{
+		foreach ($this->versions as $name => $version)
+		{
+			$this->save_version($name, $version);
+		}
+	}
+
+	/**
+	 * Persists a version.
+	 *
+	 * @param string $name Name of the version.
+	 * @param Version|array|string $version Version to persist. The version can be specified as
+	 * a {@link Version} instance, an array or as a string (a serialized version).
+	 *
+	 * @return array The options actually saved.
+	 */
+	public function save_version($name, $version)
+	{
+		global $core;
+
+		if (!($version instanceof Versions))
+		{
+			$version = new Version($version);
+		}
+
+		$options = $version->to_array(Version::ARRAY_FILTER | Version::ARRAY_SHORTEN);
+		$core->registry["thumbnailer.versions.$name"] = json_encode($options);
+
+		# revoke cache
+
+		unset($core->vars['cached_thumbnailer_versions']);
+
+		return $options;
 	}
 
 	/**
@@ -186,25 +224,17 @@ class VersionNotDefined extends \InvalidArgumentException
 namespace ICanBoogie\Modules\Thumbnailer\Versions;
 
 /**
- * Event class for the `ICanBoogie\Modules\Thumbnailer\Versions::collect` event.
+ * Event class for the `ICanBoogie\Modules\Thumbnailer\Versions::alert` event.
  */
-class CollectEvent extends \ICanBoogie\Event
+class AlterEvent extends \ICanBoogie\Event
 {
 	/**
-	 * Reference to the thumbnail versions.
-	 *
-	 * @var array[string]array
-	 */
-	public $versions;
-
-	/**
-	 * The event is constructed with the type `collect`.
+	 * The event is constructed with the type `alter`.
 	 *
 	 * @param \ICanBoogie\Modules\Thumbnailer\Versions $target
-	 * @param array $payload
 	 */
-	public function __construct(\ICanBoogie\Modules\Thumbnailer\Versions $target, array $payload)
+	public function __construct(\ICanBoogie\Modules\Thumbnailer\Versions $target)
 	{
-		parent::__construct($target, 'collect', $payload);
+		parent::__construct($target, 'alter');
 	}
 }

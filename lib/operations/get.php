@@ -52,7 +52,7 @@ class GetOperation extends Operation
 		if (isset($params['version']))
 		{
 			$version_name = $params['version'];
-			$versions = Versions::get();
+			$versions = $core->thumbnailer_versions;
 			$version = $versions[$version_name];
 			$params += $version->to_array(Version::ARRAY_FILTER);
 

@@ -1,6 +1,6 @@
 # customization
 
-MODULE_NAME = "ICanBoogie/Modules/Thumbnailer"
+PACKAGE_NAME = "ICanBoogie/Modules/Thumbnailer"
 
 # do not edit the following lines
 
@@ -12,10 +12,10 @@ composer.phar:
 	@curl -s https://getcomposer.org/installer | php
 
 vendor: composer.phar
-	@php composer.phar install --dev
+	@php composer.phar install --prefer-source --dev
 
-update: composer.phar
-	@php composer.phar update --dev
+update:
+	@php composer.phar update --prefer-source --dev
 
 test: vendor
 	@phpunit
@@ -25,11 +25,11 @@ doc: vendor
 
 	@apigen \
 	--source ./ \
-	--destination docs/ --title $(MODULE_NAME) \
+	--destination docs/ --title $(PACKAGE_NAME) \
 	--exclude "*/tests/*" \
 	--exclude "*/composer/*" \
 	--template-config /usr/share/php/data/ApiGen/templates/bootstrap/config.neon
-	
+
 clean:
 	@rm -fR docs
 	@rm -fR vendor

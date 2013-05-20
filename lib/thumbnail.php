@@ -112,9 +112,7 @@ class Thumbnail extends \ICanBoogie\Object
 			return;
 		}
 
-		$versions = Versions::get();
-
-		return $versions[$this->version_name];
+		return $core->thumbnailer_versions[$this->version_name];
 	}
 
 	private function get_option($property)
