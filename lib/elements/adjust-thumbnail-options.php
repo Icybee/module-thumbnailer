@@ -15,10 +15,19 @@ use ICanBoogie\Image;
 
 use Brickrouge\Element;
 use Brickrouge\Form;
+use Brickrouge\Group;
 use Brickrouge\Text;
 
-class AdjustThumbnailOptions extends \Brickrouge\Group
+class AdjustThumbnailOptions extends Group
 {
+	static protected function add_assets(\Brickrouge\Document $document)
+	{
+		parent::add_assets($document);
+
+		$document->css->add('adjust-thumbnail-options.css');
+		$document->js->add('adjust-thumbnail-options.js');
+	}
+
 	protected $elements = array();
 
 	public function __construct(array $attributes=array())
@@ -138,22 +147,11 @@ class AdjustThumbnailOptions extends \Brickrouge\Group
 						)
 					),
 
-
-					/*
-					'interlace' => $this->elements['interlace'] = new Element
-					(
-						Element::TYPE_CHECKBOX, array
-						(
-							self::LABEL => 'Affichage progressif'
-						)
-					),
-					*/
-
 					'background' => $this->elements['background'] = new Text
 					(
 						array
 						(
-							Form::LABEL => 'Remplissage'
+							Group::LABEL => 'Remplissage'
 						)
 					),
 
@@ -161,7 +159,7 @@ class AdjustThumbnailOptions extends \Brickrouge\Group
 					(
 						Element::TYPE_CHECKBOX, array
 						(
-							self::LABEL => "Afficher l'original en lightbox"
+							Element::LABEL => "Afficher l'original en lightbox"
 						)
 					)
 				),
@@ -170,14 +168,6 @@ class AdjustThumbnailOptions extends \Brickrouge\Group
 				'data-widget-constructor' => 'AdjustThumbnailOptions'
 			)
 		);
-	}
-
-	static protected function add_assets(\Brickrouge\Document $document)
-	{
-		parent::add_assets($document);
-
-		$document->css->add('adjust-thumbnail-options.css');
-		$document->js->add('adjust-thumbnail-options.js');
 	}
 
 	public function offsetSet($offset, $value)
