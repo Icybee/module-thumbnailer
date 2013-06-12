@@ -73,36 +73,7 @@ class GetOperation extends Operation
 			$params['background'] = 'white';
 		}
 
-		#
-		# check options
-		#
-
-		$m = $params['method'];
-		$w = $params['width'];
-		$h = $params['height'];
-
-		switch ($m)
-		{
-			case Image::RESIZE_CONSTRAINED:
-			case Image::RESIZE_FILL:
-			case Image::RESIZE_FIT:
-			case Image::RESIZE_SURFACE:
-			{
-				if (!$w || !$h)
-				{
-					throw new Exception
-					(
-						'Missing width or height for the %method method: %width × %height', array
-						(
-							'method' => $m,
-							'width' => $w,
-							'height' => $h
-						)
-					);
-				}
-			}
-			break;
-		}
+		Image::assert_sizes($params['method'], $params['width'], $params['height']);
 
 		return $params;
 	}

@@ -66,7 +66,7 @@ class Version
 		'no-upscale' => false,
 		'overlay' => null,
 		'path' => null,
-		'quality' => 85,
+		'quality' => 90,
 		'src' => null,
 		'width' => null
 	);

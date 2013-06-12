@@ -14,7 +14,7 @@ namespace ICanBoogie\Modules\Thumbnailer;
 use ICanBoogie\Operation;
 
 /**
- * Creates a thumbnail of an image managed by the "resource.images" module.
+ * Creates a thumbnail of an image managed by the "images" module.
  */
 class ThumbnailOperation extends GetOperation
 {
@@ -22,7 +22,8 @@ class ThumbnailOperation extends GetOperation
 	{
 		global $core;
 
-		$params = &$this->request->params;
+		$request = $this->request;
+		$params = &$request->params;
 		$params['src'] = null;
 
 		// TODO-20101031: support for the 's' shorthand.

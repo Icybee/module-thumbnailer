@@ -78,7 +78,7 @@ class Thumbnail extends \ICanBoogie\Object
 
 		if (is_array($options))
 		{
-			$this->options = $options;
+			$this->options = Version::normalize($options);
 		}
 
 		if ($additionnal_options)
@@ -91,9 +91,6 @@ class Thumbnail extends \ICanBoogie\Object
 			$this->options = $additionnal_options + $this->options;
 		}
 
-		#
-
-		$this->options = Version::normalize($this->options);
 		$this->src = $src;
 	}
 
@@ -328,35 +325,36 @@ class Thumbnail extends \ICanBoogie\Object
 	 */
 	public function to_element(array $attributes=array())
 	{
-		$path = $this->src;
-		$src = $this->url;
-		$alt = '';
-		$class = 'thumbnail';
-
-		if ($this->src instanceof \Icybee\Modules\Images\Image)
-		{
-			$alt = $this->src->alt;
-			$path = $this->src->path;
-		}
-
-		if ($this->version_name)
-		{
-			$class .= ' thumbnail--' . \Brickrouge\normalize($this->version_name);
-		}
-
 		$w = $this->w;
 		$h = $this->h;
+		$src = $this->src;
 
-		if (is_string($path))
+		if ($src instanceof \Icybee\Modules\Images\Image)
 		{
-			list($w, $h) = \ICanBoogie\Image::compute_final_size($w, $h, $this->method, \Brickrouge\DOCUMENT_ROOT . $path);
+			$alt = $src->alt;
+			$size_reference = array($src->width, $src->height);
+		}
+		else
+		{
+			$alt = '';
+			$size_reference = \Brickrouge\DOCUMENT_ROOT . $src;
+		}
+
+		list($w, $h) = \ICanBoogie\Image::compute_final_size($w, $h, $this->method, $size_reference);
+
+		$class = 'thumbnail';
+		$version_name = $this->version_name;
+
+		if ($version_name)
+		{
+			$class .= ' thumbnail--' . \Brickrouge\normalize($version_name);
 		}
 
 		return new Element
 		(
 			'img', $attributes + array
 			(
-				'src' => $src,
+				'src' => $this->url,
 				'alt' => $alt,
 				'width' => $w,
 				'height' => $h,

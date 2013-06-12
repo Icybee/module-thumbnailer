@@ -26,7 +26,7 @@ class AdjustThumbnailVersion extends \Brickrouge\Group
 		parent::add_assets($document);
 
 		$document->css->add('page.css');
-		$document->js->add('adjust-thumbnail-version.js');
+		$document->js->add(DIR . 'public/module.js');
 	}
 
 	public function __construct(array $attributes=array())

@@ -9,7 +9,7 @@
 * file that was distributed with this source code.
 */
 
-namespace Brickrouge\Widget;
+namespace ICanBoogie\Modules\Thumbnailer;
 
 use ICanBoogie\Image;
 
@@ -24,8 +24,8 @@ class AdjustThumbnailOptions extends Group
 	{
 		parent::add_assets($document);
 
-		$document->css->add('adjust-thumbnail-options.css');
-		$document->js->add('adjust-thumbnail-options.js');
+		$document->css->add(DIR . 'public/module.css');
+		$document->js->add(DIR . 'public/module.js');		
 	}
 
 	protected $elements = array();
@@ -56,33 +56,34 @@ class AdjustThumbnailOptions extends Group
 						(
 							Element::CHILDREN => array
 							(
-								'w' => $this->elements['w'] = new Text
+								'<span class="add-on">Size</span>',
+
+								'width' => $this->elements['width'] = new Text
 								(
 									array
 									(
-										Text::ADDON => 'px',
-
 										'class' => 'measure',
 										'size' => 5
 									)
 								),
 
-								'&nbsp;&times;&nbsp;',
+								'<span class="add-on">&times</span>',
 
-								'h' => $this->elements['h'] = new Text
+								'height' => $this->elements['height'] = new Text
 								(
 									array
 									(
-										Text::ADDON => 'px',
-
 										'class' => 'measure',
 										'size' => 5
 									)
-								)
-							)
+								),
+
+								'<span class="add-on">px</span>',
+							),
+
+							'class' => 'input-prepend input-append'
 						)
 					),
-
 
 					'method' => $this->elements['method'] = new Element
 					(
@@ -108,7 +109,7 @@ class AdjustThumbnailOptions extends Group
 					(
 						'div', array
 						(
-							Form::LABEL => 'Format',
+							Group::LABEL => 'Format',
 
 							Element::CHILDREN => array
 							(
@@ -125,7 +126,7 @@ class AdjustThumbnailOptions extends Group
 
 										self::DEFAULT_VALUE => 'jpeg',
 
-										'style' => 'width: auto; vertical-align: middle'
+										'style' => 'width: auto;'
 									)
 								),
 
@@ -137,13 +138,15 @@ class AdjustThumbnailOptions extends Group
 									(
 										Text::ADDON => 'Qualité',
 										Text::ADDON_POSITION => 'before',
-										self::DEFAULT_VALUE => 80,
+										self::DEFAULT_VALUE => 90,
 
 										'class' => 'measure',
 										'size' => 3
 									)
 								)
-							)
+							),
+
+							'class' => 'format-combo'
 						)
 					),
 
@@ -168,30 +171,59 @@ class AdjustThumbnailOptions extends Group
 				'data-widget-constructor' => 'AdjustThumbnailOptions'
 			)
 		);
+
+		$this->tag_name = 'div';
 	}
 
-	public function offsetSet($offset, $value)
+	public function offsetSet($attribute, $value)
 	{
-		if ($offset === self::DEFAULT_VALUE)
+		if ($attribute === 'value' || $attribute === self::DEFAULT_VALUE)
+		{
+			$this->dispatch_value($value, $attribute);
+		}
+		else if ($attribute === 'name')
 		{
 			foreach ($this->elements as $identifier => $element)
 			{
-				if (!array_key_exists($identifier, $value))
-				{
-					continue;
-				}
-
-				$element[$offset] = $value[$identifier];
+				$element[$attribute] = $value . '[' . $identifier . ']';
 			}
 		}
-		else if ($offset === 'name')
+
+		parent::offsetSet($attribute, $value);
+	}
+
+	private function dispatch_value($value, $attribute)
+	{
+		$version = new Version($value);
+		$options = $version->to_array();
+
+		if (!empty($value['lightbox']))
 		{
-			foreach ($this->elements as $identifier => $element)
-			{
-				$element[$offset] = $value . '[' . $identifier . ']';
-			}
+			$options['lightbox'] = true;
 		}
 
-		parent::offsetSet($offset, $value);
+		if ($options['background'] == 'transparent')
+		{
+			$options['background'] = '';
+		}
+
+		foreach ($options as $name => $v)
+		{
+			if (empty($this->elements[$name]))
+			{
+				continue;
+			}
+
+			$element = $this->elements[$name];
+
+			if ($element['type'] == 'checkbox' && $attribute == 'value')
+			{
+				$element['checked'] = $v;
+			}
+			else
+			{
+				$element[$attribute] = $v;
+			}
+		}
 	}
 }
