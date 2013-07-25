@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Brickrouge\Widget;
+namespace ICanBoogie\Modules\Thumbnailer;
 
 use ICanBoogie\Image;
 
@@ -25,7 +25,7 @@ class AdjustThumbnailVersion extends \Brickrouge\Group
 	{
 		parent::add_assets($document);
 
-		$document->css->add('page.css');
+		$document->css->add(DIR . 'public/module.css');
 		$document->js->add(DIR . 'public/module.js');
 	}
 
@@ -246,4 +246,11 @@ class AdjustThumbnailVersion extends \Brickrouge\Group
 
 		parent::offsetSet($offset, $value);
 	}
+}
+
+namespace Brickrouge\Widget;
+
+class AdjustThumbnailVersion extends \ICanBoogie\Modules\Thumbnailer\AdjustThumbnailVersion
+{
+
 }

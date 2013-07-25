@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Brickrouge\Widget;
+namespace ICanBoogie\Modules\Thumbnailer;
 
 use Brickrouge\Element;
 
@@ -119,4 +119,11 @@ EOT;
 $input <span class="spinner-content">$content</span> <em class="spinner-placeholder">$placeholder</em> $html
 EOT;
 	}
+}
+
+namespace Brickrouge\Widget;
+
+class PopThumbnailVersion extends \ICanBoogie\Modules\Thumbnailer\PopThumbnailVersion
+{
+
 }
