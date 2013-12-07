@@ -23,14 +23,14 @@
 		"icanboogie/module-installer": "*",
 		"icanboogie/event": "*",
 		"icanboogie/image": "*",
-		"brickrouge/brickrouge": "*"
+		"brickrouge/brickrouge": "2.x"
 	},
 	"require-dev": {
-		"icybee/module-images": "*"
+		"icybee/module-images": "2.x"
 	},
 	"suggest": {
 		"icybee/module-cache": "Allows thumbnails cache management from Icybee admin."
-    },
+	},
 	"autoload": {
 		"classmap": [ "lib/" ]
 	}

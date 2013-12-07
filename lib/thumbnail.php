@@ -96,7 +96,7 @@ class Thumbnail extends \ICanBoogie\Object
 
 	private $_version;
 
-	protected function volatile_get_version()
+	protected function get_version()
 	{
 		global $core;
 
@@ -161,12 +161,12 @@ class Thumbnail extends \ICanBoogie\Object
 	 *
 	 * @return int|null The width of the thumbnail or null if it's not available.
 	 */
-	protected function volatile_get_w()
+	protected function get_w()
 	{
 		return $this->get_option('width');
 	}
 
-	protected function volatile_set_w($weight)
+	protected function set_w($weight)
 	{
 		$this->set_option('weight', $weight);
 	}
@@ -178,12 +178,12 @@ class Thumbnail extends \ICanBoogie\Object
 	 *
 	 * @return int|null The height of the thumbnail or null if it's not available.
 	 */
-	protected function volatile_get_h()
+	protected function get_h()
 	{
 		return $this->get_option('height');
 	}
 
-	protected function volatile_set_h($height)
+	protected function set_h($height)
 	{
 		$this->set_option('height', $height);
 	}
@@ -197,12 +197,12 @@ class Thumbnail extends \ICanBoogie\Object
 	 * @return int|null The name of method used to resize the image or null if it's not
 	 * available.
 	 */
-	protected function volatile_get_method()
+	protected function get_method()
 	{
 		return $this->get_option('method');
 	}
 
-	protected function volatile_set_method($method)
+	protected function set_method($method)
 	{
 		$this->set_option('method', $method);
 	}
@@ -212,7 +212,7 @@ class Thumbnail extends \ICanBoogie\Object
 	 *
 	 * @return string The thumbnail URL.
 	 */
-	public function volatile_get_url()
+	public function get_url()
 	{
 		global $core;
 
