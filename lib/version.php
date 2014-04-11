@@ -58,7 +58,7 @@ class Version
 	(
 		'background' => 'transparent',
 		'default' => null,
-		'format' => 'jpeg',
+		'format' => null,
 		'filter' => null,
 		'height' => null,
 		'method' => 'fill',

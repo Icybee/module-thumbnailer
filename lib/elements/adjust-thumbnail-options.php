@@ -25,7 +25,7 @@ class AdjustThumbnailOptions extends Group
 		parent::add_assets($document);
 
 		$document->css->add(DIR . 'public/module.css');
-		$document->js->add(DIR . 'public/module.js');		
+		$document->js->add(DIR . 'public/module.js');
 	}
 
 	protected $elements = array();
@@ -119,12 +119,11 @@ class AdjustThumbnailOptions extends Group
 									(
 										self::OPTIONS => array
 										(
+											null => 'Auto.',
 											'jpeg' => 'JPEG',
 											'png' => 'PNG',
 											'gif' => 'GIF'
 										),
-
-										self::DEFAULT_VALUE => 'jpeg',
 
 										'style' => 'width: auto;'
 									)

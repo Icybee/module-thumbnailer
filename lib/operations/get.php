@@ -68,11 +68,6 @@ class GetOperation extends Operation
 			$params['background'] = 'transparent';
 		}
 
-		if ($params['format'] == 'jpeg' && $params['background'] == 'transparent')
-		{
-			$params['background'] = 'white';
-		}
-
 		Image::assert_sizes($params['method'], $params['width'], $params['height']);
 
 		return $params;
@@ -126,6 +121,17 @@ class GetOperation extends Operation
 			{
 				throw new NotFound(I18n\t('Thumbnail source (default) not found: %src', array('%src' => $src)));
 			}
+		}
+
+		if (empty($params['format']))
+		{
+			$info = getimagesize($location);
+			$params['format'] = substr($info['mime'], 6);
+		}
+
+		if ($params['format'] == 'jpeg' && $params['background'] == 'transparent')
+		{
+			$params['background'] = 'white';
 		}
 
 		#
