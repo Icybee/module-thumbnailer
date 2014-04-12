@@ -25,7 +25,7 @@ class VersionTest extends \PHPUnit_Framework_TestCase
 
 	public function testSerialize()
 	{
-		$this->assertEquals('h:100;w:120;', Version::serialize(array('width' => 120, 'height' => 100, 'anything' => 'whatever', 'format' => 'jpeg')));
+		$this->assertEquals('f:jpeg;h:100;w:120;', Version::serialize(array('width' => 120, 'height' => 100, 'anything' => 'whatever', 'format' => 'jpeg')));
 	}
 
 	public function testVersion()
