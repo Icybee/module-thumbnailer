@@ -1,6 +1,6 @@
-# Thumbnailer [![Build Status](https://travis-ci.org/Icybee/module-thumbnailer.png?branch=master)](https://travis-ci.org/Icybee/module-thumbnailer)
+# Thumbnailer [![Build Status](https://travis-ci.org/Icybee/module-thumbnailer.png?branch=2.0)](https://travis-ci.org/Icybee/module-thumbnailer)
 
-The Thumbnailer module (`thumbnailer`) Creates thumbnails from images and managed
+The Thumbnailer module (`thumbnailer`) creates thumbnails from images and managed
 images using options or configured versions.
 
 The module extends the _Image_ active record with the `thumbnail()` method and the `thumbnail`
@@ -16,11 +16,7 @@ namespace ICanBoogie\Modules\Thumbnailer;
 $versions = $core->thumbnailer_versions;
 $versions['popover'] = 'w:420;h:340';
 # or
-$versions['popover'] = array
-(
-	'width' => 420,
-	'height' => 340
-);
+$versions['popover'] = array('width' => 420, 'height' => 340);
 
 $thumbnail = new Thumbnail('/images/madonna.jpeg', 'popover');
 
@@ -32,7 +28,7 @@ $thumbnail = new Thumbnail('/images/madonna.jpeg', 'w:64;h:64;f:png');
 echo $thumbnail;      // <img src="/api/thumbnail/64x64/fill?f=png&amp;s=%2Fimages%2Fmadonna.jpeg" alt="" width="64" height="64" class="thumbnail" />
 echo $thumbnail->url; // /api/thumbnail/64x64/fill?f=png&s=%2Fimages%2Fmadonna.jpeg
 
-# Support for the Images module 
+# Support for the Images module
 
 $thumbnail = new Thumbnail($core->models['images'][123], 'popover');
 
@@ -111,7 +107,7 @@ Adds the `thumbnail` lazy getter for the `view` thumbnail version.
 
 ### `ICanBoogie\Core\get_thumbnail_versions`
 
-Adds the `thumbnail_versions` lazy getter to the _core_ object. The getter returns a version 
+Adds the `thumbnail_versions` lazy getter to the _core_ object. The getter returns a version
 collection configured with the versions saved in the registry. Third parties may alter this
 collection with an event hook attached to the `ICanBoogie\Modules\Thumbnailer\Versions::alter`
 event.
@@ -121,9 +117,15 @@ event.
 
 
 
+----------
+
+
+
+
+
 ## Requirements
 
-The package requires PHP 5.3 or later.
+The package requires PHP 5.4 or later.
 
 
 
@@ -138,7 +140,7 @@ Create a `composer.json` file and run `php composer.phar install` command to ins
 {
 	"minimum-stability": "dev",
 	"require": {
-		"icybee/module-thumbnailer": "*"
+		"icybee/module-thumbnailer": "2.x"
 	}
 }
 ```
@@ -153,7 +155,7 @@ The package is [available on GitHub](https://github.com/Icybee/module-thumbnaile
 be cloned with the following command line:
 
 	$ git clone git://github.com/Icybee/module-thumbnailer.git thumbnailer
-	
+
 
 
 
@@ -166,7 +168,7 @@ directory can later be cleaned with the `make clean` command.
 
 The package is continuously tested by [Travis CI](http://about.travis-ci.org/).
 
-[![Build Status](https://travis-ci.org/Icybee/module-thumbnailer.png?branch=master)](https://travis-ci.org/Icybee/module-thumbnailer)
+[![Build Status](https://travis-ci.org/Icybee/module-thumbnailer.png?branch=2.0)](https://travis-ci.org/Icybee/module-thumbnailer)
 
 
 
@@ -186,4 +188,4 @@ cleaned with the `make clean` command.
 
 ## License
 
-This module is licensed under the New BSD License - See the LICENSE file for details.
+This module is licensed under the New BSD License - See the [LICENSE](LICENSE) file for details.
