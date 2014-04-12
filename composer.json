@@ -23,7 +23,8 @@
 		"icanboogie/module-installer": "*",
 		"icanboogie/event": "*",
 		"icanboogie/image": "*",
-		"brickrouge/brickrouge": "2.x"
+		"brickrouge/brickrouge": "2.x",
+		"icybee/module-registry": "*"
 	},
 	"require-dev": {
 		"icybee/module-images": "2.x"
