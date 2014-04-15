@@ -48,7 +48,7 @@ class AdjustThumbnailVersion extends \Brickrouge\Group
 								Form::LABEL => 'Dimensions',
 								Element::CHILDREN => array
 								(
-									'w' => $this->elements['w'] = new Text
+									'width' => $this->elements['width'] = new Text
 									(
 										array
 										(
@@ -61,7 +61,7 @@ class AdjustThumbnailVersion extends \Brickrouge\Group
 
 									' × ',
 
-									'h' => $this->elements['h'] = new Text
+									'height' => $this->elements['height'] = new Text
 									(
 										array
 										(
@@ -116,12 +116,11 @@ class AdjustThumbnailVersion extends \Brickrouge\Group
 										(
 											self::OPTIONS => array
 											(
+												null => 'auto',
 												'jpeg' => 'JPEG',
 												'png' => 'PNG',
 												'gif' => 'GIF'
 											),
-
-											self::DEFAULT_VALUE => 'jpeg',
 
 											'style' => 'vertical-align: middle; width: auto'
 										)
@@ -144,16 +143,6 @@ class AdjustThumbnailVersion extends \Brickrouge\Group
 								)
 							)
 						),
-
-						/*
-						'interlace' => $this->elements['interlace'] = new Element
-						(
-							Element::TYPE_CHECKBOX, array
-							(
-								self::LABEL => 'Affichage progressif'
-							)
-						),
-						*/
 
 						'background' => $this->elements['background'] = new Text
 						(

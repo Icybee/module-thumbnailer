@@ -126,8 +126,7 @@ class Hooks
 	}
 
 	/**
-	 * Callback for the `properties:before` event, pre-parsing thumbnailer versions if they are
-	 * defined.
+	 * Clears the versions cache.
 	 *
 	 * @param \Icybee\ConfigOperation\BeforePropertiesEvent $event
 	 */
@@ -135,34 +134,9 @@ class Hooks
 	{
 		global $core;
 
-		$params = &$event->request->params;
-
-		if (empty($params['global']['thumbnailer.versions']))
+		if (empty($event->request->params['global']['thumbnailer.versions']))
 		{
 			return;
-		}
-
-		$config = $core->configs->synthesize('thumbnailer', 'merge');
-
-		foreach ($params['global']['thumbnailer.versions'] as $name => &$options)
-		{
-			if (is_string($options))
-			{
-				$options = json_decode($options, true);
-			}
-
-			$options = (array) $options;
-
-			$options += (isset($config[$name][0]) ? $config[$name][0] : array()) + array
-			(
-				'no-upscale' => false,
-				'interlace' => false
-			);
-
-			$options['no-upscale'] = filter_var($options['no-upscale'], FILTER_VALIDATE_BOOLEAN);
-			$options['interlace'] = filter_var($options['interlace'], FILTER_VALIDATE_BOOLEAN);
-
-			$options = (empty($options['w']) && empty($options['h'])) ? null : json_encode($options);
 		}
 
 		unset($core->vars['cached_thumbnailer_versions']);

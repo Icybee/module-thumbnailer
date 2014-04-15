@@ -20,9 +20,7 @@
 
 .widget-adjust-thumbnail-options .format-combo + .reset-default-value {
 	margin-left: .5ex;
-}@CHARSET "UTF-8";
-
-.widget-adjust-thumbnail-version > label
+}.widget-adjust-thumbnail-version > label
 {
 	display: block;
 	margin-top: .5em;
@@ -31,4 +29,8 @@
 .widget-adjust-thumbnail-version .control-group + .control-group--no-upscale,
 .widget-adjust-thumbnail-version .control-group + .control-group--interlace {
 	margin-top: 5px;
+}
+
+.widget-adjust-thumbnail-version input[readonly] {
+	opacity: .5;
 }

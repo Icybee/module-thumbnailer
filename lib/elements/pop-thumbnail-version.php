@@ -58,7 +58,7 @@ class PopThumbnailVersion extends \Brickrouge\Widget
 		$html = parent::render_inner_html();
 
 		$value = $this['value'] ?: $this[self::DEFAULT_VALUE];
-		$value = json_decode($value, true);
+		$decoded_value = json_decode($value, true);
 
 		$input = new Element
 		(
@@ -66,51 +66,22 @@ class PopThumbnailVersion extends \Brickrouge\Widget
 			(
 				'name' => $this['name'],
 				'type' => 'hidden',
-				'value' => $value ? json_encode($value) : ''
+				'value' => $value
 			)
 		);
 
 		$content = '';
 
-		if ($value)
+		if ($decoded_value)
 		{
-			$value += array
-			(
-				'w' => null,
-				'h' => null,
-				'no-upscale' => false,
-				'method' => 'fill',
-				'format' => 'jpeg',
-				'interlace' => false
-			);
+			$version = new Version($decoded_value);
 
-			$options = array();
+			$w = $version->width ?: '<em>auto</em>';
+			$h = $version->height ?: '<em>auto</em>';
+			$method = $version->method;
+			$format = '.' . ($version->format ?: '<em>auto</em>');
 
-			$w = $value['w'] ?: '<em>auto</em>';
-			$h = $value['h'] ?: '<em>auto</em>';
-
-			$method = $value['method'];
-			$format = '.' . $value['format'];
-
-			/*
-			if ($value['no-upscale'])
-			{
-				$options[] = 'ne pas agrandir';
-			}
-			*/
-
-			if ($options)
-			{
-				$options = '&ndash; ' . implode(', ', $options);
-			}
-			else
-			{
-				$options = '';
-			}
-
-			$content = <<<EOT
-{$w}×{$h} {$method} $format <span class="small light">$options</span>
-EOT;
+			$content = "{$w}×{$h} {$method} $format";
 		}
 
 		$placeholder = 'Version non définie';

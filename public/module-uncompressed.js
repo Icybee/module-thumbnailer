@@ -314,21 +314,20 @@ ICanBoogie.Modules.Thumbnailer = (function() {
 	{
 		this.element = el = $(el);
 
-		var w = el.getElement('input[name="w"]') || el.getElement('input[name$="[w]"]')
-		, h = el.getElement('input[name="h"]') || el.getElement('input[name$="[h]"]')
+		var width = el.getElement('input[name="width"]') || el.getElement('input[name$="[width]"]')
+		, height = el.getElement('input[name="height"]') || el.getElement('input[name$="[height]"]')
 		, method = el.getElement('select[name="method"]') || el.getElement('select[name$="[method]"]')
 		, format = el.getElement('select[name="format"]') || el.getElement('select[name$="[format]"]')
 		, quality = el.getElement('input[name="quality"]') || el.getElement('input[name$="[quality]"]')
 
 		this.elements =
 		{
-			w: w,
-			h: h,
+			width: width,
+			height: height,
 			method: method,
 			format: format,
 			quality: quality,
 			'no-upscale': el.getElement('input[name="no-upscale"]') || el.getElement('input[name$="[no-upscale]"]'),
-//			interlace: el.getElement('input[name="interlace"]') || el.getElement('input[name$="[interlace]"]'),
 			background: el.getElement('input[name="background"]') || el.getElement('input[name$="[background]"]'),
 			filter: el.getElement('input[name="filter"]') || el.getElement('input[name$="[filter]"]')
 		}
@@ -346,40 +345,40 @@ ICanBoogie.Modules.Thumbnailer = (function() {
 			switch (method.get('value'))
 			{
 				case 'fixed-height':
-				{
-					h.readOnly = false;
-					w.readOnly = true;
-				}
-				break;
+
+					height.readOnly = false
+					width.readOnly = true
+
+					break;
 
 				case 'fixed-width':
-				{
-					h.readOnly = true;
-					w.readOnly = false;
-				}
-				break;
+
+					height.readOnly = true
+					width.readOnly = false
+
+					break
 
 				default:
-				{
-					w.readOnly = false;
-					h.readOnly = false;
-				}
-				break;
+
+					height.readOnly = false
+					width.readOnly = false
+
+					break
 			}
 		}
 
 		function checkQuality()
 		{
-			var value = format.get('value');
+			var value = format.get('value')
 
-			quality.getParent().setStyle('display', (value != 'jpeg') ? 'none' : '');
+			quality.getParent().setStyle('display', (value != 'jpeg') ? 'none' : '')
 		}
 
-		checkMethod();
-		checkQuality();
+		checkMethod()
+		checkQuality()
 
-		method.addEvent('change', checkMethod);
-		format.addEvent('change', checkQuality);
+		method.addEvent('change', checkMethod)
+		format.addEvent('change', checkQuality)
 	},
 
 	fireChange: function()
@@ -391,35 +390,51 @@ ICanBoogie.Modules.Thumbnailer = (function() {
 	{
 		if (typeOf(value) == 'string')
 		{
-			value = JSON.decode(value);
+			value = JSON.decode(value)
 		}
 
 		if (!value)
 		{
-			return;
+			return
 		}
 
-		Object.each
-		(
-			value, function(value, key)
+		Object.each(value, function(value, key) {
+
+			if (!this.elements[key])
 			{
-				if (!this.elements[key])
-				{
-					return;
-				}
+				return
+			}
 
-				if (key == 'no-upscale' || key == 'interlace')
-				{
-					this.elements[key].set('checked', value);
-				}
-				else
-				{
-					this.elements[key].set('value', value);
-				}
-			},
+			if (key == 'no-upscale' || key == 'interlace')
+			{
+				this.elements[key].set('checked', value)
+			}
+			else
+			{
+				this.elements[key].set('value', value)
+			}
 
-			this
-		);
+		}, this )
+	},
+
+	getValue: function()
+	{
+		var value = this.element.toQueryString().parseQueryString()
+
+		value = ICanBoogie.Modules.Thumbnailer.Version.normalize(value)
+
+		if (!value.width && !value.height)
+		{
+			return
+		}
+
+		value = Object.filter(value, function(value, key) {
+
+			return !!value
+
+		})
+
+		return JSON.encode(value)
 	}
 });Brickrouge.Widget.PopThumbnailVersion = new Class
 ({
@@ -473,11 +488,16 @@ ICanBoogie.Modules.Thumbnailer = (function() {
 
 	decodeValue: function(value)
 	{
-		try
+		if (typeOf(value) == 'string')
 		{
-			return JSON.decode(value)
+			try
+			{
+				return JSON.decode(value)
+			}
+			catch (e) { }
 		}
-		catch (e) { return null }
+
+		return value
 	},
 
 	formatValue: function(value)
@@ -487,12 +507,17 @@ ICanBoogie.Modules.Thumbnailer = (function() {
 			return ''
 		}
 
-		if (typeOf(value) == 'string')
-		{
-			value = value.parseQueryString()
-		}
+		value = this.decodeValue(value)
+		value = ICanBoogie.Modules.Thumbnailer.Version.normalize(value)
 
-		return '' + (value.width || '<em>auto</em>') + '×' + (value.height || '<em>auto</em>') + ' ' + value.method + ' .' + value.format
+		return ''
+		+ (value.width || '<em>auto</em>')
+		+ '×'
+		+ (value.height || '<em>auto</em>')
+		+ ' '
+		+ value.method
+		+ ' .'
+		+ (value.format || '<em>auto</em>')
 	},
 
 	attachAdjust: function(adjust)
@@ -511,14 +536,7 @@ ICanBoogie.Modules.Thumbnailer = (function() {
 		{
 			case 'use':
 			{
-				var value = ev.popover.element.toQueryString().parseQueryString()
-
-				if (!value.width && !value.height)
-				{
-					value = null
-				}
-
-				this.setValue(value)
+				this.setValue(ev.popover.adjust.getValue())
 			}
 			break
 
