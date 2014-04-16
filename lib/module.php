@@ -12,7 +12,6 @@
 namespace ICanBoogie\Modules\Thumbnailer;
 
 use ICanBoogie\Errors;
-use ICanBoogie\I18n\FormattedString;
 
 /**
  * @property string $repository Path to the thumbnails repository.
@@ -44,7 +43,7 @@ class Module extends \ICanBoogie\Module
 			}
 			else
 			{
-				$errors[$this->id] = new FormattedString('Unable to create %directory directory, its parent is not writable', array('%directory' => \ICanBoogie\strip_root($path)));
+				$errors[$this->id] = $errors->format('Unable to create %directory directory, its parent is not writable', array('%directory' => \ICanBoogie\strip_root($path)));
 			}
 		}
 
@@ -60,7 +59,7 @@ class Module extends \ICanBoogie\Module
 
 		if (!file_exists($path))
 		{
-			$errors[$this->id] = new FormattedString('The %directory directory is missing.', array('%directory' => \ICanBoogie\strip_root($path)));
+			$errors[$this->id] = $errors->format('The %directory directory is missing.', array('%directory' => \ICanBoogie\strip_root($path)));
 		}
 
 		return !count($errors);
