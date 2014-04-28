@@ -54,7 +54,7 @@ class ThumbnailTest extends \PHPUnit_Framework_TestCase
 
 	public function testOptions()
 	{
-		$t = new Thumbnail(self::$path, 'w:100;h:120;m:fill');
+		$t = new Thumbnail(self::$path, 'w:100;h:120;m:fill;f:png');
 
 		$this->assertEquals(100, $t->w);
 		$this->assertEquals(100, $t->width);
@@ -62,6 +62,33 @@ class ThumbnailTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(120, $t->height);
 		$this->assertEquals('fill', $t->m);
 		$this->assertEquals('fill', $t->method);
+		$this->assertEquals('png', $t->f);
+		$this->assertEquals('png', $t->format);
+		$this->assertInternalType('array', $t->options);
+
+		$t->w = 300;
+		$this->assertEquals(300, $t->w);
+		$this->assertEquals(300, $t->width);
+
+		$t->width = 100;
+		$this->assertEquals(100, $t->w);
+		$this->assertEquals(100, $t->width);
+
+		$t->h = 400;
+		$this->assertEquals(400, $t->h);
+		$this->assertEquals(400, $t->height);
+
+		$t->height = 100;
+		$this->assertEquals(100, $t->h);
+		$this->assertEquals(100, $t->height);
+
+		$t->m = 'surface';
+		$this->assertEquals('surface', $t->m);
+		$this->assertEquals('surface', $t->method);
+
+		$t->method = 'fit';
+		$this->assertEquals('fit', $t->m);
+		$this->assertEquals('fit', $t->method);
 	}
 
 	public function testThumbnail()
@@ -78,6 +105,9 @@ class ThumbnailTest extends \PHPUnit_Framework_TestCase
 	public function testVersion()
 	{
 		$thumbnail = new Thumbnail(self::$path, 'icon');
+
+		$this->assertInstanceOf('ICanBoogie\Modules\Thumbnailer\Version', $thumbnail->version);
+		$this->assertInstanceOf('ICanBoogie\Modules\Thumbnailer\Version', $thumbnail->v);
 
 		$this->assertEquals(64, $thumbnail->w);
 		$this->assertEquals(64, $thumbnail->h);

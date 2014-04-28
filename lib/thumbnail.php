@@ -14,21 +14,30 @@ namespace ICanBoogie\Modules\Thumbnailer;
 use Brickrouge\Element;
 
 /**
- * Cette classes est une aide à la création de miniatures. Elle prend en paramètres une source et
- * un tableau d'option ou le nom d'une version, et permet d'obtenir l'URL de la miniature ou le
- * marqueur IMG de la miniature.
+ * Representation of an image thumbnail.
  *
- * La source peut être définie par l'URL d'une image ou une instance de la classe
- * {@link Icybee\Modules\Images\Image}. Les options peuvent être un tableau de paramètres ou le
- * nom d'une version.
+ * Instances of the class are used to create IMG elements. The parameters used to create the
+ * thumbnail can be specified as a serialized string, an array of options, a version name, or
+ * a version instance.
  *
- * @property $version array|null Il s'agit des paramètres correspondant à la version.
- * @property $w int|null Largeur de la miniature, extraite des options ou de la version.
- * @property $h int|null Hauteur de la miniature, extraite des options ou de la version.
- * @property $method string|null Méthode de redimensionnement de la miniature, extraite des options
- * ou de la version.
+ * @property $width int|null Width of the thumbnail, or `null` if it is not defined.
+ * @property $height int|null Height of the thumbnail, or `null`if it is not defined.
+ * @property $method string|null Resizing method, or `null` if it is not defined.
+ * @property $format string|null Image format, or `null` if it is not defined.
+ * @property $version Version|null The {@link Version} instance used to created the thumbnail,
+ * or `null` if it is not defined.
+ *
+ * @property $w int|null Alias to {@link $width}.
+ * @property $h int|null Alias to {@link $height}.
+ * @property $m string|null Alias to {@link $method}.
+ * @property $f string|null Alias to {@link $format}.
+ * @property $v Version|null Alias to {@link $version}.
+ *
+ * @property array $options Options used to create the thumbnail.
  * @property-read array $filtered_options Filtered thumbnail options.
  * @property-read string $url The URL of the thumbnail.
+ * @property-read string $url_base The base to build the URL of the thumbnail.
+ * @property-read array $final_size The final size (width and height) of the thumbnail.
  */
 class Thumbnail extends \ICanBoogie\Object
 {
@@ -60,9 +69,25 @@ class Thumbnail extends \ICanBoogie\Object
 
 	];
 
+	/**
+	 * Format the specified options as a path.
+	 *
+	 * Only the `width`, `height`, `method` and `format` options are used to create the path.
+	 *
+	 * If it is not defined, the `method` option is inferred from the `width` and `height`
+	 * options. For instance, If the `width` option is defined but the `height` option is empty,
+	 * the `method` option is set to `fixed-width`. Similarly, if the `height` option is
+	 * defined but the `width` option is empty, the `method` option is set to `fixed-height`.
+	 *
+	 * The `format` option is used as the extension of the path. e.g. "200x300.png".
+	 *
+	 * @param array $options
+	 *
+	 * @return string|null A path, or `null` if both `width` and `height` are empty.
+	 */
 	static public function format_options_as_path(array $options)
 	{
-		$options += self::$path_params_defaults;
+		$options = Version::widen($options) + self::$path_params_defaults;
 
 		$w = $options['width'];
 		$h = $options['height'];
@@ -96,6 +121,17 @@ class Thumbnail extends \ICanBoogie\Object
 		return $rc;
 	}
 
+	/**
+	 * Formats the options as a query string.
+	 *
+	 * @param array $options The options to format. They are filtered using
+	 * {@link Version::filter()}.
+	 * @param bool $remove_path_params Optionally the options that can be used to format a path
+	 * using the {@link format_options_as_path()} function can be filtered out.
+	 *
+	 * @return string A query string. Note that the option that are actually used to create the
+	 * query string are shortened using the {@link Version::shorten()} method.
+	 */
 	static public function format_options_as_query_string(array $options, $remove_path_params=false)
 	{
 		$options = Version::filter($options);
@@ -122,7 +158,7 @@ class Thumbnail extends \ICanBoogie\Object
 	 *
 	 * @var array
 	 */
-	public $options = array();
+	public $options = [];
 
 	/**
 	 * Version name of the thumbnail.
@@ -174,22 +210,42 @@ class Thumbnail extends \ICanBoogie\Object
 		$this->src = $src;
 	}
 
-	private $_version;
-
-	protected function get_version()
+	/**
+	 * Handles version options.
+	 */
+	public function __get($property)
 	{
-		global $core;
-
-		if ($this->_version)
+		if (isset(Version::$shorthands[$property]))
 		{
-			return $this->_version;
+			$property = Version::$shorthands[$property];
 		}
-		else if (!$this->version_name)
+
+		if (array_key_exists($property, Version::$defaults))
 		{
+			return $this->get_option($property);
+		}
+
+		return parent::__get($property);
+	}
+
+	/**
+	 * Handles version options.
+	 */
+	public function __set($property, $value)
+	{
+		if (isset(Version::$shorthands[$property]))
+		{
+			$property = Version::$shorthands[$property];
+		}
+
+		if (array_key_exists($property, Version::$defaults))
+		{
+			$this->set_option($property, $value);
+
 			return;
 		}
 
-		return $core->thumbnailer_versions[$this->version_name];
+		parent::__set($property, $value);
 	}
 
 	private function get_option($property)
@@ -219,6 +275,25 @@ class Thumbnail extends \ICanBoogie\Object
 		}
 	}
 
+	private $_version;
+
+	protected function get_version()
+	{
+		global $core;
+
+		if ($this->_version)
+		{
+			return $this->_version;
+		}
+
+		if (!$this->version_name)
+		{
+			return;
+		}
+
+		return $this->_version = $core->thumbnailer_versions[$this->version_name];
+	}
+
 	/**
 	 * Returns the options, filtered.
 	 *
@@ -229,74 +304,6 @@ class Thumbnail extends \ICanBoogie\Object
 		return Version::filter($this->options);
 	}
 
-	public function __get($property)
-	{
-		if (isset(Version::$shorthands[$property]))
-		{
-			$property = Version::$shorthands[$property];
-		}
-
-		if (array_key_exists($property, Version::$defaults))
-		{
-			return $this->get_option($property);
-		}
-
-		return parent::__get($property);
-	}
-
-	/**
-	 * Returns the width of the thumbnail.
-	 *
-	 * The width of the thumbnail is extracted from the options or the version parameters.
-	 *
-	 * @return int|null The width of the thumbnail or null if it's not available.
-	 */
-	protected function get_w()
-	{
-		return $this->get_option('width');
-	}
-
-	protected function set_w($weight)
-	{
-		$this->set_option('weight', $weight);
-	}
-
-	/**
-	 * Returns the height of the thumbnail.
-	 *
-	 * The height of the thumbnail is extracted from the options or the version's parameters.
-	 *
-	 * @return int|null The height of the thumbnail or null if it's not available.
-	 */
-	protected function get_h()
-	{
-		return $this->get_option('height');
-	}
-
-	protected function set_h($height)
-	{
-		$this->set_option('height', $height);
-	}
-
-	/**
-	 * Returns the name of the method used to resize the image.
-	 *
-	 * The resizing method of the thumbnail is extracted from the options or the version's
-	 * parameters.
-	 *
-	 * @return int|null The name of method used to resize the image or null if it's not
-	 * available.
-	 */
-	protected function get_method()
-	{
-		return $this->get_option('method');
-	}
-
-	protected function set_method($method)
-	{
-		$this->set_option('method', $method);
-	}
-
 	/**
 	 * Returns the thumbnail URL.
 	 *
@@ -304,17 +311,10 @@ class Thumbnail extends \ICanBoogie\Object
 	 */
 	protected function get_url()
 	{
-		$w = $this->w;
-		$h = $this->h;
-		$src = $this->src;
-		$method = $this->method;
 		$version_name = $this->version_name;
-
 		$options = $this->filtered_options;
-		$options['src'] = $src;
-// 		$options['version'] = $version_name;
 
-		$url = '/api/thumbnail';
+		$url = $this->url_base;
 
 		if ($version_name)
 		{
@@ -322,13 +322,10 @@ class Thumbnail extends \ICanBoogie\Object
 		}
 		else
 		{
-			if ($w || $h)
-			{
-				$url .= self::format_options_as_path($options);
-			}
+			$url .= self::format_options_as_path($options);
 		}
 
-		$query_string = self::format_options_as_query_string($options, true);
+		$query_string = self::format_options_as_query_string($options + [ 'src' => $this->src ], true);
 
 		if ($query_string)
 		{
@@ -339,13 +336,19 @@ class Thumbnail extends \ICanBoogie\Object
 	}
 
 	/**
-	 * Convert the thumbnail into a IMG element.
+	 * Returns a base to build the thumbnail's URL.
 	 *
-	 * @param array $attributes
-	 *
-	 * @return \Brickrouge\Element
+	 * @return string
 	 */
-	public function to_element(array $attributes=[])
+	protected function get_url_base()
+	{
+		return '/api/thumbnail';
+	}
+
+	/**
+	 * Returns the final size (width and height) of the thumbnail.
+	 */
+	protected function get_final_size()
 	{
 		$w = $this->w;
 		$h = $this->h;
@@ -353,10 +356,25 @@ class Thumbnail extends \ICanBoogie\Object
 
 		if (is_string($src))
 		{
-			$size_reference = \Brickrouge\DOCUMENT_ROOT . $src;
-
-			list($w, $h) = \ICanBoogie\Image::compute_final_size($w, $h, $this->method, $size_reference);
+			list($w, $h) = \ICanBoogie\Image::compute_final_size($w, $h, $this->method, \ICanBoogie\DOCUMENT_ROOT . $src);
 		}
+
+		return [ $w , $h ];
+	}
+
+	/**
+	 * Convert the thumbnail into a IMG element.
+	 *
+	 * The `width` and `height` attribute of the element are defined whenever possible. The `alt`
+	 * attribute is also defined if the image src is an Image active record.
+	 *
+	 * @param array $attributes Additionnal attributes to create the {@link Element} instance.
+	 *
+	 * @return \Brickrouge\Element
+	 */
+	public function to_element(array $attributes=[])
+	{
+		list($w, $h) = $this->final_size;
 
 		$class = 'thumbnail';
 		$version_name = $this->version_name;
@@ -379,9 +397,6 @@ class Thumbnail extends \ICanBoogie\Object
 
 	/**
 	 * Return a IMG element that can be inserted as is in the document.
-	 *
-	 * The `width` and `height` attribute of the element are defined whenever possible. The `alt`
-	 * attribute is also defined if the image src is an Image active record.
 	 */
 	public function __toString()
 	{
