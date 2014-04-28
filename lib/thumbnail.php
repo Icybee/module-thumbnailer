@@ -27,9 +27,89 @@ use Brickrouge\Element;
  * @property $h int|null Hauteur de la miniature, extraite des options ou de la version.
  * @property $method string|null Méthode de redimensionnement de la miniature, extraite des options
  * ou de la version.
+ * @property-read array $filtered_options Filtered thumbnail options.
+ * @property-read string $url The URL of the thumbnail.
  */
 class Thumbnail extends \ICanBoogie\Object
 {
+	/**
+	 * Parameters that can be used to create a path.
+	 *
+	 * @var array
+	 */
+	static private $path_params = [
+
+		'width',
+		'height',
+		'method',
+		'format'
+
+	];
+
+	/**
+	 * The default values of the parameters that can be used to create a path.
+	 *
+	 * @var array
+	 */
+	static private $path_params_defaults = [
+
+		'width' => null,
+		'height' => null,
+		'method' => null,
+		'format' => null
+
+	];
+
+	static public function format_options_as_path(array $options)
+	{
+		$options += self::$path_params_defaults;
+
+		$w = $options['width'];
+		$h = $options['height'];
+
+		if (!$w && !$h)
+		{
+			return;
+		}
+
+		$m = $options['method'];
+
+		if (!$m && (!$w || !$h))
+		{
+			$m = $w ? 'fixed-width' : 'fixed-height';
+		}
+
+		$f = $options['format'];
+
+		$rc = "/{$w}x{$h}";
+
+		if ($m)
+		{
+			$rc .= "/{$m}";
+		}
+
+		if ($f)
+		{
+			$rc .= ".{$f}";
+		}
+
+		return $rc;
+	}
+
+	static public function format_options_as_query_string(array $options, $remove_path_params=false)
+	{
+		$options = Version::filter($options);
+
+		if ($remove_path_params)
+		{
+			$options = array_diff_key($options, self::$path_params_defaults);
+		}
+
+		$options = Version::shorten($options);
+
+		return http_build_query($options);
+	}
+
 	/**
 	 * The source of the thumbnail.
 	 *
@@ -139,6 +219,16 @@ class Thumbnail extends \ICanBoogie\Object
 		}
 	}
 
+	/**
+	 * Returns the options, filtered.
+	 *
+	 * @return array
+	 */
+	protected function get_filtered_options()
+	{
+		return Version::filter($this->options);
+	}
+
 	public function __get($property)
 	{
 		if (isset(Version::$shorthands[$property]))
@@ -212,105 +302,37 @@ class Thumbnail extends \ICanBoogie\Object
 	 *
 	 * @return string The thumbnail URL.
 	 */
-	public function get_url()
+	protected function get_url()
 	{
-		global $core;
-
-		$src = $this->src;
-		$options = Version::filter($this->options);
-		$version_name = $this->version_name;
-		$url = '/api/';
-
 		$w = $this->w;
 		$h = $this->h;
+		$src = $this->src;
 		$method = $this->method;
+		$version_name = $this->version_name;
 
-		if (is_string($src))
+		$options = $this->filtered_options;
+		$options['src'] = $src;
+// 		$options['version'] = $version_name;
+
+		$url = '/api/thumbnail';
+
+		if ($version_name)
 		{
-			$url .= 'thumbnail';
-
-			$options['src'] = $src;
-			$options['version'] = $version_name;
-
-			if ($w || $h)
-			{
-				$url .= '/';
-
-				if ($w && $h)
-				{
-					$url .= $w . 'x' . $h;
-				}
-				else if ($w)
-				{
-					$url .= $w;
-					$method = 'fixed-width';
-				}
-				else if ($h)
-				{
-					$url .= 'x' . $h;
-					$method = 'fixed-height';
-				}
-
-				unset($options['width']);
-				unset($options['height']);
-
-				if ($method)
-				{
-					$url .= '/' . $method;
-
-					unset($options['method']);
-				}
-			}
+			$url .= '/' . $version_name;
 		}
 		else
 		{
-			$url .= (empty($src->constructor) ? $src->model_id : $src->constructor) . '/' . $src->nid;
-
-			if ($version_name)
+			if ($w || $h)
 			{
-				$url .= '/thumbnails/' . $version_name;
-			}
-			else
-			{
-				if ($w || $h)
-				{
-					$url .= '/';
-
-					if ($w && $h)
-					{
-						$url .= $w . 'x' . $h;
-					}
-					else if ($w)
-					{
-						$url .= $w;
-						$method = 'fixed-width';
-					}
-					else if ($h)
-					{
-						$url .= 'x' . $h;
-						$method = 'fixed-height';
-					}
-
-					unset($options['width']);
-					unset($options['height']);
-
-					if ($method)
-					{
-						$url .= '/' . $method;
-
-						unset($options['method']);
-					}
-				}
-				else
-				{
-					$url .= '/thumbnail';
-				}
+				$url .= self::format_options_as_path($options);
 			}
 		}
 
-		if ($options)
+		$query_string = self::format_options_as_query_string($options, true);
+
+		if ($query_string)
 		{
-			$url .= '?'. http_build_query(Version::shorten($options));
+			$url .= '?'. $query_string;
 		}
 
 		return $url;
@@ -323,24 +345,18 @@ class Thumbnail extends \ICanBoogie\Object
 	 *
 	 * @return \Brickrouge\Element
 	 */
-	public function to_element(array $attributes=array())
+	public function to_element(array $attributes=[])
 	{
 		$w = $this->w;
 		$h = $this->h;
 		$src = $this->src;
 
-		if ($src instanceof \Icybee\Modules\Images\Image)
+		if (is_string($src))
 		{
-			$alt = $src->alt;
-			$size_reference = array($src->width, $src->height);
-		}
-		else
-		{
-			$alt = '';
 			$size_reference = \Brickrouge\DOCUMENT_ROOT . $src;
-		}
 
-		list($w, $h) = \ICanBoogie\Image::compute_final_size($w, $h, $this->method, $size_reference);
+			list($w, $h) = \ICanBoogie\Image::compute_final_size($w, $h, $this->method, $size_reference);
+		}
 
 		$class = 'thumbnail';
 		$version_name = $this->version_name;
@@ -350,17 +366,15 @@ class Thumbnail extends \ICanBoogie\Object
 			$class .= ' thumbnail--' . \Brickrouge\normalize($version_name);
 		}
 
-		return new Element
-		(
-			'img', $attributes + array
-			(
-				'src' => $this->url,
-				'alt' => $alt,
-				'width' => $w,
-				'height' => $h,
-				'class' => $class
-			)
-		);
+		return new Element('img', $attributes + [
+
+			'src' => $this->url,
+			'alt' => '',
+			'width' => $w,
+			'height' => $h,
+			'class' => $class
+
+		]);
 	}
 
 	/**

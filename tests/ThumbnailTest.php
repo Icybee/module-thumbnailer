@@ -11,11 +11,46 @@
 
 namespace ICanBoogie\Modules\Thumbnailer;
 
-use Icybee\Modules\Images\Image;
-
 class ThumbnailTest extends \PHPUnit_Framework_TestCase
 {
 	static private $path = '/repository/images/madonna.jpeg';
+
+	static public function setupBeforeClass()
+	{
+		global $core;
+
+		$core->thumbnailer_versions['icon'] = [
+
+			'w' => 64,
+			'h' => 64,
+			'background' => 'transparent',
+			'format' => 'jpeg',
+			'quality' => 85
+
+		];
+	}
+
+	static public function tearDownAfterClass()
+	{
+		global $core;
+
+		unset($core->thumbnailer_versions['icon']);
+	}
+
+	/**
+	 * @dataProvider provider_test_url
+	 */
+	public function test_url($src, $options, $expected)
+	{
+		$t = new Thumbnail($src, $options);
+
+		$this->assertEquals($expected, $t->url);
+	}
+
+	public function provider_test_url()
+	{
+		return require __DIR__ . '/cases/url.php';
+	}
 
 	public function testOptions()
 	{
@@ -36,7 +71,7 @@ class ThumbnailTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(100, $thumbnail->w);
 		$this->assertEquals(120, $thumbnail->h);
 		$this->assertEquals('fill', $thumbnail->method);
-		$this->assertEquals("/api/thumbnail/100x120/fill?s=%2Frepository%2Fimages%2Fmadonna.jpeg", $thumbnail->url);
+		$this->assertEquals("/api/thumbnail/100x120?s=%2Frepository%2Fimages%2Fmadonna.jpeg", $thumbnail->url);
 		$this->assertEquals('<img src="' . \Brickrouge\escape($thumbnail->url) . '" alt="" width="100" height="120" class="thumbnail" />', (string) $thumbnail);
 	}
 
@@ -46,7 +81,7 @@ class ThumbnailTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertEquals(64, $thumbnail->w);
 		$this->assertEquals(64, $thumbnail->h);
-		$this->assertEquals("/api/thumbnail/64x64/fill?s=%2Frepository%2Fimages%2Fmadonna.jpeg&v=icon", $thumbnail->url);
+		$this->assertEquals("/api/thumbnail/icon?s=%2Frepository%2Fimages%2Fmadonna.jpeg", $thumbnail->url);
 		$this->assertEquals('<img src="' . \Brickrouge\escape($thumbnail->url) . '" alt="" width="64" height="64" class="thumbnail thumbnail--icon" />', (string) $thumbnail);
 	}
 }

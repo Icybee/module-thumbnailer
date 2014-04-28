@@ -1,4 +1,4 @@
-# Thumbnailer [![Build Status](https://travis-ci.org/Icybee/module-thumbnailer.png?branch=2.0)](https://travis-ci.org/Icybee/module-thumbnailer)
+# Thumbnailer [![Build Status](https://travis-ci.org/Icybee/module-thumbnailer.png?branch=2.1)](https://travis-ci.org/Icybee/module-thumbnailer)
 
 The Thumbnailer module (`thumbnailer`) creates thumbnails from images and managed
 images using options or configured versions.
@@ -25,18 +25,8 @@ echo $thumbnail->url; // /api/thumbnail/420x340/fill?s=%2Fimages%2Fmadonna.jpeg&
 
 $thumbnail = new Thumbnail('/images/madonna.jpeg', 'w:64;h:64;f:png');
 
-echo $thumbnail;      // <img src="/api/thumbnail/64x64/fill?f=png&amp;s=%2Fimages%2Fmadonna.jpeg" alt="" width="64" height="64" class="thumbnail" />
-echo $thumbnail->url; // /api/thumbnail/64x64/fill?f=png&s=%2Fimages%2Fmadonna.jpeg
-
-# Support for the Images module
-
-$thumbnail = new Thumbnail($core->models['images'][123], 'popover');
-
-echo $thumbnail;      // <img src="/api/images/123/thumbnails/popover" alt="" width="420" height="340" class="thumbnail thumbnail--popover" />
-echo $thumbnail->url; // /api/images/123/thumbnails/popover
-
-$core->models['images'][123]->thumbnail('popover');
-$core->models['images'][123]->thumbnail('popover')->url;
+echo $thumbnail;      // <img src="/api/thumbnail/64x64/fill.png&amp;s=%2Fimages%2Fmadonna.jpeg" alt="" width="64" height="64" class="thumbnail" />
+echo $thumbnail->url; // /api/thumbnail/64x64/fill.png&s=%2Fimages%2Fmadonna.jpeg
 ```
 
 
@@ -80,31 +70,6 @@ Pre-parses defined thumbnail versions before the config is saved.
 
 
 
-### `Icybee\Modules\Images\Image::thumbnail`
-
-Adds the `thumbnail()` method to the _Image_ active record.
-
-```php
-<?php
-
-$image = $core->models['images']->one;
-
-echo $image->thumbnail('my-version-name');
-echo $image->thumbnail('w:64;h:64;m:fit');
-```
-
-
-
-
-
-### `Icybee\Modules\Images\Image::get_thumbnail`
-
-Adds the `thumbnail` lazy getter for the `view` thumbnail version.
-
-
-
-
-
 ### `ICanBoogie\Core\get_thumbnail_versions`
 
 Adds the `thumbnail_versions` lazy getter to the _core_ object. The getter returns a version
@@ -140,7 +105,7 @@ Create a `composer.json` file and run `php composer.phar install` command to ins
 {
 	"minimum-stability": "dev",
 	"require": {
-		"icybee/module-thumbnailer": "2.x"
+		"icybee/module-thumbnailer": "2.1.x"
 	}
 }
 ```
@@ -168,7 +133,7 @@ directory can later be cleaned with the `make clean` command.
 
 The package is continuously tested by [Travis CI](http://about.travis-ci.org/).
 
-[![Build Status](https://travis-ci.org/Icybee/module-thumbnailer.png?branch=2.0)](https://travis-ci.org/Icybee/module-thumbnailer)
+[![Build Status](https://travis-ci.org/Icybee/module-thumbnailer.png?branch=2.1)](https://travis-ci.org/Icybee/module-thumbnailer)
 
 
 

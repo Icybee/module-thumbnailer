@@ -130,4 +130,185 @@ class VersionTest extends \PHPUnit_Framework_TestCase
 			$v->to_array(Version::ARRAY_FILTER | Version::ARRAY_SHORTEN)
 		);
 	}
+
+	/**
+	 * @dataProvider provide_test_from_uri
+	 */
+	public function test_from_uri($uri, $expected)
+	{
+		$v = Version::from_uri($uri);
+
+		$options = $v->to_array(Version::ARRAY_FILTER | Version::ARRAY_SHORTEN);
+
+		$this->assertSame($expected, $options);
+	}
+
+	public function provide_test_from_uri()
+	{
+		return [
+
+			[ '/api/thumbnail/100x200' , [
+
+				'h' => 200,
+				'w' => 100
+
+			] ],
+
+			[ '/api/thumbnail/100x' , [
+
+				'm' => 'fixed-width',
+				'w' => 100
+
+			] ],
+
+			[ '/api/thumbnail/x200' , [
+
+				'h' => 200,
+				'm' => 'fixed-height'
+
+			] ],
+
+			#
+
+			[ '/api/thumbnail/100x200.png' , [
+
+				'f' => 'png',
+				'h' => 200,
+				'w' => 100
+
+			] ],
+
+			[ '/api/thumbnail/100x.png' , [
+
+				'f' => 'png',
+				'm' => 'fixed-width',
+				'w' => 100
+
+			] ],
+
+			[ '/api/thumbnail/x200.png' , [
+
+				'f' => 'png',
+				'h' => 200,
+				'm' => 'fixed-height'
+
+			] ],
+
+			#
+
+			[ '/api/thumbnail/100x200/surface' , [
+
+				'h' => 200,
+				'm' => 'surface',
+				'w' => 100
+
+			] ],
+
+			// although 'surface' is impossible because 'height' is not defined
+			[ '/api/thumbnail/100x/surface' , [
+
+				'm' => 'surface',
+				'w' => 100
+
+			] ],
+
+			// although 'surface' is impossible because 'width' is not defined
+			[ '/api/thumbnail/x200/surface' , [
+
+				'h' => 200,
+				'm' => 'surface'
+
+			] ],
+
+			#
+
+			[ '/api/thumbnail/100x200/surface.png' , [
+
+				'f' => 'png',
+				'h' => 200,
+				'm' => 'surface',
+				'w' => 100
+
+			] ],
+
+			// although 'surface' is impossible because 'height' is not defined
+			[ '/api/thumbnail/100x/surface.png' , [
+
+				'f' => 'png',
+				'm' => 'surface',
+				'w' => 100
+
+			] ],
+
+			// although 'surface' is impossible because 'width' is not defined
+			[ '/api/thumbnail/x200/surface.png' , [
+
+				'f' => 'png',
+				'h' => 200,
+				'm' => 'surface'
+
+			] ],
+
+			#
+
+			[ '/api/thumbnail/100x200?src=' . urlencode('/path/to/example.png') , [
+
+				'h' => 200,
+				's' => '/path/to/example.png',
+				'w' => 100
+
+			] ],
+
+			[ '/api/thumbnail/100x?src=' . urlencode('/path/to/example.png') , [
+
+				'm' => 'fixed-width',
+				's' => '/path/to/example.png',
+				'w' => 100
+
+			] ],
+
+			[ '/api/thumbnail/x200?src=' . urlencode('/path/to/example.png') , [
+
+				'h' => 200,
+				'm' => 'fixed-height',
+				's' => '/path/to/example.png'
+
+			] ],
+
+		];
+	}
+
+	/**
+	 * @dataProvider provide_test_to_string
+	 */
+	public function test_to_string($expected, $options)
+	{
+		$v = new Version($options);
+
+		$this->assertEquals($expected, (string) $v);
+	}
+
+	public function provide_test_to_string()
+	{
+		return [
+
+			[ '', Version::$defaults ],
+
+			[ 'h:200;w:100;', [
+
+				'w' => 100,
+				'h' => 200,
+				'extraneous' => 'extraneous'
+
+			] ]
+
+		];
+	}
+
+	public function test_widen()
+	{
+		$options = Version::widen(Version::$defaults);
+
+		$this->assertEquals('background default format filter height method no-interlace no-upscale overlay path quality src width', implode(' ', array_keys($options)));
+	}
 }

@@ -2,6 +2,8 @@
 
 PACKAGE_NAME = "ICanBoogie/Modules/Thumbnailer"
 
+# do not edit the following lines
+
 # assets
 
 JS_FILES = \
@@ -15,7 +17,7 @@ CSS_FILES = \
 	lib/elements/adjust-thumbnail-version.css
 
 JS_COMPRESSOR = curl -X POST -s --data-urlencode 'js_code@$^' --data-urlencode 'utf8=1' http://marijnhaverbeke.nl/uglifyjs
-JS_COMPRESSOR = cat $^
+#JS_COMPRESSOR = cat $^
 JS_COMPRESSED = public/module.js
 JS_UNCOMPRESSED = public/module-uncompressed.js
 
@@ -37,23 +39,18 @@ $(CSS_COMPRESSED): $(CSS_UNCOMPRESSED)
 $(CSS_UNCOMPRESSED): $(CSS_FILES)
 	cat $^ >$@
 
-# do not edit the following lines
+test: vendor
+	@phpunit
 
-usage:
-	@echo "test:  Runs the test suite.\ndoc:   Creates the documentation.\nclean: Removes the documentation, the dependencies and the Composer files."
+vendor: composer.phar
+	@php composer.phar install --prefer-source --dev
 
 composer.phar:
 	@echo "Installing composer..."
 	@curl -s https://getcomposer.org/installer | php
 
-vendor: composer.phar
-	@php composer.phar install --prefer-source --dev
-
 update:
 	@php composer.phar update --prefer-source --dev
-
-test: vendor
-	@phpunit
 
 doc: vendor
 	@mkdir -p "docs"

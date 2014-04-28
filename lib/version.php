@@ -2,6 +2,8 @@
 
 namespace ICanBoogie\Modules\Thumbnailer;
 
+use ICanBoogie\ToArray;
+
 /**
  * A thumbnail version.
  *
@@ -33,7 +35,7 @@ namespace ICanBoogie\Modules\Thumbnailer;
  * @property string $s Alias to {@link $src}.
  * @property string $w alias to {@link $width}.
  */
-class Version
+class Version implements ToArray
 {
 	/**
 	 * Option for the {@link to_array()} method.
@@ -95,6 +97,81 @@ class Version
 	);
 
 	/**
+	 * Returns version options extracted from the URI.
+	 *
+	 * Options are extracted from the pathinfo (`width`, `height`, `method`, and `format`) as well
+	 * as from the query string.
+	 *
+	 * @param string $uri The URI from which options should be extracted.
+	 *
+	 * @return \ICanBoogie\Modules\Thumbnailer\Version
+	 */
+	static public function from_uri($uri)
+	{
+		$options = [];
+		$path = $uri;
+		$query_string_position = strpos($uri, '?');
+
+		if ($query_string_position)
+		{
+			$path = substr($uri, 0, $query_string_position);
+			$query_string = substr($uri, $query_string_position + 1);
+			parse_str($query_string, $options);
+			$options = Version::widen($options);
+		}
+
+		$options += [
+
+			'width' => null,
+			'height' => null,
+			'method' => null,
+			'format' => null
+
+		];
+
+		preg_match('#/(\d+x\d+|\d+x|x\d+)(/([^/\.]+))?(\.([a-z]+))?#', $path, $matches);
+
+		if ($matches)
+		{
+			list($w, $h) = explode('x', $matches[1]);
+
+			if ($w)
+			{
+				$options['width'] = (int) $w;
+			}
+
+			if ($h)
+			{
+				$options['height'] = (int) $h;
+			}
+
+			if (isset($matches[3]))
+			{
+				$options['method'] = $matches[3];
+			}
+
+			if (isset($matches[5]))
+			{
+				$options['format'] = $matches[5];
+			}
+
+			if (!$options['method'] && (!$options['width'] || !$options['height']))
+			{
+				$options['method'] = $options['width'] ? 'fixed-width' : 'fixed-height';
+			}
+
+			if ($options['format'] && $options['format'] == 'jpg')
+			{
+				$options['format'] = 'jpeg';
+			}
+		}
+
+		$options = array_filter($options);
+
+		return new static($options);
+	}
+
+	/**
 	 * Normalizes thumbnail options.
 	 *
 	 * @param array $options
@@ -147,21 +224,55 @@ class Version
 	/**
 	 * Shorten option names.
 	 *
+	 * Note: Extraneous options are not filtered.
+	 *
 	 * @param array $options
 	 *
 	 * @return array
 	 */
 	static public function shorten(array $options)
 	{
-		$shorten_options = array();
-		$shorthands = array_flip(self::$shorthands);
+		$rc = [];
+		$longhands = array_flip(self::$shorthands);
 
 		foreach ($options as $name => $value)
 		{
-			$shorten_options[$shorthands[$name]] = $value;
+			if (isset($longhands[$name]))
+			{
+				$name = $longhands[$name];
+			}
+
+			$rc[$name] = $value;
 		}
 
-		return $shorten_options;
+		return $rc;
+	}
+
+	/**
+	 * Widen option names.
+	 *
+	 * Note: Extraneous options are not filtered.
+	 *
+	 * @param array $options
+	 *
+	 * @return array
+	 */
+	static public function widen(array $options)
+	{
+		$rc = [];
+		$shorthands = self::$shorthands;
+
+		foreach ($options as $name => $value)
+		{
+			if (isset($shorthands[$name]))
+			{
+				$name = $shorthands[$name];
+			}
+
+			$rc[$name] = $value;
+		}
+
+		return $rc;
 	}
 
 	/**
@@ -267,6 +378,18 @@ class Version
 	{
 		$option = self::property_name_to_option_name($property);
 		$this->options[$option] = $value;
+	}
+
+	/**
+	 * Returns a string representation of the instance.
+	 *
+	 * @return string
+	 *
+	 * @see Version::serialize
+	 */
+	public function __toString()
+	{
+		return self::serialize($this->options);
 	}
 
 	/**

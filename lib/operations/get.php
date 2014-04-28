@@ -15,6 +15,7 @@ use ICanBoogie\Exception;
 use ICanBoogie\FileCache;
 use ICanBoogie\HTTP\HTTPError;
 use ICanBoogie\HTTP\NotFound;
+use ICanBoogie\HTTP\Request;
 use ICanBoogie\I18n;
 use ICanBoogie\Image;
 use ICanBoogie\Operation;
@@ -26,51 +27,40 @@ use ICanBoogie\Operation;
  */
 class GetOperation extends Operation
 {
-	const VERSION = '1.2.0';
+	const VERSION = '2.1';
 
 	static public $background;
 
 	/**
-	 * Parse, filter and sort options.
+	 * Tries to create a {@link Version} instance from the request.
 	 *
-	 * @param unknown_type $options
-	 * @throws Exception
+	 * @param Request $request
+	 *
+	 * @return \ICanBoogie\Modules\Thumbnailer\Version
 	 */
-	protected function parse_params($params)
+	protected function resolve_version(Request $request)
 	{
 		global $core;
 
-		#
-		# handle the 'version' parameter
-		#
+		$version_name = $request['version'] ?: $request['v'];
 
-		if (isset($params['v']))
+		if ($version_name)
 		{
-			$params['version'] = $params['v'];
+			$version = $core->thumbnailer_versions[$version_name];
+		}
+		else
+		{
+			$version = Version::from_uri($request->uri);
+
+			if (!$version)
+			{
+				$version = new Version($request->params);
+			}
 		}
 
-		if (isset($params['version']))
-		{
-			$version_name = $params['version'];
-			$versions = $core->thumbnailer_versions;
-			$version = $versions[$version_name];
-			$params += $version->to_array(Version::ARRAY_FILTER);
+		Image::assert_sizes($version->method, $version->width, $version->height); // TODO-20140423: $version->validate($errors)
 
-			unset($params['version']);
-		}
-
-		#
-
-		$params = Version::normalize($params);
-
-		if (empty($params['background']))
-		{
-			$params['background'] = 'transparent';
-		}
-
-		Image::assert_sizes($params['method'], $params['width'], $params['height']);
-
-		return $params;
+		return $version;
 	}
 
 	/**
@@ -82,16 +72,16 @@ class GetOperation extends Operation
 	 * @param array $params
 	 * @throws HTTPError
 	 */
-	public function get(array $params=array())
+	public function get()
 	{
-		$params = $this->parse_params($params);
+		$version = clone $this->resolve_version($this->request);
 
 		#
 		# We check if the source file exists
 		#
 
-		$src = $params['src'];
-		$path = $params['path'];
+		$src = $version->src;
+		$path = $version->path;
 
 		if (!$src)
 		{
@@ -103,7 +93,7 @@ class GetOperation extends Operation
 
 		if (!is_file($location))
 		{
-			$default = $params['default'];
+			$default = $version->default;
 
 			#
 			# use the provided default file is defined
@@ -123,15 +113,15 @@ class GetOperation extends Operation
 			}
 		}
 
-		if (empty($params['format']))
+		if (!$version->format)
 		{
 			$info = getimagesize($location);
-			$params['format'] = substr($info['mime'], 6);
+			$version->format = substr($info['mime'], 6);
 		}
 
-		if ($params['format'] == 'jpeg' && $params['background'] == 'transparent')
+		if ($version->format == 'jpeg' && $version->background == 'transparent')
 		{
-			$params['background'] = 'white';
+			$version->background = 'white';
 		}
 
 		#
@@ -139,8 +129,8 @@ class GetOperation extends Operation
 		# and the options used to create the thumbnail.
 		#
 
-		$key = filemtime($location) . '#' . filesize($location) . '#' . json_encode($params);
-		$key = sha1($key) . '.' . $params['format'];
+		$key = filemtime($location) . '#' . filesize($location) . '#' . json_encode($version->to_array());
+		$key = sha1($key) . '.' . $version->format;
 
 		#
 		# Use the cache object to get the file
@@ -148,7 +138,7 @@ class GetOperation extends Operation
 
 		$cache = new CacheManager;
 
-		return $cache->retrieve($key, array($this, 'get_construct'), array($location, $params));
+		return $cache->retrieve($key, array($this, 'get_construct'), array($location, $version));
 	}
 
 	/**
@@ -162,18 +152,18 @@ class GetOperation extends Operation
 	 */
 	public function get_construct(FileCache $cache, $destination, $userdata)
 	{
-		list($path, $options) = $userdata;
+		list($path, $version) = $userdata;
 
 		$callback = null;
 
-		if ($options['background'] != 'transparent')
+		if ($version->background != 'transparent')
 		{
-			self::$background = self::decode_background($options['background']);
+			self::$background = self::decode_background($version->background);
 
 			$callback = __CLASS__ . '::fill_callback';
 		}
 
-        $image = Image::load($path, $info);
+		$image = Image::load($path, $info);
 
 		if (!$image)
 		{
@@ -184,14 +174,14 @@ class GetOperation extends Operation
 		# resize image
 		#
 
-		$w = $options['width'];
-		$h = $options['height'];
+		$w = $version->width;
+		$h = $version->height;
 
 		list($ow, $oh) = $info;
 
-		$method = $options['method'];
+		$method = $version->method;
 
-		if ($options['no-upscale'])
+		if ($version->no_upscale)
 		{
 			if ($method == Image::RESIZE_SURFACE)
 			{
@@ -215,16 +205,16 @@ class GetOperation extends Operation
 			}
 		}
 
-        $image = Image::resize($image, $w, $h, $method, $callback);
+		$image = Image::resize($image, $w, $h, $method, $callback);
 
 		if (!$image)
 		{
 			throw new Exception
 			(
-				'Unable to resize image for file %path with options: !options', array
+				'Unable to resize image for file %path with version: !version', array
 				(
 					'%path' => $path,
-					'!options' => $options
+					'!version' => $version
 				)
 			);
 		}
@@ -233,7 +223,7 @@ class GetOperation extends Operation
 		# apply filters
 		#
 
-		$filter = $options['filter'];
+		$filter = $version->filter;
 
 		if ($filter)
 		{
@@ -244,9 +234,9 @@ class GetOperation extends Operation
 		# apply the overlay
 		#
 
-		if ($options['overlay'])
+		if ($version->overlay)
 		{
-			$overlay_file = \ICanBoogie\DOCUMENT_ROOT . $options['overlay'];
+			$overlay_file = \ICanBoogie\DOCUMENT_ROOT . $version->overlay;
 
 			list($o_w, $o_h) = getimagesize($overlay_file);
 
@@ -259,56 +249,56 @@ class GetOperation extends Operation
 		# interlace
 		#
 
-		if (!$options['no-interlace'])
+		if (!$version->no_interlace)
 		{
 			imageinterlace($image, true);
 		}
 
-        #
-        # choose export format
-        #
+		#
+		# choose export format
+		#
 
-		$format = $options['format'];
+		$format = $version->format;
 
 		static $functions = array
 		(
-	        'gif' => 'imagegif',
-	        'jpeg' => 'imagejpeg',
-	        'png' => 'imagepng'
-        );
+			'gif' => 'imagegif',
+			'jpeg' => 'imagejpeg',
+			'png' => 'imagepng'
+		);
 
-        $function = $functions[$format];
-        $args = array($image, $destination);
+		$function = $functions[$format];
+		$args = array($image, $destination);
 
-        if ($format == 'jpeg')
-        {
-        	#
-        	# add quality option for the 'jpeg' format
-        	#
+		if ($format == 'jpeg')
+		{
+			#
+			# add quality option for the 'jpeg' format
+			#
 
-        	$args[] = $options['quality'];
-        }
-        else if ($format == 'png' && !$callback)
-        {
-        	#
-        	# If there is no background callback defined, the image is defined as transparent in
-        	# order to obtain a transparent thumbnail when the resulting image is centered.
-        	#
+			$args[] = $version->quality;
+		}
+		else if ($format == 'png' && !$callback)
+		{
+			#
+			# If there is no background callback defined, the image is defined as transparent in
+			# order to obtain a transparent thumbnail when the resulting image is centered.
+			#
 
-        	imagealphablending($image, false);
-        	imagesavealpha($image, true);
-        }
+			imagealphablending($image, false);
+			imagesavealpha($image, true);
+		}
 
-        $rc = call_user_func_array($function, $args);
+		$rc = call_user_func_array($function, $args);
 
-        imagedestroy($image);
+		imagedestroy($image);
 
-        if (!$rc)
-        {
-        	throw new Exception('Unable to save thumbnail');
-        }
+		if (!$rc)
+		{
+			throw new Exception('Unable to save thumbnail');
+		}
 
-        return $destination;
+		return $destination;
 	}
 
 	protected function apply_filter($image, $filter)
@@ -341,7 +331,7 @@ class GetOperation extends Operation
 	{
 		$this->rescue_uri();
 
-		$path = $this->get($this->request->params);
+		$path = $this->get();
 
 		if (!$path)
 		{

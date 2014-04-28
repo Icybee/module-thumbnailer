@@ -5,6 +5,7 @@
 	"keywords": [ "thumbnail" ],
 	"homepage": "http://icybee.org/",
 	"license": "BSD-3-Clause",
+
 	"authors": [
 		{
 			"name": "Olivier Laviale",
@@ -13,11 +14,14 @@
 			"role" : "Developer"
 		}
 	],
+
 	"support": {
 		"issues": "https://github.com/Icybee/module-thumbnailer/issues",
 		"source": "https://github.com/Icybee/module-thumbnailer"
 	},
+
 	"minimum-stability": "dev",
+
 	"require": {
 		"php": ">=5.4.0",
 		"icanboogie/module-installer": "*",
@@ -26,13 +30,22 @@
 		"brickrouge/brickrouge": "2.x",
 		"icybee/module-registry": "*"
 	},
+
 	"require-dev": {
-		"icybee/module-images": "2.x"
+		"icanboogie/icanboogie": "2.x",
+		"icybee/core": "2.x",
+		"icybee/module-cache": "2.x"
 	},
+
 	"suggest": {
-		"icybee/module-cache": "Allows thumbnails cache management from Icybee admin."
+		"icybee/module-cache": "Allows thumbnails cache management from Icybee's admin."
 	},
+
 	"autoload": {
 		"classmap": [ "lib/" ]
+	},
+
+	"scripts": {
+		"post-autoload-dump": "ICanBoogie\\AutoConfig\\Generator::on_autoload_dump"
 	}
 }

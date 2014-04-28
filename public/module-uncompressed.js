@@ -1,4 +1,4 @@
-ICanBoogie.Modules.Thumbnailer = (function() {
+!function() {
 
 	var Image = new function() {
 
@@ -13,43 +13,43 @@ ICanBoogie.Modules.Thumbnailer = (function() {
 		this.RESIZE_SIMPLE = 'simple'
 		this.RESIZE_CONSTRAINED = 'constrained'
 
-		this.assertSize = function(w, h, m)
-		{
+		this.assertSize = function(w, h, m) {
+
 			switch (m)
 			{
 				case this.RESIZE_FIXED_WIDTH:
-				{
+
 					if (!w)
 					{
 						throw new Error('Width is required for the ' + m + ' resize method.')
 					}
-				}
-				break
+
+					break
 
 				case this.RESIZE_FIXED_HEIGHT:
-				{
+
 					if (!h)
 					{
 						throw new Error('Height is required for the ' + m + ' resize method.')
 					}
-				}
-				break
+
+					break
 
 				default:
-				{
+
 					if (!w || !h)
 					{
 						throw new Error('Both width and height are required for the ' + m + ' resize method.')
 					}
-				}
-				break
+
+					break
 			}
 
 			return true
 		}
 	}
 
-	var Version= new function() {
+	var Version = new function() {
 
 		this.defaults = {
 
@@ -130,67 +130,68 @@ ICanBoogie.Modules.Thumbnailer = (function() {
 		}
 	}
 
-	return {
+	var Thumbnail = new Class({
 
-		Image: Image,
+		options: {
 
-		Thumbnail: new Class({
+		},
 
-			options: {
+		initialize: function(src, options) {
 
-			},
+			this.src = src
+			this.options = options
+		},
 
-			initialize: function(src, options) {
+		toString: function()
+		{
+			var options = Version.normalize(this.options)
+			, url = this.src
+			, w = options.width
+			, h = options.height
+			, m = options.method
+			, q = null
 
-				this.src = src
-				this.options = options
-			},
+			Image.assertSize(w, h, m)
 
-			toString: function()
+			var capture = url.match(/repository\/files\/image\/(\d+)/)
+
+			if (capture.length)
 			{
-				var options = Version.normalize(this.options)
-				, url = this.src
-				, w = options.width
-				, h = options.height
-				, m = options.method
-				, q = null
-
-				Image.assertSize(w, h, m)
-
-				var capture = url.match(/repository\/files\/image\/(\d+)/)
-
-				if (capture.length)
-				{
-					url = '/api/images/' + capture[1]
-				}
-
-				url += '/' + (w || '') + 'x' + (h || '')
-
-				if (m)
-				{
-					url += '/' + m
-				}
-
-				delete options.width
-				delete options.height
-				delete options.method
-
-				q = Object.toQueryString(Version.filter(options))
-
-				if (q)
-				{
-					url += '?' + q
-				}
-
-				return url
+				url = '/api/images/' + capture[1]
 			}
 
-		}),
+			url += '/' + (w || '') + 'x' + (h || '')
 
+			if (m)
+			{
+				url += '/' + m
+			}
+
+			delete options.width
+			delete options.height
+			delete options.method
+
+			q = Object.toQueryString(Version.filter(options))
+
+			if (q)
+			{
+				url += '?' + q
+			}
+
+			return url
+		}
+
+	})
+
+	ICanBoogie.Modules.Thumbnailer = {
+
+		Image: Image,
+		Thumbnail: Thumbnail,
 		Version: Version
+
 	}
 
-})();Brickrouge.Widget.AdjustThumbnailOptions = (function() {
+} ();Brickrouge.Widget.AdjustThumbnailOptions = (function() {
 
 	var Version = ICanBoogie.Modules.Thumbnailer.Version
 

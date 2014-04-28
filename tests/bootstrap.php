@@ -9,32 +9,63 @@
  * file that was distributed with this source code.
  */
 
-use ICanBoogie\Modules\Thumbnailer\Versions;
+$_SERVER['DOCUMENT_ROOT'] = __DIR__;
 
 require __DIR__ . '/../vendor/autoload.php';
 
-$versions = new Versions
-(
-	array
-	(
-		'images-view' => array
-		(
-			'w' => 120,
-			'h' => 100
-		),
+#
+# Create the _core_ instance used for the tests.
+#
 
-		'icon' => array
-		(
-			'w' => 64,
-			'h' => 64,
-			'background' => 'transparent',
-			'format' => 'jpeg',
-			'quality' => 85
-		)
-	)
-);
+global $core;
 
-$core = (object) array
-(
-	'thumbnailer_versions' => $versions
-);
+$core = new \ICanBoogie\Core(\ICanBoogie\array_merge_recursive(\ICanBoogie\get_autoconfig(), [
+
+	'config-path' => [
+
+		__DIR__ . DIRECTORY_SEPARATOR . 'config'
+
+	],
+
+	'module-path' => [
+
+		realpath(__DIR__ . '/../')
+
+	]
+
+]));
+
+$core();
+
+#
+# Install modules
+#
+
+$errors = new \ICanBoogie\Errors();
+
+foreach (array_keys($core->modules->enabled_modules_descriptors) as $module_id)
+{
+	#
+	# The index on the `constructor` column of the `nodes` module clashes with SQLite, we don't
+	# care right now, so the exception is discarted.
+	#
+
+	try
+	{
+		$core->modules[$module_id]->install($errors);
+	}
+	catch (\Exception $e)
+	{
+		$errors[$module_id] = "Unable to install module: " . $e->getMessage();
+	}
+}
+
+if ($errors->count())
+{
+	foreach ($errors as $module_id => $error)
+	{
+		echo "[$module_id] $error\n";
+	}
+
+	exit(1);
+}
