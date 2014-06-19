@@ -162,7 +162,7 @@ class AdjustThumbnailVersion extends \Brickrouge\Group
 					),
 
 					'class' => 'adjust widget-adjust-thumbnail-version',
-					'data-widget-constructor' => 'AdjustThumbnailVersion'
+					Element::WIDGET_CONSTRUCTOR => 'AdjustThumbnailVersion'
 				),
 
 				$attributes

@@ -167,7 +167,7 @@ class AdjustThumbnailOptions extends Group
 				),
 
 				'class' => 'widget-adjust-thumbnail-options',
-				'data-widget-constructor' => 'AdjustThumbnailOptions'
+				Element::WIDGET_CONSTRUCTOR => 'AdjustThumbnailOptions'
 			)
 		);
 
