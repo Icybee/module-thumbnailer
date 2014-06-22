@@ -1,5 +1,9 @@
+.README.md.html
 composer.lock
 composer.phar
 docs
+node_modules
+public/module-uncompressed.css
+public/module-uncompressed.js
 tests/repository
 vendor

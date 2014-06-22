@@ -137,7 +137,7 @@ class AdjustThumbnailOptions extends Group
 									(
 										Text::ADDON => 'Qualité',
 										Text::ADDON_POSITION => 'before',
-										self::DEFAULT_VALUE => 90,
+										self::DEFAULT_VALUE => Version::$defaults['quality'],
 
 										'class' => 'measure',
 										'size' => 3
@@ -199,11 +199,6 @@ class AdjustThumbnailOptions extends Group
 		if (!empty($value['lightbox']))
 		{
 			$options['lightbox'] = true;
-		}
-
-		if ($options['background'] == 'transparent')
-		{
-			$options['background'] = '';
 		}
 
 		foreach ($options as $name => $v)

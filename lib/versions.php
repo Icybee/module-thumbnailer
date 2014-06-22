@@ -62,16 +62,9 @@ class Versions implements \ArrayAccess, \IteratorAggregate
 		->where('name LIKE ?', 'thumbnailer.versions.%')
 		->pairs;
 
-		foreach ($definitions as $name => $options)
+		foreach ($definitions as $name => $serialized_options)
 		{
-			if (!$options || !is_string($options) || $options{0} != '{')
-			{
-				\ICanBoogie\log_error('Bad version: %name, :options', array('name' => $name, 'options' => $options));
-
-				continue;
-			}
-
-			$versions[$name] = Version::normalize(json_decode($options, true));
+			$versions[$name] = Version::unserialize($serialized_options);
 		}
 
 		return $versions;

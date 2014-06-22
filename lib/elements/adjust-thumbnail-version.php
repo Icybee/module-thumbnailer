@@ -31,14 +31,14 @@ class AdjustThumbnailVersion extends \Brickrouge\Group
 
 	public function __construct(array $attributes=array())
 	{
-		global $core;
-
 		parent::__construct
 		(
 			\ICanBoogie\array_merge_recursive
 			(
 				array
 				(
+					Element::IS => 'AdjustThumbnailVersion',
+
 					Element::CHILDREN => array
 					(
 						new Element
@@ -134,7 +134,7 @@ class AdjustThumbnailVersion extends \Brickrouge\Group
 										(
 											Text::ADDON => 'Qualité',
 											Text::ADDON_POSITION => 'before',
-											self::DEFAULT_VALUE => 80,
+											self::DEFAULT_VALUE => Version::$defaults['quality'],
 
 											'class' => 'measure',
 											'size' => 3
@@ -161,8 +161,7 @@ class AdjustThumbnailVersion extends \Brickrouge\Group
 						)
 					),
 
-					'class' => 'adjust widget-adjust-thumbnail-version',
-					Element::WIDGET_CONSTRUCTOR => 'AdjustThumbnailVersion'
+					'class' => 'adjust widget-adjust-thumbnail-version'
 				),
 
 				$attributes
@@ -176,12 +175,10 @@ class AdjustThumbnailVersion extends \Brickrouge\Group
 		{
 			case self::DEFAULT_VALUE:
 			{
-				$options = $value;
+				if (!$value) break;
 
-				if (is_string($options))
-				{
-					$options = json_decode($options);
-				}
+				$version = new Version($value);
+				$options = $version->to_array();
 
 				foreach ($options as $identifier => $v)
 				{
@@ -206,17 +203,10 @@ class AdjustThumbnailVersion extends \Brickrouge\Group
 
 			case 'value':
 			{
-				$options = $value;
+				if (!$value) break;
 
-				if (is_string($options))
-				{
-					$options = json_decode($options);
-				}
-
-				if (!$options)
-				{
-					break;
-				}
+				$version = new Version($value);
+				$options = $version->to_array();
 
 				foreach ($options as $identifier => $v)
 				{

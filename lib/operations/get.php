@@ -119,7 +119,7 @@ class GetOperation extends Operation
 			$version->format = substr($info['mime'], 6);
 		}
 
-		if ($version->format == 'jpeg' && $version->background == 'transparent')
+		if ($version->format == 'jpeg' && !$version->background)
 		{
 			$version->background = 'white';
 		}
@@ -156,7 +156,7 @@ class GetOperation extends Operation
 
 		$callback = null;
 
-		if ($version->background != 'transparent')
+		if ($version->background)
 		{
 			self::$background = self::decode_background($version->background);
 

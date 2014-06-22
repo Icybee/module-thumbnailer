@@ -14,16 +14,20 @@ with the `thumbnail_versions` lazy getter.
 namespace ICanBoogie\Modules\Thumbnailer;
 
 $versions = $core->thumbnailer_versions;
+$versions['popover'] = [ 'width' => 420, 'height' => 340 ];
+# or
 $versions['popover'] = 'w:420;h:340';
 # or
-$versions['popover'] = array('width' => 420, 'height' => 340);
+$versions['popover'] = '{"w":"420","h":"340"}';
+# or 
+$versions['popover'] = '420x340';
 
 $thumbnail = new Thumbnail('/images/madonna.jpeg', 'popover');
 
 echo $thumbnail;      // <img src="/api/thumbnail/420x340/fill?s=%2Fimages%2Fmadonna.jpeg&amp;v=popover" alt="" width="420" height="340" class="thumbnail thumbnail--popover" />
 echo $thumbnail->url; // /api/thumbnail/420x340/fill?s=%2Fimages%2Fmadonna.jpeg&v=popover
 
-$thumbnail = new Thumbnail('/images/madonna.jpeg', 'w:64;h:64;f:png');
+$thumbnail = new Thumbnail('/images/madonna.jpeg', '64x64.png');
 
 echo $thumbnail;      // <img src="/api/thumbnail/64x64/fill.png&amp;s=%2Fimages%2Fmadonna.jpeg" alt="" width="64" height="64" class="thumbnail" />
 echo $thumbnail->url; // /api/thumbnail/64x64/fill.png&s=%2Fimages%2Fmadonna.jpeg

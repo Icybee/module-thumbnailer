@@ -16,7 +16,7 @@ CSS_FILES = \
 	lib/elements/adjust-thumbnail-options.css \
 	lib/elements/adjust-thumbnail-version.css
 
-JS_COMPRESSOR = curl -X POST -s --data-urlencode 'js_code@$^' --data-urlencode 'utf8=1' http://marijnhaverbeke.nl/uglifyjs
+JS_COMPRESSOR = curl -X POST -s --data-urlencode 'input@$^' http://javascript-minifier.com/raw
 #JS_COMPRESSOR = cat $^ # uncomment this line to produce an uncompressed file
 JS_COMPRESSED = public/module.js
 JS_UNCOMPRESSED = public/module-uncompressed.js
@@ -40,11 +40,19 @@ $(CSS_COMPRESSED): $(CSS_UNCOMPRESSED)
 $(CSS_UNCOMPRESSED): $(CSS_FILES)
 	cat $^ >$@
 
-test: vendor
+test: vendor node_modules testphp testjs
+
+testphp:
 	@phpunit
+
+testjs:
+	@node_modules/mocha/bin/mocha tests/*.js
 
 vendor: composer.phar
 	@php composer.phar install --prefer-source --dev
+
+node_modules:
+	sudo npm install mocha chai mootools
 
 composer.phar:
 	@echo "Installing composer..."

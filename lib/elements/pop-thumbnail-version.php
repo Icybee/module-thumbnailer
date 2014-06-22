@@ -33,16 +33,6 @@ class PopThumbnailVersion extends \Brickrouge\Widget
 		);
 	}
 
-	public function offsetSet($offset, $value)
-	{
-		if (($offset == 'value' || $offset == self::DEFAULT_VALUE) && is_array($value))
-		{
-			$value = json_encode($value);
-		}
-
-		parent::offsetSet($offset, $value);
-	}
-
 	protected function render_class(array $class_names)
 	{
 		if (!$this['value'])
@@ -58,7 +48,11 @@ class PopThumbnailVersion extends \Brickrouge\Widget
 		$html = parent::render_inner_html();
 
 		$value = $this['value'] ?: $this[self::DEFAULT_VALUE];
-		$decoded_value = json_decode($value, true);
+
+		if ($value)
+		{
+			$value = (string) new Version($value);
+		}
 
 		$input = new Element
 		(
@@ -70,24 +64,10 @@ class PopThumbnailVersion extends \Brickrouge\Widget
 			)
 		);
 
-		$content = '';
-
-		if ($decoded_value)
-		{
-			$version = new Version($decoded_value);
-
-			$w = $version->width ?: '<em>auto</em>';
-			$h = $version->height ?: '<em>auto</em>';
-			$method = $version->method;
-			$format = '.' . ($version->format ?: '<em>auto</em>');
-
-			$content = "{$w}×{$h} {$method} $format";
-		}
-
 		$placeholder = 'Version non définie';
 
 		return <<<EOT
-$input <span class="spinner-content">$content</span> <em class="spinner-placeholder">$placeholder</em> $html
+$input <span class="spinner-content">$value</span> <em class="spinner-placeholder">$placeholder</em> $html
 EOT;
 	}
 }

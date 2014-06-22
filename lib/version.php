@@ -51,6 +51,20 @@ class Version implements ToArray
 	 */
 	const ARRAY_FILTER = 2;
 
+	const OPTION_BACKGROUND = 'background';
+	const OPTION_DEFAULT = 'default';
+	const OPTION_FORMAT = 'format';
+	const OPTION_FILTER = 'filter';
+	const OPTION_HEIGHT = 'height';
+	const OPTION_METHOD = 'method';
+	const OPTION_NO_INTERLACE = 'no-interlace';
+	const OPTION_NO_UPSCALE = 'no-upscale';
+	const OPTION_OVERLAY = 'overlay';
+	const OPTION_PATH = 'path';
+	const OPTION_QUALITY = 'quality';
+	const OPTION_SRC = 'src';
+	const OPTION_WIDTH = 'width';
+
 	/**
 	 * Options and their default value.
 	 *
@@ -58,10 +72,10 @@ class Version implements ToArray
 	 */
 	static public $defaults = array
 	(
-		'background' => 'transparent',
+		'background' => null,
 		'default' => null,
-		'format' => null,
 		'filter' => null,
+		'format' => null,
 		'height' => null,
 		'method' => 'fill',
 		'no-interlace' => false,
@@ -82,8 +96,8 @@ class Version implements ToArray
 	(
 		'b' => 'background',
 		'd' => 'default',
-		'f' => 'format',
 		'ft' => 'filter',
+		'f' => 'format',
 		'h' => 'height',
 		'm' => 'method',
 		'ni' => 'no-interlace',
@@ -108,6 +122,14 @@ class Version implements ToArray
 	 */
 	static public function from_uri($uri)
 	{
+		$options = self::extract_options_from_uri($uri);
+		$options = self::normalize($options);
+
+		return new static($options);
+	}
+
+	static private function extract_options_from_uri($uri)
+	{
 		$options = [];
 		$path = $uri;
 		$query_string_position = strpos($uri, '?');
@@ -129,7 +151,7 @@ class Version implements ToArray
 
 		];
 
-		preg_match('#/(\d+x\d+|\d+x|x\d+)(/([^/\.]+))?(\.([a-z]+))?#', $path, $matches);
+		preg_match('#/?(\d+x\d+|\d+x|x\d+)(/([^/\.]+))?(\.([a-z]+))?#', $path, $matches);
 
 		if ($matches)
 		{
@@ -155,24 +177,27 @@ class Version implements ToArray
 				$options['format'] = $matches[5];
 			}
 
-			if (!$options['method'] && (!$options['width'] || !$options['height']))
-			{
-				$options['method'] = $options['width'] ? 'fixed-width' : 'fixed-height';
-			}
-
 			if ($options['format'] && $options['format'] == 'jpg')
 			{
 				$options['format'] = 'jpeg';
 			}
 		}
 
-		$options = array_filter($options);
-
-		return new static($options);
+		return array_filter($options);
 	}
 
 	/**
 	 * Normalizes thumbnail options.
+	 *
+	 * The method fixes the resizing method according to the `width` and `height` option:
+	 *
+	 * - If `width` and `height` are defined but `method` is empty, `method` is set to "fill".
+	 * - If `width` is defined but `height` is empty, `method` is set to "fixed-width".
+	 * - If `height` is defined but `width` is empty, `method` is set to "fixed-height".
+	 * - If `width`, `height` and `method` are empty, `method` is set to the default value "fill".
+	 *
+	 * Thus if `method` is defined as "surface", but only the `width` is defined, `method` is set
+	 * to "fixed-width".
 	 *
 	 * @param array $options
 	 *
@@ -186,6 +211,40 @@ class Version implements ToArray
 			{
 				$options[$full] = $options[$shorthand];
 			}
+		}
+
+		$options += [
+
+			self::OPTION_WIDTH => null,
+			self::OPTION_HEIGHT => null,
+			self::OPTION_METHOD => null
+
+		];
+
+		$m = $options[self::OPTION_METHOD];
+		$w = $options[self::OPTION_WIDTH];
+		$h = $options[self::OPTION_HEIGHT];
+
+		if ($w && $h && !$m)
+		{
+			$m = 'fill';
+		}
+		else if ($w && !$h)
+		{
+			$m = 'fixed-width';
+		}
+		else if (!$w && $h)
+		{
+			$m = 'fixed-height';
+		}
+
+		if ($m)
+		{
+			$options[self::OPTION_METHOD] = $m;
+		}
+		else
+		{
+			unset($options[self::OPTION_METHOD]);
 		}
 
 		#
@@ -207,10 +266,11 @@ class Version implements ToArray
 	}
 
 	/**
-	 * Filter thumbnail options.
+	 * Filter options.
 	 *
-	 * Options than match default values are removed. The options are normalized using
-	 * {@link normalize_options()} before they are filtered.
+	 * The options are normalized using {@link normalize()} before they are filtered.
+	 * Options than match default values are removed. If `method` equals the implicit resizing
+	 * method the option is removed.
 	 *
 	 * @param array $options
 	 *
@@ -218,7 +278,20 @@ class Version implements ToArray
 	 */
 	static public function filter(array $options)
 	{
-		return array_diff_assoc(self::normalize($options), self::$defaults);
+		$options = self::normalize($options);
+
+		$w = $options[self::OPTION_WIDTH];
+		$h = $options[self::OPTION_HEIGHT];
+		$m = $options[self::OPTION_METHOD];
+
+		if (($w && $h && $m === 'fill')
+		|| ($w && !$h && $m === 'fixed-width')
+		|| (!$w && $h && $m === 'fixed-height'))
+		{
+			unset($options[self::OPTION_METHOD]);
+		}
+
+		return array_diff_assoc($options, self::$defaults);
 	}
 
 	/**
@@ -284,9 +357,37 @@ class Version implements ToArray
 	 */
 	static public function unserialize($serialized_options)
 	{
-		preg_match_all('#([^:]+):\s*([^;]+);?#', $serialized_options, $matches, PREG_PATTERN_ORDER);
+		#
+		# JSON style
+		#
 
-		return self::filter(array_combine($matches[1], $matches[2]));
+		if (is_string($serialized_options) && strlen($serialized_options) > 2 && $serialized_options{0} === '{')
+		{
+			$options = json_decode($serialized_options, true);
+			$options = self::filter($options);
+
+			return $options;
+		}
+
+		#
+		# CSS style
+		#
+
+		if (!preg_match('#\d+x\d+|\d+x|x\d+#', $serialized_options))
+		{
+			preg_match_all('#([^:]+):\s*([^;]+);?#', $serialized_options, $matches, PREG_PATTERN_ORDER);
+
+			return self::filter(array_combine($matches[1], $matches[2]));
+		}
+
+		#
+		# URL style
+		#
+
+		$options = self::extract_options_from_uri($serialized_options);
+		$options = self::filter($options);
+
+		return $options;
 	}
 
 	/**
@@ -299,15 +400,62 @@ class Version implements ToArray
 	static public function serialize(array $options)
 	{
 		$options = self::filter($options);
-		$options = self::shorten($options);
-		$serialized_options = '';
+		$options = self::shorten($options) + [
 
-		foreach ($options as $option => $value)
+			'w' => null,
+			'h' => null,
+			'm' => null,
+			'f' => null
+
+		];
+
+		$rc = '';
+		$w = $options['w'];
+		$h = $options['h'];
+
+		if ($w || $h)
 		{
-			$serialized_options .= "$option:$value;";
+			$rc .= "{$w}x{$h}";
+
+			$m = $options['m'];
+
+			if ($w && $h && $m === 'fill')
+			{
+				$m = null;
+			}
+			else if ($w && !$h && $m === 'fixed-width')
+			{
+				$m = null;
+			}
+			else if (!$w && $h && $m === 'fixed-height')
+			{
+				$m = null;
+			}
+
+			if ($m)
+			{
+				$rc .= "/{$m}";
+			}
+
+			$f = $options['f'];
+
+			if ($f)
+			{
+				$rc .= ".{$f}";
+			}
 		}
 
-		return $serialized_options;
+		unset($options['w']);
+		unset($options['h']);
+		unset($options['m']);
+		unset($options['f']);
+
+		if ($options)
+		{
+			$rc .= '?' . http_build_query($options);
+		}
+
+		return $rc;
 	}
 
 	protected $options;
