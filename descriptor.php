@@ -2,16 +2,16 @@
 
 namespace ICanBoogie\Modules\Thumbnailer;
 
-use ICanBoogie\Module;
+use ICanBoogie\Module\Descriptor;
 
 return array
 (
-	Module::T_CATEGORY => 'features',
-	Module::T_TITLE => 'Thumbnailer',
-	Module::T_DESCRIPTION => 'Create thumbnails on the fly',
-	Module::T_NAMESPACE => __NAMESPACE__,
-	Module::T_PERMISSION => false,
-	Module::T_REQUIRES => array
+	Descriptor::CATEGORY => 'features',
+	Descriptor::TITLE => 'Thumbnailer',
+	Descriptor::DESCRIPTION => 'Create thumbnails on the fly',
+	Descriptor::NS => __NAMESPACE__,
+	Descriptor::PERMISSION => false,
+	Descriptor::REQUIRES => array
 	(
 		"registry" => "1.x"
 	)
