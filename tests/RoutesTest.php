@@ -29,7 +29,7 @@ class RoutesTests extends \PHPUnit_Framework_TestCase
 	{
 		$route = self::$routes->find($uri);
 
-		$this->assertInstanceOf('ICanBoogie\Route', $route);
+		$this->assertInstanceOf('ICanBoogie\Routing\Route', $route);
 		$this->assertEquals($expected, $route->id);
 	}
 

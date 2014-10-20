@@ -91,7 +91,7 @@ class ThumbnailTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('fit', $t->method);
 	}
 
-	public function testThumbnail()
+	public function test_with_json_version()
 	{
 		$thumbnail = new Thumbnail(self::$path, 'w:100;h:120;m:fill');
 
@@ -102,7 +102,18 @@ class ThumbnailTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('<img src="' . \Brickrouge\escape($thumbnail->url) . '" alt="" width="100" height="120" class="thumbnail" />', (string) $thumbnail);
 	}
 
-	public function testVersion()
+	public function test_with_uri()
+	{
+		$thumbnail = new Thumbnail(self::$path, '100x120/fill');
+
+		$this->assertEquals(100, $thumbnail->w);
+		$this->assertEquals(120, $thumbnail->h);
+		$this->assertEquals('fill', $thumbnail->method);
+		$this->assertEquals("/api/thumbnail/100x120?s=%2Frepository%2Fimages%2Fmadonna.jpeg", $thumbnail->url);
+		$this->assertEquals('<img src="' . \Brickrouge\escape($thumbnail->url) . '" alt="" width="100" height="120" class="thumbnail" />', (string) $thumbnail);
+	}
+
+	public function test_with_version_name()
 	{
 		$thumbnail = new Thumbnail(self::$path, 'icon');
 

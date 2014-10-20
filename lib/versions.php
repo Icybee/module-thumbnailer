@@ -119,14 +119,13 @@ class Versions implements \ArrayAccess, \IteratorAggregate
 			$version = new Version($version);
 		}
 
-		$options = $version->to_array(Version::ARRAY_FILTER | Version::ARRAY_SHORTEN);
-		$core->registry["thumbnailer.versions.$name"] = json_encode($options);
+		$core->registry["thumbnailer.versions.$name"] = (string) $version;
 
 		# revoke cache
 
 		unset($core->vars['cached_thumbnailer_versions']);
 
-		return $options;
+		return $version;
 	}
 
 	/**

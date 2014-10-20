@@ -4,15 +4,15 @@ namespace ICanBoogie\Modules\Thumbnailer;
 
 use ICanBoogie\Module\Descriptor;
 
-return array
-(
+return [
+
 	Descriptor::CATEGORY => 'features',
 	Descriptor::TITLE => 'Thumbnailer',
 	Descriptor::DESCRIPTION => 'Create thumbnails on the fly',
 	Descriptor::NS => __NAMESPACE__,
 	Descriptor::PERMISSION => false,
-	Descriptor::REQUIRES => array
-	(
+	Descriptor::REQUIRES => [
+
 		"registry" => "1.x"
-	)
-);
+	]
+];

@@ -117,9 +117,9 @@ class AdjustThumbnailVersion extends \Brickrouge\Group
 											self::OPTIONS => array
 											(
 												null => 'auto',
-												'jpeg' => 'JPEG',
-												'png' => 'PNG',
-												'gif' => 'GIF'
+												'jpeg' => '.jpeg',
+												'png' => '.png',
+												'gif' => '.gif'
 											),
 
 											'style' => 'vertical-align: middle; width: auto'

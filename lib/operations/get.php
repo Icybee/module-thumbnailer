@@ -11,7 +11,6 @@
 
 namespace ICanBoogie\Modules\Thumbnailer;
 
-use ICanBoogie\Exception;
 use ICanBoogie\FileCache;
 use ICanBoogie\HTTP\HTTPError;
 use ICanBoogie\HTTP\NotFound;
@@ -148,7 +147,7 @@ class GetOperation extends Operation
 	 * @param string $destination The file to create.
 	 * @param array $userdata An array with the path of the original image and the options to use
 	 * to create the thumbnail.
-	 * @throws Exception
+	 * @throws \Exception
 	 */
 	public function get_construct(FileCache $cache, $destination, $userdata)
 	{
@@ -167,7 +166,7 @@ class GetOperation extends Operation
 
 		if (!$image)
 		{
-			throw new Exception('Unable to load image from file %path', array('%path' => $path));
+			throw new \Exception(\ICanBoogie\format('Unable to load image from file %path', array('%path' => $path)));
 		}
 
 		#
@@ -209,14 +208,12 @@ class GetOperation extends Operation
 
 		if (!$image)
 		{
-			throw new Exception
-			(
-				'Unable to resize image for file %path with version: !version', array
-				(
-					'%path' => $path,
-					'!version' => $version
-				)
-			);
+			throw new \Exception(\ICanBoogie\format('Unable to resize image for file %path with version: !version', [
+
+				'%path' => $path,
+				'!version' => $version
+
+			]));
 		}
 
 		#
@@ -295,7 +292,7 @@ class GetOperation extends Operation
 
 		if (!$rc)
 		{
-			throw new Exception('Unable to save thumbnail');
+			throw new \Exception('Unable to save thumbnail');
 		}
 
 		return $destination;
@@ -410,13 +407,13 @@ class GetOperation extends Operation
 	static public function fill_callback($image, $w, $h)
 	{
 		#
-		# We create Image::drawGrid() arguments from the dimensions of the image
+		# We create Image::draw_grid() arguments from the dimensions of the image
 		# and the values passed using the 'background' parameter.
 		#
 
 		$args = (array) self::$background;
 
-		array_unshift($args, $image, 0, 0, $w - 1, $h - 1);
+		array_unshift($args, $image, 0, 0, (int) $w - 1, (int) $h - 1);
 
 		call_user_func_array('ICanBoogie\Image::draw_grid', $args);
 	}

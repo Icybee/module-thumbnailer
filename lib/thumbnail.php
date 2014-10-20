@@ -170,21 +170,23 @@ class Thumbnail extends \ICanBoogie\Object
 	/**
 	 * Constructor.
 	 *
-	 * @param Icybee\Modules\Images\Image|int|string The souce of the thumbnail.
+	 * @param Icybee\Modules\Images\Image|int|string The source of the thumbnail.
 	 *
 	 * @param string|array $options The options to create the thumbnail can be provided as a
 	 * version name or an array of options. If a version name is provided, the `image` parameter
 	 * must also be provided.
 	 *
-	 * @param string|array $additionnal_options Additionnal options to create the thumbnail.
+	 * @param string|array $additionnal_options Additional options to create the thumbnail.
 	 */
 	public function __construct($src, $options=null, $additionnal_options=null)
 	{
 		if (is_string($options))
 		{
-			if (strpos($options, ':') !== false)
+			$unserialized_version = Version::unserialize($options);
+
+			if ($unserialized_version)
 			{
-				$options = Version::unserialize($options);
+				$options = $unserialized_version;
 			}
 			else
 			{
@@ -368,7 +370,7 @@ class Thumbnail extends \ICanBoogie\Object
 	 * The `width` and `height` attribute of the element are defined whenever possible. The `alt`
 	 * attribute is also defined if the image src is an Image active record.
 	 *
-	 * @param array $attributes Additionnal attributes to create the {@link Element} instance.
+	 * @param array $attributes Additional attributes to create the {@link Element} instance.
 	 *
 	 * @return \Brickrouge\Element
 	 */

@@ -48,18 +48,17 @@ testphp:
 testjs:
 	@node_modules/mocha/bin/mocha tests/*.js
 
-vendor: composer.phar
-	@php composer.phar install --prefer-source --dev
+vendor:
+	@composer install --prefer-source --dev
 
 node_modules:
 	sudo npm install mocha chai mootools
 
-composer.phar:
-	@echo "Installing composer..."
-	@curl -s https://getcomposer.org/installer | php
-
 update:
-	@php composer.phar update --prefer-source --dev
+	@composer update --prefer-source --dev
+
+autoload:
+	@composer dump-autoload
 
 doc: vendor
 	@mkdir -p "docs"
@@ -79,3 +78,5 @@ clean:
 	@rm -f composer.phar
 	@rm -f public/module-uncompressed.css
 	@rm -f public/module-uncompressed.js
+	@rm -Rf tests/repository/thumbnailer
+	@rm -f tests/repository/vars/cached_thumbnailer_versions

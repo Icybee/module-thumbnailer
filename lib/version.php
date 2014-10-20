@@ -72,19 +72,19 @@ class Version implements ToArray
 	 */
 	static public $defaults = array
 	(
-		'background' => null,
-		'default' => null,
-		'filter' => null,
-		'format' => null,
-		'height' => null,
-		'method' => 'fill',
-		'no-interlace' => false,
-		'no-upscale' => false,
-		'overlay' => null,
-		'path' => null,
-		'quality' => 90,
-		'src' => null,
-		'width' => null
+		self::OPTION_BACKGROUND => null,
+		self::OPTION_DEFAULT => null,
+		self::OPTION_FILTER => null,
+		self::OPTION_FORMAT => null,
+		self::OPTION_HEIGHT => null,
+		self::OPTION_METHOD => 'fill',
+		self::OPTION_NO_INTERLACE => false,
+		self::OPTION_NO_UPSCALE => false,
+		self::OPTION_OVERLAY => null,
+		self::OPTION_PATH => null,
+		self::OPTION_QUALITY => 90,
+		self::OPTION_SRC => null,
+		self::OPTION_WIDTH => null
 	);
 
 	/**
@@ -94,20 +94,20 @@ class Version implements ToArray
 	 */
 	static public $shorthands = array
 	(
-		'b' => 'background',
-		'd' => 'default',
-		'ft' => 'filter',
-		'f' => 'format',
-		'h' => 'height',
-		'm' => 'method',
-		'ni' => 'no-interlace',
-		'nu' => 'no-upscale',
-		'o' => 'overlay',
-		'p' => 'path',
-		'q' => 'quality',
-		's' => 'src',
-		'v' => 'version', // FIXME-20130507: remove this
-		'w' => 'width'
+		'b'  => self::OPTION_BACKGROUND,
+		'd'  => self::OPTION_DEFAULT,
+		'ft' => self::OPTION_FILTER,
+		'f'  => self::OPTION_FORMAT,
+		'h'  => self::OPTION_HEIGHT,
+		'm'  => self::OPTION_METHOD,
+		'ni' => self::OPTION_NO_INTERLACE,
+		'nu' => self::OPTION_NO_UPSCALE,
+		'o'  => self::OPTION_OVERLAY,
+		'p'  => self::OPTION_PATH,
+		'q'  => self::OPTION_QUALITY,
+		's'  => self::OPTION_SRC,
+		'v'  => 'version', // FIXME-20130507: remove this
+		'w'  => self::OPTION_WIDTH
 	);
 
 	/**
@@ -144,10 +144,10 @@ class Version implements ToArray
 
 		$options += [
 
-			'width' => null,
-			'height' => null,
-			'method' => null,
-			'format' => null
+			self::OPTION_WIDTH => null,
+			self::OPTION_HEIGHT => null,
+			self::OPTION_METHOD => null,
+			self::OPTION_FORMAT => null
 
 		];
 
@@ -159,27 +159,27 @@ class Version implements ToArray
 
 			if ($w)
 			{
-				$options['width'] = (int) $w;
+				$options[self::OPTION_WIDTH] = (int) $w;
 			}
 
 			if ($h)
 			{
-				$options['height'] = (int) $h;
+				$options[self::OPTION_HEIGHT] = (int) $h;
 			}
 
 			if (isset($matches[3]))
 			{
-				$options['method'] = $matches[3];
+				$options[self::OPTION_METHOD] = $matches[3];
 			}
 
 			if (isset($matches[5]))
 			{
-				$options['format'] = $matches[5];
+				$options[self::OPTION_FORMAT] = $matches[5];
 			}
 
-			if ($options['format'] && $options['format'] == 'jpg')
+			if ($options[self::OPTION_FORMAT] && $options[self::OPTION_FORMAT] == 'jpg')
 			{
-				$options['format'] = 'jpeg';
+				$options[self::OPTION_FORMAT] = 'jpeg';
 			}
 		}
 
@@ -360,12 +360,10 @@ class Version implements ToArray
 		#
 		# JSON style
 		#
-
 		if (is_string($serialized_options) && strlen($serialized_options) > 2 && $serialized_options{0} === '{')
 		{
 			$options = json_decode($serialized_options, true);
 			$options = self::filter($options);
-
 			return $options;
 		}
 
@@ -490,13 +488,13 @@ class Version implements ToArray
 		}
 		else
 		{
-			if ($property == 'no_interlace')
+			if ($property === 'no_interlace')
 			{
-				$property = 'no-interlace';
+				$property = self::OPTION_NO_INTERLACE;
 			}
-			else if ($property == 'no_upscale')
+			else if ($property === 'no_upscale')
 			{
-				$property = 'no-upscale';
+				$property = self::OPTION_NO_UPSCALE;
 			}
 		}
 

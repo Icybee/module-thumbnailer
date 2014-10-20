@@ -120,9 +120,9 @@ class AdjustThumbnailOptions extends Group
 										self::OPTIONS => array
 										(
 											null => 'Auto.',
-											'jpeg' => 'JPEG',
-											'png' => 'PNG',
-											'gif' => 'GIF'
+											'.jpeg' => 'JPEG',
+											'.png' => 'PNG',
+											'.gif' => 'GIF'
 										),
 
 										'style' => 'width: auto;'
