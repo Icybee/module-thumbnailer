@@ -7,14 +7,14 @@ PACKAGE_NAME = "ICanBoogie/Modules/Thumbnailer"
 # assets
 
 JS_FILES = \
-	lib/module.js \
-	lib/elements/adjust-thumbnail-options.js \
-	lib/elements/adjust-thumbnail-version.js \
-	lib/elements/pop-thumbnail-version.js
+	lib/Module.js \
+	lib/AdjustThumbnailOptions.js \
+	lib/AdjustThumbnailVersion.js \
+	lib/PopThumbnailVersion.js
 
 CSS_FILES = \
-	lib/elements/adjust-thumbnail-options.css \
-	lib/elements/adjust-thumbnail-version.css
+	lib/AdjustThumbnailOptions.css \
+	lib/AdjustThumbnailVersion.css
 
 JS_COMPRESSOR = curl -X POST -s --data-urlencode 'input@$^' http://javascript-minifier.com/raw
 #JS_COMPRESSOR = cat $^ # uncomment this line to produce an uncompressed file

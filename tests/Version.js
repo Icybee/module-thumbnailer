@@ -6,7 +6,7 @@ require('./bootstrap.js')
 
 var chai = require('chai')
 , expect = chai.expect
-, thumbnailer = require('../lib/module.js')
+, thumbnailer = require('../lib/Module.js')
 , Version = thumbnailer.Version
 
 /*
