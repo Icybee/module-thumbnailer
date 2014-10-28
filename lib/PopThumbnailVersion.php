@@ -22,15 +22,13 @@ class PopThumbnailVersion extends \Brickrouge\Widget
 		$document->js->add(DIR . 'public/module.js');
 	}
 
-	public function __construct(array $attributes=array())
+	public function __construct(array $attributes=[])
 	{
-		parent::__construct
-		(
-			'a', $attributes + array
-			(
-				'class' => 'spinner'
-			)
-		);
+		parent::__construct('a', $attributes + [
+
+			'class' => 'spinner'
+
+		]);
 	}
 
 	protected function render_class(array $class_names)
@@ -54,17 +52,15 @@ class PopThumbnailVersion extends \Brickrouge\Widget
 			$value = (string) new Version($value);
 		}
 
-		$input = new Element
-		(
-			'input', array
-			(
-				'name' => $this['name'],
-				'type' => 'hidden',
-				'value' => $value
-			)
-		);
+		$input = new Element('input', [
 
-		$placeholder = 'Version non définie';
+			'name' => $this['name'],
+			'type' => 'hidden',
+			'value' => $value
+
+		]);
+
+		$placeholder = \Brickrouge\t('Version not defined');
 
 		return <<<EOT
 $input <span class="spinner-content">$value</span> <em class="spinner-placeholder">$placeholder</em> $html

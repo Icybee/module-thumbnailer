@@ -19,7 +19,7 @@ use Brickrouge\Text;
 
 class AdjustThumbnailVersion extends \Brickrouge\Group
 {
-	private $elements = array();
+	private $elements = [];
 
 	static protected function add_assets(\Brickrouge\Document $document)
 	{
@@ -29,144 +29,117 @@ class AdjustThumbnailVersion extends \Brickrouge\Group
 		$document->js->add(DIR . 'public/module.js');
 	}
 
-	public function __construct(array $attributes=array())
+	public function __construct(array $attributes=[])
 	{
-		parent::__construct
-		(
-			\ICanBoogie\array_merge_recursive
-			(
-				array
-				(
-					Element::IS => 'AdjustThumbnailVersion',
+		parent::__construct(\ICanBoogie\array_merge_recursive([
 
-					Element::CHILDREN => array
-					(
-						new Element
-						(
-							'div', array
-							(
-								Form::LABEL => 'Dimensions',
-								Element::CHILDREN => array
-								(
-									'width' => $this->elements['width'] = new Text
-									(
-										array
-										(
-											Text::ADDON => 'px',
+			Element::IS => 'AdjustThumbnailVersion',
 
-											'class' => 'measure',
-											'size' => 5
-										)
-									),
+			Element::CHILDREN => [
 
-									' × ',
+				new Element('div', [
 
-									'height' => $this->elements['height'] = new Text
-									(
-										array
-										(
-											Text::ADDON => 'px',
+					Form::LABEL => 'Dimensions',
+					Element::CHILDREN => [
 
-											'class' => 'measure',
-											'size' => 5
-										)
-									)
-								)
-							)
-						),
+						'width' => $this->elements['width'] = new Text([
 
-						'method' => $this->elements['method'] = new Element
-						(
-							'select', array
-							(
-								Form::LABEL => 'Méthode',
-								Element::OPTIONS => array
-								(
-									Image::RESIZE_FILL => 'Remplir',
-									Image::RESIZE_FIT => 'Ajuster',
-									Image::RESIZE_SURFACE => 'Surface',
-									Image::RESIZE_FIXED_HEIGHT => 'Hauteur fixe, largeur ajustée',
-									Image::RESIZE_FIXED_HEIGHT_CROPPED => 'Hauteur fixe, largeur respectée',
-									Image::RESIZE_FIXED_WIDTH => 'Largeur fixe, hauteur ajustée',
-									Image::RESIZE_FIXED_WIDTH_CROPPED => 'Largeur fixe, hauteur respectée',
-									Image::RESIZE_CONSTRAINED => 'Contraindre'
-								)
-							)
-						),
+							Text::ADDON => 'px',
 
-						'no-upscale' => $this->elements['no-upscale'] = new Element
-						(
-							Element::TYPE_CHECKBOX, array
-							(
-								Element::LABEL => 'Redimensionner mais ne pas agrandir'
-							)
-						),
+							'class' => 'measure',
+							'size' => 5
 
-						new Element
-						(
-							'div', array
-							(
-								Form::LABEL => 'Format de la miniature',
+						]),
 
-								self::CHILDREN => array
-								(
-									'format' => $this->elements['format'] = new Element
-									(
-										'select', array
-										(
-											self::OPTIONS => array
-											(
-												null => 'auto',
-												'jpeg' => '.jpeg',
-												'png' => '.png',
-												'gif' => '.gif'
-											),
+						' × ',
 
-											'style' => 'vertical-align: middle; width: auto'
-										)
-									),
+						'height' => $this->elements['height'] = new Text([
 
-									'&nbsp;',
+							Text::ADDON => 'px',
 
-									'quality' => $this->elements['quality'] = new Text
-									(
-										array
-										(
-											Text::ADDON => 'Qualité',
-											Text::ADDON_POSITION => 'before',
-											self::DEFAULT_VALUE => Version::$defaults['quality'],
+							'class' => 'measure',
+							'size' => 5
 
-											'class' => 'measure',
-											'size' => 3
-										)
-									)
-								)
-							)
-						),
+						])
+					]
+				]),
 
-						'background' => $this->elements['background'] = new Text
-						(
-							array
-							(
-								Form::LABEL => 'Remplissage'
-							)
-						),
+				'method' => $this->elements['method'] = new Element('select', [
 
-						'filter' => $this->elements['filter'] = new Text
-						(
-							array
-							(
-								Form::LABEL => 'Filtre'
-							)
-						)
-					),
+					Form::LABEL => 'Méthode',
+					Element::OPTIONS => [
 
-					'class' => 'adjust widget-adjust-thumbnail-version'
-				),
+						Image::RESIZE_FILL => 'Remplir',
+						Image::RESIZE_FIT => 'Ajuster',
+						Image::RESIZE_SURFACE => 'Surface',
+						Image::RESIZE_FIXED_HEIGHT => 'Hauteur fixe, largeur ajustée',
+						Image::RESIZE_FIXED_HEIGHT_CROPPED => 'Hauteur fixe, largeur respectée',
+						Image::RESIZE_FIXED_WIDTH => 'Largeur fixe, hauteur ajustée',
+						Image::RESIZE_FIXED_WIDTH_CROPPED => 'Largeur fixe, hauteur respectée',
+						Image::RESIZE_CONSTRAINED => 'Contraindre'
 
-				$attributes
-			)
-		);
+					]
+				]),
+
+				'no-upscale' => $this->elements['no-upscale'] = new Element(Element::TYPE_CHECKBOX, [
+
+					Element::LABEL => 'Redimensionner mais ne pas agrandir'
+
+				]),
+
+				new Element('div', [
+
+					Form::LABEL => 'Format de la miniature',
+
+					self::CHILDREN => [
+
+						'format' => $this->elements['format'] = new Element('select', [
+
+							self::OPTIONS => [
+
+								null => 'auto',
+								'jpeg' => '.jpeg',
+								'png' => '.png',
+								'gif' => '.gif'
+
+							],
+
+							'style' => 'vertical-align: middle; width: auto'
+
+						]),
+
+						'&nbsp;',
+
+						'quality' => $this->elements['quality'] = new Text([
+
+							Text::ADDON => 'Qualité',
+							Text::ADDON_POSITION => 'before',
+							self::DEFAULT_VALUE => Version::$defaults['quality'],
+
+							'class' => 'measure',
+							'size' => 3
+
+						])
+					]
+				]),
+
+				'background' => $this->elements['background'] = new Text([
+
+					Form::LABEL => 'Remplissage'
+
+				]),
+
+				'filter' => $this->elements['filter'] = new Text([
+
+					Form::LABEL => 'Filtre'
+
+
+				])
+			],
+
+			'class' => 'adjust widget-adjust-thumbnail-version'
+
+		], $attributes));
 	}
 
 	public function offsetSet($offset, $value)

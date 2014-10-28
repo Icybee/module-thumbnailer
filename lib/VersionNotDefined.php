@@ -18,20 +18,19 @@ namespace ICanBoogie\Modules\Thumbnailer;
  */
 class VersionNotDefined extends \InvalidArgumentException
 {
+	use \ICanBoogie\GetterTrait;
+
 	private $version;
+
+	protected function get_version()
+	{
+		return $this->version;
+	}
 
 	public function __construct($version, $code=500, \Exception $previous=null)
 	{
 		$this->version = $version;
 
 		parent::__construct("Version not defined: $version.", $code, $previous);
-	}
-
-	public function __get($property)
-	{
-		if ($property == 'version')
-		{
-			return $this->version;
-		}
 	}
 }

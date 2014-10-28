@@ -100,7 +100,7 @@ class GetOperation extends Operation
 
 			if (!$default)
 			{
-				throw new NotFound(I18n\t('Thumbnail source not found: %src', array('%src' => $src)));
+				throw new NotFound(I18n\t('Thumbnail source not found: %src', [ '%src' => $src ]));
 			}
 
 			$src = $path . $default;
@@ -108,7 +108,7 @@ class GetOperation extends Operation
 
 			if (!is_file($location))
 			{
-				throw new NotFound(I18n\t('Thumbnail source (default) not found: %src', array('%src' => $src)));
+				throw new NotFound(I18n\t('Thumbnail source (default) not found: %src', [ '%src' => $src ]));
 			}
 		}
 
@@ -137,7 +137,7 @@ class GetOperation extends Operation
 
 		$cache = new CacheManager;
 
-		return $cache->retrieve($key, array($this, 'get_construct'), array($location, $version));
+		return $cache->retrieve($key, [ $this, 'get_construct' ], [ $location, $version ]);
 	}
 
 	/**
@@ -166,7 +166,7 @@ class GetOperation extends Operation
 
 		if (!$image)
 		{
-			throw new \Exception(\ICanBoogie\format('Unable to load image from file %path', array('%path' => $path)));
+			throw new \Exception(\ICanBoogie\format('Unable to load image from file %path', [ '%path' => $path ]));
 		}
 
 		#
@@ -257,15 +257,16 @@ class GetOperation extends Operation
 
 		$format = $version->format;
 
-		static $functions = array
-		(
+		static $functions = [
+
 			'gif' => 'imagegif',
 			'jpeg' => 'imagejpeg',
 			'png' => 'imagepng'
-		);
+
+		];
 
 		$function = $functions[$format];
-		$args = array($image, $destination);
+		$args = [ $image, $destination ];
 
 		if ($format == 'jpeg')
 		{
@@ -332,7 +333,7 @@ class GetOperation extends Operation
 
 		if (!$path)
 		{
-			throw new HTTPError(\ICanBoogie\format('Unable to create thumbnail for: %src', array('%src' => $this->request['src'])), 404);
+			throw new HTTPError(\ICanBoogie\format('Unable to create thumbnail for: %src', [ '%src' => $this->request['src'] ]), 404);
 		}
 
 		$request = $this->request;

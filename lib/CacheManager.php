@@ -37,11 +37,12 @@ class CacheManager extends \ICanBoogie\Object implements \Icybee\Modules\Cache\C
 	 *
 	 * - repository_size: The size of the repository, in Mo.
 	 */
-	static public $config = array
-	(
+	static public $config = [
+
 		'cleanup_interval' => 15,
 		'repository_size' => 8
-	);
+
+	];
 
 	protected function get_config_preview()
 	{
@@ -49,57 +50,47 @@ class CacheManager extends \ICanBoogie\Object implements \Icybee\Modules\Cache\C
 
 		$registry = $core->registry;
 
-		$rc = I18n\t("The cache size does not exceed :cache_sizeMb.", array('cache_size' => $registry['thumbnailer.cache_size'] ?: 8));
-		$rc .= ' ' . I18n\t("The cache is cleaned every :cleanup_interval minutes.", array('cleanup_interval' => $registry['thumbnailer.cleanup_interval'] ?: 15));
+		$rc = I18n\t("The cache size does not exceed :cache_sizeMb.", [ 'cache_size' => $registry['thumbnailer.cache_size'] ?: 8 ]);
+		$rc .= ' ' . I18n\t("The cache is cleaned every :cleanup_interval minutes.", [ 'cleanup_interval' => $registry['thumbnailer.cleanup_interval'] ?: 15 ]);
 
 		return $rc;
 	}
 
 	protected function get_editor()
 	{
-		global $core;
+		$registry = \ICanBoogie\app()->registry;
 
-		$registry = $core->registry;
+		return new Form([
 
-		return new Form
-		(
-			array
-			(
-				Form::RENDERER => 'Simple',
-				Element::CHILDREN => array
-				(
-					'cache_size' => new Text
-					(
-						array
-						(
-							Form::LABEL => "Maximum cache size",
-							Text::ADDON => 'Mb',
+			Form::RENDERER => 'Simple',
+			Element::CHILDREN => [
 
-							'size' => 5,
-							'class' => 'measure',
-							'value' => $registry['thumbnailer.cache_size'] ?: 8
-						)
-					),
+				'cache_size' => new Text([
 
-					'cleanup_interval' => new Text
-					(
-						array
-						(
-							Form::LABEL => "Interval between cleanings",
-							Text::ADDON => 'minutes',
+					Form::LABEL => "Maximum cache size",
+					Text::ADDON => 'Mb',
 
-							'size' => 5,
-							'class' => 'measure',
-							'value' => $registry['thumbnailer.cleanup_interval'] ?: 15
-						)
-					),
+					'size' => 5,
+					'class' => 'measure',
+					'value' => $registry['thumbnailer.cache_size'] ?: 8
 
+				]),
 
-				),
+				'cleanup_interval' => new Text([
 
-				'class' => 'stacked'
-			)
-		);
+					Form::LABEL => "Interval between cleaning",
+					Text::ADDON => 'minutes',
+
+					'size' => 5,
+					'class' => 'measure',
+					'value' => $registry['thumbnailer.cleanup_interval'] ?: 15
+
+				]),
+			],
+
+			'class' => 'stacked'
+
+		]);
 	}
 
 	/**
@@ -119,14 +110,12 @@ class CacheManager extends \ICanBoogie\Object implements \Icybee\Modules\Cache\C
 	 */
 	protected function get_handler()
 	{
-		return new FileCache
-		(
-			array
-			(
-				FileCache::T_REPOSITORY => $this->path,
-				FileCache::T_REPOSITORY_SIZE => self::$config['repository_size'] * 1024
-			)
-		);
+		return new FileCache([
+
+			FileCache::T_REPOSITORY => $this->path,
+			FileCache::T_REPOSITORY_SIZE => self::$config['repository_size'] * 1024
+
+		]);
 	}
 
 	public function enable()
@@ -182,7 +171,7 @@ class CacheManager extends \ICanBoogie\Object implements \Icybee\Modules\Cache\C
 
 	public function config($params)
 	{
-		global $core;
+		$registry = \ICanBoogie\app()->registry;
 
 		if (!empty($params['cache_size']))
 		{
@@ -199,6 +188,6 @@ class CacheManager extends \ICanBoogie\Object implements \Icybee\Modules\Cache\C
 	{
 		$this->clean();
 
-		return call_user_func_array(array($this->handler, 'get'), func_get_args());
+		return call_user_func_array([ $this->handler, 'get' ], func_get_args());
 	}
 }

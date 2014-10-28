@@ -44,7 +44,7 @@ class Hooks
 			return;
 		}
 
-		$configs = array();
+		$configs = [];
 
 		foreach ($c as $version_name => $config)
 		{
@@ -63,38 +63,38 @@ class Hooks
 
 		$core->document->css->add(DIR . 'public/admin.css');
 
-		$children = array();
+		$children = [];
 
 		foreach ($configs as $version_name => $config)
 		{
 			list($defaults) = $config;
 
-			$config += array
-			(
+			$config += [
+
 				'description' => null
-			);
 
-			$children['global[thumbnailer.versions][' . $version_name . ']'] = new Widget\PopThumbnailVersion
-			(
-				array
-				(
-					Form::LABEL => new Element('span', array(Element::INNER_HTML => $config['title'] . '<br /><small>' . $version_name . '</small>')),
-					Element::DEFAULT_VALUE => $defaults,
-					Element::GROUP => 'thumbnailer',
-					Element::DESCRIPTION => $config['description'],
+			];
 
-					'value' => $core->registry["thumbnailer.verison.$version_name"]
-				)
-			);
+			$children['global[thumbnailer.versions][' . $version_name . ']'] = new Widget\PopThumbnailVersion([
+
+				Form::LABEL => new Element('span', [ Element::INNER_HTML => $config['title'] . '<br /><small>' . $version_name . '</small>' ]),
+				Element::DEFAULT_VALUE => $defaults,
+				Element::GROUP => 'thumbnailer',
+				Element::DESCRIPTION => $config['description'],
+
+				'value' => $core->registry["thumbnailer.verison.$version_name"]
+
+			]);
 		}
 
-		$event->attributes[Element::GROUPS]['thumbnailer'] = array
-		(
+		$event->attributes[Element::GROUPS]['thumbnailer'] = [
+
 			'title' => 'Miniatures',
 			'description' => "Ce groupe permet de configurer les différentes
 			versions de miniatures qu'il est possible d'utiliser pour
 			les entrées de ce module."
-		);
+
+		];
 
 		$event->children = array_merge($event->children, $children);
 	}

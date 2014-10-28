@@ -20,21 +20,19 @@
 		"source": "https://github.com/Icybee/module-thumbnailer"
 	},
 
-	"minimum-stability": "dev",
-
 	"require": {
 		"php": ">=5.4.0",
-		"icanboogie/module-installer": "*",
-		"icanboogie/event": "*",
-		"icanboogie/image": "*",
-		"brickrouge/brickrouge": "2.x",
-		"icybee/module-registry": "*"
+		"icanboogie/module-installer": "~1.2",
+		"icanboogie/event": "~1.2",
+		"icanboogie/image": "~0.0",
+		"brickrouge/brickrouge": "~2.1",
+		"icybee/module-registry": "~2.0"
 	},
 
 	"require-dev": {
-		"icanboogie/icanboogie": "2.x",
-		"icybee/core": "2.x",
-		"icybee/module-cache": "2.x"
+		"icanboogie/icanboogie": "~2.0",
+		"icybee/core": "~2.0",
+		"icybee/module-cache": "~2.0"
 	},
 
 	"suggest": {
@@ -47,6 +45,6 @@
 	},
 
 	"scripts": {
-		"post-autoload-dump": "ICanBoogie\\AutoConfig\\Generator::on_autoload_dump"
+		"post-autoload-dump": "ICanBoogie\\AutoConfig\\Hooks::on_autoload_dump"
 	}
 }

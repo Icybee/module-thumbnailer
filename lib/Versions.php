@@ -56,7 +56,7 @@ class Versions implements \ArrayAccess, \IteratorAggregate
 	 */
 	static private function collect(\ICanBoogie\Core $core)
 	{
-		$versions = array();
+		$versions = [];
 		$definitions = $core->registry
 		->select('SUBSTR(name, LENGTH("thumbnailer.versions.") + 1) as name, value')
 		->where('name LIKE ?', 'thumbnailer.versions.%')
@@ -82,7 +82,7 @@ class Versions implements \ArrayAccess, \IteratorAggregate
 	 *
 	 * @param array $versions
 	 */
-	public function __construct(array $versions=array())
+	public function __construct(array $versions=[])
 	{
 		foreach ($versions as $name => $version)
 		{

@@ -70,8 +70,8 @@ class Version implements ToArray
 	 *
 	 * @var array[string]mixed
 	 */
-	static public $defaults = array
-	(
+	static public $defaults = [
+
 		self::OPTION_BACKGROUND => null,
 		self::OPTION_DEFAULT => null,
 		self::OPTION_FILTER => null,
@@ -85,15 +85,16 @@ class Version implements ToArray
 		self::OPTION_QUALITY => 90,
 		self::OPTION_SRC => null,
 		self::OPTION_WIDTH => null
-	);
+
+	];
 
 	/**
 	 * Options shorthands.
 	 *
 	 * @var array[string]string
 	 */
-	static public $shorthands = array
-	(
+	static public $shorthands = [
+
 		'b'  => self::OPTION_BACKGROUND,
 		'd'  => self::OPTION_DEFAULT,
 		'ft' => self::OPTION_FILTER,
@@ -108,7 +109,8 @@ class Version implements ToArray
 		's'  => self::OPTION_SRC,
 		'v'  => 'version', // FIXME-20130507: remove this
 		'w'  => self::OPTION_WIDTH
-	);
+
+	];
 
 	/**
 	 * Returns version options extracted from the URI.

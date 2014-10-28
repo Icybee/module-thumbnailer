@@ -28,148 +28,120 @@ class AdjustThumbnailOptions extends Group
 		$document->js->add(DIR . 'public/module.js');
 	}
 
-	protected $elements = array();
+	protected $elements = [];
 
-	public function __construct(array $attributes=array())
+	public function __construct(array $attributes=[])
 	{
-		$versions = array(null => '<personnalisé>');
+		$versions = [ null => '<custom>' ];
 
-		parent::__construct
-		(
-			$attributes + array
-			(
-				self::CHILDREN => array
-				(
-					/*
-					'v' => $this->elements['v'] = new Element
-					(
-						'select', array
-						(
-							Element::OPTIONS => $versions
-						)
-					),
-					*/
+		parent::__construct($attributes + [
 
-					new Element
-					(
-						'div', array
-						(
-							Element::CHILDREN => array
-							(
-								'<span class="add-on">Size</span>',
+			self::CHILDREN => [
 
-								'width' => $this->elements['width'] = new Text
-								(
-									array
-									(
-										'class' => 'measure',
-										'size' => 5
-									)
-								),
+				new Element('div', [
 
-								'<span class="add-on">&times</span>',
+					Element::CHILDREN => [
 
-								'height' => $this->elements['height'] = new Text
-								(
-									array
-									(
-										'class' => 'measure',
-										'size' => 5
-									)
-								),
+						'<span class="add-on">Size</span>',
 
-								'<span class="add-on">px</span>',
-							),
+						'width' => $this->elements['width'] = new Text([
 
-							'class' => 'input-prepend input-append'
-						)
-					),
+							'class' => 'measure',
+							'size' => 5
 
-					'method' => $this->elements['method'] = new Element
-					(
-						'select', array
-						(
-							Form::LABEL => 'Méthode',
+						]),
 
-							Element::OPTIONS => array
-							(
-								Image::RESIZE_FILL => 'Remplir',
-								Image::RESIZE_FIT => 'Ajuster',
-								Image::RESIZE_SURFACE => 'Surface',
-								Image::RESIZE_FIXED_HEIGHT => 'Hauteur fixe, largeur ajustée',
-								Image::RESIZE_FIXED_HEIGHT_CROPPED => 'Hauteur fixe, largeur respectée',
-								Image::RESIZE_FIXED_WIDTH => 'Largeur fixe, hauteur ajustée',
-								Image::RESIZE_FIXED_WIDTH_CROPPED => 'Largeur fixe, hauteur respectée',
-								Image::RESIZE_CONSTRAINED => 'Contraindre'
-							)
-						)
-					),
+						'<span class="add-on">&times</span>',
 
-					new Element
-					(
-						'div', array
-						(
-							Group::LABEL => 'Format',
+						'height' => $this->elements['height'] = new Text([
 
-							Element::CHILDREN => array
-							(
-								'format' => $this->elements['format'] = new Element
-								(
-									'select', array
-									(
-										self::OPTIONS => array
-										(
-											null => 'Auto.',
-											'.jpeg' => 'JPEG',
-											'.png' => 'PNG',
-											'.gif' => 'GIF'
-										),
+							'class' => 'measure',
+							'size' => 5
 
-										'style' => 'width: auto;'
-									)
-								),
+						]),
 
-								'&nbsp;',
+						'<span class="add-on">px</span>',
+					],
 
-								'quality' => $this->elements['quality'] = new Text
-								(
-									array
-									(
-										Text::ADDON => 'Qualité',
-										Text::ADDON_POSITION => 'before',
-										self::DEFAULT_VALUE => Version::$defaults['quality'],
+					'class' => 'input-prepend input-append'
 
-										'class' => 'measure',
-										'size' => 3
-									)
-								)
-							),
+				]),
 
-							'class' => 'format-combo'
-						)
-					),
+				'method' => $this->elements['method'] = new Element('select', [
 
-					'background' => $this->elements['background'] = new Text
-					(
-						array
-						(
-							Group::LABEL => 'Remplissage'
-						)
-					),
+					Form::LABEL => 'Méthode',
 
-					'lightbox' => $this->elements['lightbox'] = new Element
-					(
-						Element::TYPE_CHECKBOX, array
-						(
-							Element::LABEL => "Afficher l'original en lightbox"
-						)
-					)
-				),
+					Element::OPTIONS => [
 
-				'class' => 'widget-adjust-thumbnail-options',
-				Element::WIDGET_CONSTRUCTOR => 'AdjustThumbnailOptions'
-			)
-		);
+						Image::RESIZE_FILL => 'Remplir',
+						Image::RESIZE_FIT => 'Ajuster',
+						Image::RESIZE_SURFACE => 'Surface',
+						Image::RESIZE_FIXED_HEIGHT => 'Hauteur fixe, largeur ajustée',
+						Image::RESIZE_FIXED_HEIGHT_CROPPED => 'Hauteur fixe, largeur respectée',
+						Image::RESIZE_FIXED_WIDTH => 'Largeur fixe, hauteur ajustée',
+						Image::RESIZE_FIXED_WIDTH_CROPPED => 'Largeur fixe, hauteur respectée',
+						Image::RESIZE_CONSTRAINED => 'Contraindre'
+
+					]
+				]),
+
+				new Element('div', [
+
+					Group::LABEL => 'Format',
+
+					Element::CHILDREN => [
+
+						'format' => $this->elements['format'] = new Element('select', [
+
+							self::OPTIONS => [
+
+								null => 'Auto.',
+								'.jpeg' => 'JPEG',
+								'.png' => 'PNG',
+								'.gif' => 'GIF'
+
+							],
+
+							'style' => 'width: auto;'
+
+						]),
+
+						'&nbsp;',
+
+						'quality' => $this->elements['quality'] = new Text([
+
+							Text::ADDON => 'Qualité',
+							Text::ADDON_POSITION => 'before',
+							self::DEFAULT_VALUE => Version::$defaults['quality'],
+
+							'class' => 'measure',
+							'size' => 3
+
+						])
+					],
+
+					'class' => 'format-combo'
+
+				]),
+
+				'background' => $this->elements['background'] = new Text([
+
+					Group::LABEL => 'Remplissage'
+
+
+				]),
+
+				'lightbox' => $this->elements['lightbox'] = new Element(Element::TYPE_CHECKBOX, [
+
+					Element::LABEL => "Afficher l'original en lightbox"
+
+				])
+			],
+
+			'class' => 'widget-adjust-thumbnail-options',
+			Element::WIDGET_CONSTRUCTOR => 'AdjustThumbnailOptions'
+
+		]);
 
 		$this->tag_name = 'div';
 	}

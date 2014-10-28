@@ -1,4 +1,4 @@
-# Thumbnailer [![Build Status](https://travis-ci.org/Icybee/module-thumbnailer.png?branch=2.1)](https://travis-ci.org/Icybee/module-thumbnailer)
+# Thumbnailer [![Build Status](https://travis-ci.org/Icybee/module-thumbnailer.png?branch=2.0)](https://travis-ci.org/Icybee/module-thumbnailer)
 
 The Thumbnailer module (`thumbnailer`) creates thumbnails from images and managed
 images using options or configured versions.
@@ -102,16 +102,10 @@ The package requires PHP 5.4 or later.
 
 ## Installation
 
-The recommended way to install this package is through [Composer](http://getcomposer.org/).
-Create a `composer.json` file and run `php composer.phar install` command to install it:
+The recommended way to install this package is through [Composer](http://getcomposer.org/):
 
-```json
-{
-	"minimum-stability": "dev",
-	"require": {
-		"icybee/module-thumbnailer": "2.1.x"
-	}
-}
+```
+$ composer require icybee/module-thumbnailer
 ```
 
 
@@ -123,7 +117,7 @@ Create a `composer.json` file and run `php composer.phar install` command to ins
 The package is [available on GitHub](https://github.com/Icybee/module-thumbnailer), its repository can
 be cloned with the following command line:
 
-	$ git clone git://github.com/Icybee/module-thumbnailer.git thumbnailer
+	$ git clone https://github.com/Icybee/module-thumbnailer.git thumbnailer
 
 
 
@@ -137,7 +131,7 @@ directory can later be cleaned with the `make clean` command.
 
 The package is continuously tested by [Travis CI](http://about.travis-ci.org/).
 
-[![Build Status](https://travis-ci.org/Icybee/module-thumbnailer.png?branch=2.1)](https://travis-ci.org/Icybee/module-thumbnailer)
+[![Build Status](https://travis-ci.org/Icybee/module-thumbnailer.png?branch=2.0)](https://travis-ci.org/Icybee/module-thumbnailer)
 
 
 
