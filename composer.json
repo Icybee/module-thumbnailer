@@ -41,7 +41,7 @@
 
 	"autoload": {
 		"psr-4": { "ICanBoogie\\Modules\\Thumbnailer\\": "lib" },
-		"classmap": [ "lib/PopThumbnailVersion.php" ]
+		"classmap": [ "lib/PopThumbnailVersion.php", "lib/AdjustThumbnailVersion.php" ]
 	},
 
 	"scripts": {
