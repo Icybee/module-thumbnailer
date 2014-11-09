@@ -15,20 +15,8 @@ use ICanBoogie\HTTP\Request;
 
 class GetOperationTests extends \PHPUnit_Framework_TestCase
 {
-	/**
-	 * @dataProvider provide_test_successful
-	 */
-	public function test_successful($uri, $expected_imagesize)
+	private function assert_successful_response($response, $expected_imagesize)
 	{
-		$request = Request::from([
-
-			'uri' => $uri
-
-		]);
-
-		$operation = new GetOperation;
-		$response = $operation($request);
-
 		$this->assertTrue($response->is_successful);
 
 		ob_start();
@@ -40,6 +28,29 @@ class GetOperationTests extends \PHPUnit_Framework_TestCase
 		$this->assertEquals($expected_imagesize[0], $imagesize[0]);
 		$this->assertEquals($expected_imagesize[1], $imagesize[1]);
 		$this->assertEquals('image/' . $expected_imagesize[2], $imagesize['mime']);
+	}
+
+	/**
+	 * @dataProvider provide_test_successful
+	 */
+	public function test_successful($uri, $expected_imagesize)
+	{
+		$request = Request::from($uri);
+		$operation = new GetOperation;
+		$response = $operation($request);
+
+		$this->assert_successful_response($response, $expected_imagesize);
+	}
+
+	/**
+	 * @dataProvider provide_test_successful
+	 */
+	public function test_successful_dispatch($uri, $expected_imagesize)
+	{
+		$request = Request::from($uri);
+		$response = $request();
+
+		$this->assert_successful_response($response, $expected_imagesize);
 	}
 
 	public function provide_test_successful()
@@ -69,6 +80,10 @@ class GetOperationTests extends \PHPUnit_Framework_TestCase
 			[ '/api/thumbnail/200x200.gif?src=' . urlencode('/cases/claire.png'), [ 200, 200, 'gif' ] ],
 			[ '/api/thumbnail/100x.gif?src=' . urlencode('/cases/claire.png'), [ 100, 100, 'gif' ] ],
 			[ '/api/thumbnail/x100.gif?src=' . urlencode('/cases/claire.png'), [ 100, 100, 'gif' ] ],
+
+			[ '/api/thumbnail/200x200/fit.gif?src=' . urlencode('/cases/claire.png'), [ 200, 200, 'gif' ] ],
+			[ '/api/thumbnail/100x/fit.gif?src=' . urlencode('/cases/claire.png'), [ 100, 100, 'gif' ] ],
+			[ '/api/thumbnail/x100/fit.gif?src=' . urlencode('/cases/claire.png'), [ 100, 100, 'gif' ] ],
 
 			[ '/api/thumbnail/200x200?f=gif&src=' . urlencode('/cases/claire.png'), [ 200, 200, 'gif' ] ],
 			[ '/api/thumbnail/100x?f=gif&src=' . urlencode('/cases/claire.png'), [ 100, 100, 'gif' ] ],
