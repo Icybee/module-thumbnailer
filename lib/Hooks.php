@@ -33,11 +33,11 @@ class Hooks
 	 */
 	static public function on_configblock_alter_children(Event $event, \Icybee\ConfigBlock $block)
 	{
-		global $core;
+		$app = \ICanBoogie\app();
 
 		$module_id = (string) $event->module->id;
 
-		$c = $core->configs->synthesize('thumbnailer', 'merge');
+		$c = $app->configs->synthesize('thumbnailer', 'merge');
 
 		if (!$c)
 		{
@@ -61,7 +61,7 @@ class Hooks
 			return;
 		}
 
-		$core->document->css->add(DIR . 'public/admin.css');
+		$app->document->css->add(DIR . 'public/admin.css');
 
 		$children = [];
 
@@ -82,7 +82,7 @@ class Hooks
 				Element::GROUP => 'thumbnailer',
 				Element::DESCRIPTION => $config['description'],
 
-				'value' => $core->registry["thumbnailer.verison.$version_name"]
+				'value' => $app->registry["thumbnailer.verison.$version_name"]
 
 			]);
 		}
@@ -106,14 +106,12 @@ class Hooks
 	 */
 	static public function before_configoperation_properties(\Icybee\ConfigOperation\BeforePropertiesEvent $event)
 	{
-		global $core;
-
 		if (empty($event->request->params['global']['thumbnailer.versions']))
 		{
 			return;
 		}
 
-		unset($core->vars['cached_thumbnailer_versions']);
+		unset(\ICanBoogie\app()->vars['cached_thumbnailer_versions']);
 	}
 
 	/**
@@ -124,8 +122,6 @@ class Hooks
 	 */
 	static public function on_cache_collection_collect(CacheCollection\CollectEvent $event, CacheCollection $collection)
 	{
-		global $core;
-
 		$event->collection['thumbnails'] = new CacheManager();
 	}
 }

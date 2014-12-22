@@ -39,13 +39,11 @@ class GetOperation extends Operation
 	 */
 	protected function resolve_version(Request $request)
 	{
-		global $core;
-
 		$version_name = $request['version'] ?: $request['v'];
 
 		if ($version_name)
 		{
-			$version = $core->thumbnailer_versions[$version_name];
+			$version = $this->app->thumbnailer_versions[$version_name];
 		}
 		else
 		{

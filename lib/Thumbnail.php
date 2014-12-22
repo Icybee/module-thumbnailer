@@ -281,8 +281,6 @@ class Thumbnail extends \ICanBoogie\Object
 
 	protected function get_version()
 	{
-		global $core;
-
 		if ($this->_version)
 		{
 			return $this->_version;
@@ -293,7 +291,7 @@ class Thumbnail extends \ICanBoogie\Object
 			return;
 		}
 
-		return $this->_version = $core->thumbnailer_versions[$this->version_name];
+		return $this->_version = \ICanBoogie\app()->thumbnailer_versions[$this->version_name];
 	}
 
 	/**

@@ -24,22 +24,22 @@ class Versions implements \ArrayAccess, \IteratorAggregate
 	 *
 	 * @param \ICanBoogie\Core $core
 	 */
-	static public function prototype_get_thumbnailer_versions(\ICanBoogie\Core $core)
+	static public function prototype_get_thumbnailer_versions(\ICanBoogie\Core $app)
 	{
 		if (CACHE_VERSIONS)
 		{
-			$versions = $core->vars['cached_thumbnailer_versions'];
+			$versions = $app->vars['cached_thumbnailer_versions'];
 
 			if (!$versions)
 			{
-				$versions = self::collect($core);
+				$versions = self::collect($app);
 
-				$core->vars['cached_thumbnailer_versions'] = $versions;
+				$app->vars['cached_thumbnailer_versions'] = $versions;
 			}
 		}
 		else
 		{
-			$versions = self::collect($core);
+			$versions = self::collect($app);
 		}
 
 		$instance = new static($versions);
@@ -54,10 +54,10 @@ class Versions implements \ArrayAccess, \IteratorAggregate
 	 *
 	 * @return array[string]array
 	 */
-	static private function collect(\ICanBoogie\Core $core)
+	static private function collect(\ICanBoogie\Core $app)
 	{
 		$versions = [];
-		$definitions = $core->registry
+		$definitions = $app->registry
 		->select('SUBSTR(name, LENGTH("thumbnailer.versions.") + 1) as name, value')
 		->where('name LIKE ?', 'thumbnailer.versions.%')
 		->pairs;
@@ -112,18 +112,18 @@ class Versions implements \ArrayAccess, \IteratorAggregate
 	 */
 	public function save_version($name, $version)
 	{
-		global $core;
+		$app = \ICanBoogie\app();
 
 		if (!($version instanceof Versions))
 		{
 			$version = new Version($version);
 		}
 
-		$core->registry["thumbnailer.versions.$name"] = (string) $version;
+		$app->registry["thumbnailer.versions.$name"] = (string) $version;
 
 		# revoke cache
 
-		unset($core->vars['cached_thumbnailer_versions']);
+		unset($app->vars['cached_thumbnailer_versions']);
 
 		return $version;
 	}

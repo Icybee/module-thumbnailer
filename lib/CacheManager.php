@@ -46,9 +46,7 @@ class CacheManager extends \ICanBoogie\Object implements \Icybee\Modules\Cache\C
 
 	protected function get_config_preview()
 	{
-		global $core;
-
-		$registry = $core->registry;
+		$registry = $this->app->registry;
 
 		$rc = I18n\t("The cache size does not exceed :cache_sizeMb.", [ 'cache_size' => $registry['thumbnailer.cache_size'] ?: 8 ]);
 		$rc .= ' ' . I18n\t("The cache is cleaned every :cleanup_interval minutes.", [ 'cleanup_interval' => $registry['thumbnailer.cleanup_interval'] ?: 15 ]);
@@ -58,7 +56,7 @@ class CacheManager extends \ICanBoogie\Object implements \Icybee\Modules\Cache\C
 
 	protected function get_editor()
 	{
-		$registry = \ICanBoogie\app()->registry;
+		$registry = $this->app->registry;
 
 		return new Form([
 
@@ -135,8 +133,6 @@ class CacheManager extends \ICanBoogie\Object implements \Icybee\Modules\Cache\C
 
 	public function clear()
 	{
-		global $core;
-
 		$files = glob(\ICanBoogie\REPOSITORY . 'thumbnailer/*');
 
 		foreach ($files as $file)
@@ -171,16 +167,16 @@ class CacheManager extends \ICanBoogie\Object implements \Icybee\Modules\Cache\C
 
 	public function config($params)
 	{
-		$registry = \ICanBoogie\app()->registry;
+		$registry = $this->app->registry;
 
 		if (!empty($params['cache_size']))
 		{
-			$core->registry['thumbnailer.cache_size'] = (int) $params['cache_size'];
+			$registry['thumbnailer.cache_size'] = (int) $params['cache_size'];
 		}
 
 		if (!empty($params['cleanup_interval']))
 		{
-			$core->registry['thumbnailer.cleanup_interval'] = (int) $params['cleanup_interval'];
+			$registry['thumbnailer.cleanup_interval'] = (int) $params['cleanup_interval'];
 		}
 	}
 
