@@ -543,7 +543,7 @@ class Version implements ToArray
 	/**
 	 * Returns the instance as an array.
 	 *
-	 * @param int $flags A bitmask of one or more of the following flags:
+	 * @param int $flags A bit mask of one or more of the following flags:
 	 * - {@link ARRAY_FILTER} The options are filtered with {@link filter()}.
 	 * - {@link ARRAY_SHORTEN} The options are shortened with {@link shorten()}.
 	 *

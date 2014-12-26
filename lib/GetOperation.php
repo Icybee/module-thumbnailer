@@ -15,12 +15,11 @@ use ICanBoogie\FileCache;
 use ICanBoogie\HTTP\HTTPError;
 use ICanBoogie\HTTP\NotFound;
 use ICanBoogie\HTTP\Request;
-use ICanBoogie\I18n;
 use ICanBoogie\Image;
 use ICanBoogie\Operation;
 
 /**
- * @property Modules\Thumbnailer $module
+ * @property Module $module
  * @property string $repository Path to the thumbnails repository.
  * @property FileCache $cache Thumbnails cache manager.
  */
@@ -35,7 +34,7 @@ class GetOperation extends Operation
 	 *
 	 * @param Request $request
 	 *
-	 * @return \ICanBoogie\Modules\Thumbnailer\Version
+	 * @return Version
 	 */
 	protected function resolve_version(Request $request)
 	{
@@ -66,8 +65,9 @@ class GetOperation extends Operation
 	 * The thumbnail is created using the parameters supplied, if it is not already available in
 	 * the cache.
 	 *
-	 * @param array $params
-	 * @throws HTTPError
+	 * @return string
+	 *
+	 * @throws NotFound
 	 */
 	public function get()
 	{
@@ -98,7 +98,7 @@ class GetOperation extends Operation
 
 			if (!$default)
 			{
-				throw new NotFound(I18n\t('Thumbnail source not found: %src', [ '%src' => $src ]));
+				throw new NotFound($this->format('Thumbnail source not found: %src', [ '%src' => $src ]));
 			}
 
 			$src = $path . $default;
@@ -106,7 +106,7 @@ class GetOperation extends Operation
 
 			if (!is_file($location))
 			{
-				throw new NotFound(I18n\t('Thumbnail source (default) not found: %src', [ '%src' => $src ]));
+				throw new NotFound($this->format('Thumbnail source (default) not found: %src', [ '%src' => $src ]));
 			}
 		}
 
@@ -145,6 +145,9 @@ class GetOperation extends Operation
 	 * @param string $destination The file to create.
 	 * @param array $userdata An array with the path of the original image and the options to use
 	 * to create the thumbnail.
+	 *
+	 * @return string
+	 *
 	 * @throws \Exception
 	 */
 	public function get_construct(FileCache $cache, $destination, $userdata)
@@ -164,7 +167,7 @@ class GetOperation extends Operation
 
 		if (!$image)
 		{
-			throw new \Exception(\ICanBoogie\format('Unable to load image from file %path', [ '%path' => $path ]));
+			throw new \Exception($this->format('Unable to load image from file %path', [ '%path' => $path ]));
 		}
 
 		#
@@ -206,7 +209,7 @@ class GetOperation extends Operation
 
 		if (!$image)
 		{
-			throw new \Exception(\ICanBoogie\format('Unable to resize image for file %path with version: !version', [
+			throw new \Exception($this->format('Unable to resize image for file %path with version: !version', [
 
 				'%path' => $path,
 				'!version' => $version
@@ -331,7 +334,7 @@ class GetOperation extends Operation
 
 		if (!$path)
 		{
-			throw new HTTPError(\ICanBoogie\format('Unable to create thumbnail for: %src', [ '%src' => $this->request['src'] ]), 404);
+			throw new HTTPError($this->format('Unable to create thumbnail for: %src', [ '%src' => $this->request['src'] ]), 404);
 		}
 
 		$request = $this->request;
@@ -434,6 +437,6 @@ class GetOperation extends Operation
 
 		$query = html_entity_decode($query);
 
-		$rc = parse_str($query, $this->request->params);
+		parse_str($query, $this->request->params);
 	}
 }

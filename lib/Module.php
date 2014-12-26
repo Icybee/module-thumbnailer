@@ -14,7 +14,7 @@ namespace ICanBoogie\Modules\Thumbnailer;
 use ICanBoogie\Errors;
 
 /**
- * @property string $repository Path to the thumbnails repository.
+ * @property-read string $repository Path to the thumbnails repository.
  */
 class Module extends \ICanBoogie\Module
 {
@@ -28,10 +28,12 @@ class Module extends \ICanBoogie\Module
 
 	/**
 	 * Creates the repository folder where generated thumbnails are saved.
+	 *
+	 * @inheritdoc
 	 */
 	public function install(Errors $errors)
 	{
-		$path = \ICanBoogie\REPOSITORY . 'thumbnailer' .  DIRECTORY_SEPARATOR;
+		$path = $this->repository;
 
 		if (!file_exists($path))
 		{
@@ -43,7 +45,11 @@ class Module extends \ICanBoogie\Module
 			}
 			else
 			{
-				$errors[$this->id] = $errors->format('Unable to create %directory directory, its parent is not writable', [ '%directory' => \ICanBoogie\strip_root($path) ]);
+				$errors[$this->id] = $errors->format('Unable to create %directory directory, its parent is not writable', [
+
+					'%directory' => \ICanBoogie\strip_root($path)
+
+				]);
 			}
 		}
 
@@ -52,14 +58,20 @@ class Module extends \ICanBoogie\Module
 
 	/**
 	 * Check if the repository folder has been created.
+	 *
+	 * @inheritdoc
 	 */
 	public function is_installed(Errors $errors)
 	{
-		$path = \ICanBoogie\REPOSITORY . 'thumbnailer';
+		$path = $this->repository;
 
 		if (!file_exists($path))
 		{
-			$errors[$this->id] = $errors->format('The %directory directory is missing.', [ '%directory' => \ICanBoogie\strip_root($path) ]);
+			$errors[$this->id] = $errors->format('The %directory directory is missing.', [
+
+				'%directory' => \ICanBoogie\strip_root($path)
+
+			]);
 		}
 
 		return !count($errors);

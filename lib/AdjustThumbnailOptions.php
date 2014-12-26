@@ -32,8 +32,6 @@ class AdjustThumbnailOptions extends Group
 
 	public function __construct(array $attributes=[])
 	{
-		$versions = [ null => '<custom>' ];
-
 		parent::__construct($attributes + [
 
 			self::CHILDREN => [

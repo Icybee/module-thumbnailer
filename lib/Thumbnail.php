@@ -42,20 +42,6 @@ use Brickrouge\Element;
 class Thumbnail extends \ICanBoogie\Object
 {
 	/**
-	 * Parameters that can be used to create a path.
-	 *
-	 * @var array
-	 */
-	static private $path_params = [
-
-		'width',
-		'height',
-		'method',
-		'format'
-
-	];
-
-	/**
 	 * The default values of the parameters that can be used to create a path.
 	 *
 	 * @var array
@@ -149,7 +135,7 @@ class Thumbnail extends \ICanBoogie\Object
 	/**
 	 * The source of the thumbnail.
 	 *
-	 * @var \ICanBoogie\ActiveRecord|int|string
+	 * @var mixed
 	 */
 	public $src;
 
@@ -170,15 +156,15 @@ class Thumbnail extends \ICanBoogie\Object
 	/**
 	 * Constructor.
 	 *
-	 * @param Icybee\Modules\Images\Image|int|string The source of the thumbnail.
+	 * @param mixed $src The source of the thumbnail.
 	 *
 	 * @param string|array $options The options to create the thumbnail can be provided as a
 	 * version name or an array of options. If a version name is provided, the `image` parameter
 	 * must also be provided.
 	 *
-	 * @param string|array $additionnal_options Additional options to create the thumbnail.
+	 * @param string|array $additional_options Additional options to create the thumbnail.
 	 */
-	public function __construct($src, $options=null, $additionnal_options=null)
+	public function __construct($src, $options=null, $additional_options=null)
 	{
 		if (is_string($options))
 		{
@@ -199,14 +185,14 @@ class Thumbnail extends \ICanBoogie\Object
 			$this->options = Version::normalize($options);
 		}
 
-		if ($additionnal_options)
+		if ($additional_options)
 		{
-			if (is_string($additionnal_options))
+			if (is_string($additional_options))
 			{
-				$additionnal_options = Version::unserialize($additionnal_options);
+				$additional_options = Version::unserialize($additional_options);
 			}
 
-			$this->options = $additionnal_options + $this->options;
+			$this->options = $additional_options + $this->options;
 		}
 
 		$this->src = $src;
@@ -214,6 +200,8 @@ class Thumbnail extends \ICanBoogie\Object
 
 	/**
 	 * Handles version options.
+	 *
+	 * @inheritdoc
 	 */
 	public function __get($property)
 	{
@@ -232,6 +220,8 @@ class Thumbnail extends \ICanBoogie\Object
 
 	/**
 	 * Handles version options.
+	 *
+	 * @inheritdoc
 	 */
 	public function __set($property, $value)
 	{
@@ -347,6 +337,8 @@ class Thumbnail extends \ICanBoogie\Object
 
 	/**
 	 * Returns the final size (width and height) of the thumbnail.
+	 *
+	 * @return array
 	 */
 	protected function get_final_size()
 	{

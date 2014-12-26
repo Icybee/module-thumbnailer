@@ -15,6 +15,8 @@ const CACHE_VERSIONS = true;
 
 class Versions implements \ArrayAccess, \IteratorAggregate
 {
+	const STORAGE_KEY = 'cached_thumbnailer_versions';
+
 	/**
 	 * Creates a {@link Versions} instance and initializes it with the defined versions.
 	 *
@@ -23,18 +25,18 @@ class Versions implements \ArrayAccess, \IteratorAggregate
 	 * to alter the instance.
 	 *
 	 * @param \ICanBoogie\Core $app
+	 *
+	 * @return Versions
 	 */
 	static public function prototype_get_thumbnailer_versions(\ICanBoogie\Core $app)
 	{
 		if (CACHE_VERSIONS)
 		{
-			$versions = $app->vars['cached_thumbnailer_versions'];
+			$versions = $app->vars[self::STORAGE_KEY];
 
 			if (!$versions)
 			{
-				$versions = self::collect($app);
-
-				$app->vars['cached_thumbnailer_versions'] = $versions;
+				$app->vars[self::STORAGE_KEY] = $versions = self::collect($app);
 			}
 		}
 		else
@@ -52,7 +54,9 @@ class Versions implements \ArrayAccess, \IteratorAggregate
 	/**
 	 * Collects versions.
 	 *
-	 * @return array[string]array
+	 * @param \ICanBoogie\Core $app
+	 *
+	 * @return array [string]array
 	 */
 	static private function collect(\ICanBoogie\Core $app)
 	{
@@ -123,13 +127,17 @@ class Versions implements \ArrayAccess, \IteratorAggregate
 
 		# revoke cache
 
-		unset($app->vars['cached_thumbnailer_versions']);
+		unset($app->vars[self::STORAGE_KEY]);
 
 		return $version;
 	}
 
 	/**
 	 * Checks if a version exists.
+	 *
+	 * @param string $version The name of the version.
+	 *
+	 * @return bool `true` if the version exists, `false` otherwise.
 	 */
 	public function offsetExists($version)
 	{
@@ -138,6 +146,10 @@ class Versions implements \ArrayAccess, \IteratorAggregate
 
 	/**
 	 * Returns the definition of a version.
+	 *
+	 * @param string $version The name of the version.
+	 *
+	 * @return Version
 	 *
 	 * @throws VersionNotDefined in attempt to get a version that is not defined.
 	 */
@@ -162,8 +174,8 @@ class Versions implements \ArrayAccess, \IteratorAggregate
 	/**
 	 * Sets a version.
 	 *
-	 * @param string $version Name of the version
-	 * @param array[string]mixed Options of the version.
+	 * @param string $version The name of the version
+	 * @param array $options Options of the version.
 	 */
 	public function offsetSet($version, $options)
 	{
@@ -172,6 +184,8 @@ class Versions implements \ArrayAccess, \IteratorAggregate
 
 	/**
 	 * Deletes a version.
+	 *
+	 * @param string $version The name of the version.
 	 */
 	public function offsetUnset($version)
 	{

@@ -29,9 +29,12 @@ class Hooks
 	 * {@link PopThumbnailVersion} elements to the config block if image versions are defined for
 	 * the module.
 	 *
-	 * @param Event $ev
+	 * @param \Icybee\FormBlock\AlterChildrenEvent $event
+	 * @param \Icybee\ConfigBlock $block
+	 *
+	 * @internal param Event $ev
 	 */
-	static public function on_configblock_alter_children(Event $event, \Icybee\ConfigBlock $block)
+	static public function on_configblock_alter_children(\Icybee\FormBlock\AlterChildrenEvent $event, \Icybee\ConfigBlock $block)
 	{
 		$app = \ICanBoogie\app();
 
