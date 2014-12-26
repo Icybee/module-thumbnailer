@@ -17,9 +17,7 @@ class RoutesTests extends \PHPUnit_Framework_TestCase
 
 	static public function setupBeforeClass()
 	{
-		global $core;
-
-		self::$routes = $core->routes;
+		self::$routes = \ICanBoogie\app()->routes;
 	}
 
 	/**

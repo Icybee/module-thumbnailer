@@ -17,9 +17,7 @@ class ThumbnailTest extends \PHPUnit_Framework_TestCase
 
 	static public function setupBeforeClass()
 	{
-		global $core;
-
-		$core->thumbnailer_versions['icon'] = [
+		\ICanBoogie\app()->thumbnailer_versions['icon'] = [
 
 			'w' => 64,
 			'h' => 64,
@@ -32,9 +30,7 @@ class ThumbnailTest extends \PHPUnit_Framework_TestCase
 
 	static public function tearDownAfterClass()
 	{
-		global $core;
-
-		unset($core->thumbnailer_versions['icon']);
+		unset(\ICanBoogie\app()->thumbnailer_versions['icon']);
 	}
 
 	/**

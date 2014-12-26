@@ -22,7 +22,7 @@ class Versions implements \ArrayAccess, \IteratorAggregate
 	 * {@link ICanBoogie\Modules\Thumbnailer\Versions\AlterEvent} is fired to allow third parties
 	 * to alter the instance.
 	 *
-	 * @param \ICanBoogie\Core $core
+	 * @param \ICanBoogie\Core $app
 	 */
 	static public function prototype_get_thumbnailer_versions(\ICanBoogie\Core $app)
 	{

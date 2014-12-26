@@ -17,9 +17,7 @@ require __DIR__ . '/../vendor/autoload.php';
 # Create the _core_ instance used for the tests.
 #
 
-global $core;
-
-$core = new \ICanBoogie\Core(\ICanBoogie\array_merge_recursive(\ICanBoogie\get_autoconfig(), [
+$app = new \ICanBoogie\Core(\ICanBoogie\array_merge_recursive(\ICanBoogie\get_autoconfig(), [
 
 	'config-path' => [
 
@@ -35,13 +33,13 @@ $core = new \ICanBoogie\Core(\ICanBoogie\array_merge_recursive(\ICanBoogie\get_a
 
 ]));
 
-$core->boot();
+$app->boot();
 
 #
 # Install modules
 #
 
-$errors = $core->modules->install(new \ICanBoogie\Errors);
+$errors = $app->modules->install(new \ICanBoogie\Errors);
 
 if ($errors->count())
 {
