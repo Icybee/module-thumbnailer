@@ -22,6 +22,7 @@
 
 	"require": {
 		"php": ">=5.4.0",
+		"ext-gd": "*",
 		"icanboogie/module-installer": "~1.2",
 		"icanboogie/event": "~1.2",
 		"icanboogie/image": "~0.0",
