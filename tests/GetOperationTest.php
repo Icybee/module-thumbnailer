@@ -17,10 +17,12 @@ class GetOperationTests extends \PHPUnit_Framework_TestCase
 {
 	private function assert_successful_response($response, $expected_imagesize)
 	{
-		$this->assertTrue($response->is_successful);
+		$rc = $response->rc;
+		$this->assertTrue($response->status->is_successful);
+		$this->assertInstanceOf('Closure', $rc);
 
 		ob_start();
-		$response->rc();
+		$rc();
 		$imagefile = ob_get_clean();
 
 		$imagesize = getimagesizefromstring($imagefile);

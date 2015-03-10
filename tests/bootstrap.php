@@ -1,5 +1,7 @@
 <?php
 
+namespace ICanBoogie;
+
 /*
  * This file is part of the ICanBoogie package.
  *
@@ -17,7 +19,7 @@ require __DIR__ . '/../vendor/autoload.php';
 # Create the _core_ instance used for the tests.
 #
 
-$app = new \ICanBoogie\Core(\ICanBoogie\array_merge_recursive(\ICanBoogie\get_autoconfig(), [
+$app = new Core(array_merge_recursive(get_autoconfig(), [
 
 	'config-path' => [
 
@@ -39,7 +41,7 @@ $app->boot();
 # Install modules
 #
 
-$errors = $app->modules->install(new \ICanBoogie\Errors);
+$errors = $app->modules->install(new Errors);
 
 if ($errors->count())
 {
