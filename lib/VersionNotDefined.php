@@ -11,6 +11,8 @@
 
 namespace ICanBoogie\Modules\Thumbnailer;
 
+use ICanBoogie\Accessor\AccessorTrait;
+
 /**
  * Exception thrown when a thumbnail version is not defined.
  *
@@ -18,7 +20,7 @@ namespace ICanBoogie\Modules\Thumbnailer;
  */
 class VersionNotDefined extends \InvalidArgumentException
 {
-	use \ICanBoogie\GetterTrait;
+	use AccessorTrait;
 
 	private $version;
 

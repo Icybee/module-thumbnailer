@@ -1,11 +1,7 @@
-.buildpath
 composer.lock
 docs
 node_modules
-.project
 public/module-uncompressed.css
 public/module-uncompressed.js
-.README.md.html
-.settings
 tests/repository
 vendor

@@ -27,7 +27,8 @@
 		"icanboogie/event": "~1.2",
 		"icanboogie/image": "~0.0",
 		"brickrouge/brickrouge": "~2.1",
-		"icybee/module-registry": "~2.0"
+		"icybee/module-registry": "~2.0",
+		"olvlvl/filecache": "dev-master"
 	},
 
 	"require-dev": {

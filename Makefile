@@ -49,13 +49,13 @@ testjs:
 	@node_modules/mocha/bin/mocha tests/*.js
 
 vendor:
-	@composer install --dev
+	@composer install
 
 node_modules:
 	sudo npm install mocha chai mootools
 
 update:
-	@composer update --dev
+	@composer update
 
 autoload:
 	@composer dump-autoload
