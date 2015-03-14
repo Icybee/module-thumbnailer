@@ -13,7 +13,7 @@ with the `thumbnail_versions` lazy getter.
 
 namespace ICanBoogie\Modules\Thumbnailer;
 
-$versions = $core->thumbnailer_versions;
+$versions = $app->thumbnailer_versions;
 $versions['popover'] = [ 'width' => 420, 'height' => 340 ];
 # or
 $versions['popover'] = 'w:420;h:340';
