@@ -20,22 +20,24 @@
 		"source": "https://github.com/Icybee/module-thumbnailer"
 	},
 
+	"minimum-stability": "dev",
+
 	"require": {
-		"php": ">=5.4.0",
+		"php": ">=5.5.0",
 		"ext-gd": "*",
-		"icanboogie/module-installer": "~1.2.3",
-		"icanboogie/event": "~1.3.1",
-		"icanboogie/image": "~0.0.2",
-		"brickrouge/brickrouge": "~2.1.4",
-		"icybee/module-registry": "~2.0.0",
+		"icanboogie/module-installer": "^1.2.3",
+		"icanboogie/event": "^1.4.0",
+		"icanboogie/image": "^0.0.2",
+		"brickrouge/brickrouge": "^2.1.4",
+		"icybee/module-registry": "^2.0.0",
 		"olvlvl/filecache": "dev-master"
 	},
 
 	"require-dev": {
-		"icanboogie/icanboogie": "~2.3.0",
-		"icanboogie/bind-activerecord": "~0.2.1",
-		"icybee/core": "~2.0.0",
-		"icybee/module-cache": "~2.0.1"
+		"icanboogie/icanboogie": "^2.4.0",
+		"icanboogie/bind-activerecord": "^0.3.0",
+		"icybee/core": "^2.1.0",
+		"icybee/module-cache": "^2.1.0"
 	},
 
 	"suggest": {

@@ -35,6 +35,8 @@ $app = new Core(array_merge_recursive(get_autoconfig(), [
 
 ]));
 
+$app->locale = 'en';
+
 $app->boot();
 
 #
@@ -47,7 +49,8 @@ if ($errors->count())
 {
 	foreach ($errors as $module_id => $error)
 	{
-		echo "[$module_id] $error\n";
+		echo "from $module_id:\n";
+		echo $error . PHP_EOL;
 	}
 
 	exit(1);

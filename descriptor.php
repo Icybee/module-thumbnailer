@@ -7,14 +7,11 @@ use ICanBoogie\Module\Descriptor;
 return [
 
 	Descriptor::CATEGORY => 'features',
-	Descriptor::TITLE => 'Thumbnailer',
-	Descriptor::DESCRIPTION => 'Create thumbnails on the fly',
+	Descriptor::TITLE => "Thumbnailer",
+	Descriptor::DESCRIPTION => "Create thumbnails on the fly",
 	Descriptor::ID => 'thumbnailer',
 	Descriptor::NS => __NAMESPACE__,
 	Descriptor::PERMISSION => false,
-	Descriptor::REQUIRES => [
+	Descriptor::REQUIRES => [ 'registry' ]
 
-		"registry" => "1.x"
-
-	]
 ];
