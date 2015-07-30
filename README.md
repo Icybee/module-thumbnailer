@@ -43,7 +43,7 @@ echo $thumbnail->url; // /api/thumbnail/64x64/fill.png&s=%2Fimages%2Fmadonna.jpe
 
 
 
-### `ICanBoogie\Modules\System\Cache\Collection::alter`
+### `ICanBoogie\Modules\System\Cache\CacheCollection::alter`
 
 Adds our cache manager to the cache collection.
 

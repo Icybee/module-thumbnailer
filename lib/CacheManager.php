@@ -13,17 +13,21 @@ namespace ICanBoogie\Modules\Thumbnailer;
 
 use ICanBoogie\FileCache;
 use ICanBoogie\I18n;
+use ICanBoogie\Object;
 
 use Brickrouge\Element;
 use Brickrouge\Form;
 use Brickrouge\Text;
+
+use Icybee\Modules\Cache\CacheManagerInterface;
+use Icybee\Modules\Cache\Module as CacheModule;
 
 /**
  * Manages cache for thumbnails.
  *
  * The cache is always active.
  */
-class CacheManager extends \ICanBoogie\Object implements \Icybee\Modules\Cache\CacheManagerInterface
+class CacheManager extends Object implements CacheManagerInterface
 {
 	public $title = "Thumbnails";
 	public $description = "Thumbnails created on the fly by the <q>Thumbnailer</q> module.";
@@ -128,7 +132,7 @@ class CacheManager extends \ICanBoogie\Object implements \Icybee\Modules\Cache\C
 
 	public function stat()
 	{
-		return \Icybee\Modules\Cache\Module::get_files_stat(\ICanBoogie\REPOSITORY . 'thumbnailer');
+		return CacheModule::get_files_stat(\ICanBoogie\REPOSITORY . 'thumbnailer');
 	}
 
 	public function clear()

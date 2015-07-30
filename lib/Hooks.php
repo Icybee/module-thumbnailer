@@ -19,7 +19,7 @@ use Brickrouge\Element;
 use Brickrouge\Form;
 use Brickrouge\Widget;
 
-use Icybee\Modules\Cache\Collection as CacheCollection;
+use Icybee\Modules\Cache\CacheCollection as CacheCollection;
 use Icybee\Modules\Images\Image as ImageActiveRecord;
 
 class Hooks
