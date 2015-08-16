@@ -125,6 +125,6 @@ class Hooks
 	 */
 	static public function on_cache_collection_collect(CacheCollection\CollectEvent $event, CacheCollection $collection)
 	{
-		$event->collection['thumbnails'] = new CacheManager();
+		$event->collection['thumbnails'] = new ThumbnailCacheManager;
 	}
 }

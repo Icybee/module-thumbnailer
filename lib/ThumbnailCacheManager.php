@@ -19,15 +19,17 @@ use Brickrouge\Element;
 use Brickrouge\Form;
 use Brickrouge\Text;
 
-use Icybee\Modules\Cache\CacheManagerInterface;
+use Icybee\Modules\Cache\CacheManager;
 use Icybee\Modules\Cache\Module as CacheModule;
 
 /**
  * Manages cache for thumbnails.
  *
  * The cache is always active.
+ *
+ * @property-read \ICanBoogie\Core|\Icybee\Binding\CoreBindings $app
  */
-class CacheManager extends Object implements CacheManagerInterface
+class ThumbnailCacheManager extends Object implements CacheManager
 {
 	public $title = "Thumbnails";
 	public $description = "Thumbnails created on the fly by the <q>Thumbnailer</q> module.";
@@ -50,10 +52,11 @@ class CacheManager extends Object implements CacheManagerInterface
 
 	protected function get_config_preview()
 	{
-		$registry = $this->app->registry;
+		$app = $this->app;
+		$registry = $app->registry;
 
-		$rc = I18n\t("The cache size does not exceed :cache_sizeMb.", [ 'cache_size' => $registry['thumbnailer.cache_size'] ?: 8 ]);
-		$rc .= ' ' . I18n\t("The cache is cleaned every :cleanup_interval minutes.", [ 'cleanup_interval' => $registry['thumbnailer.cleanup_interval'] ?: 15 ]);
+		$rc = $app->translate("The cache size does not exceed :cache_sizeMb.", [ 'cache_size' => $registry['thumbnailer.cache_size'] ?: 8 ]);
+		$rc .= ' ' . $app->translate("The cache is cleaned every :cleanup_interval minutes.", [ 'cleanup_interval' => $registry['thumbnailer.cleanup_interval'] ?: 15 ]);
 
 		return $rc;
 	}

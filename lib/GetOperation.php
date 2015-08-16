@@ -12,11 +12,11 @@
 namespace ICanBoogie\Modules\Thumbnailer;
 
 use ICanBoogie\FileCache;
-use ICanBoogie\HTTP\HTTPError;
 use ICanBoogie\HTTP\NotFound;
 use ICanBoogie\HTTP\Request;
 use ICanBoogie\Image;
 use ICanBoogie\Operation;
+use Icybee\Binding\PrototypeBindings;
 
 /**
  * @property Module $module
@@ -25,6 +25,8 @@ use ICanBoogie\Operation;
  */
 class GetOperation extends Operation
 {
+	use PrototypeBindings;
+
 	const VERSION = '2.1';
 
 	static public $background;
@@ -321,10 +323,7 @@ class GetOperation extends Operation
 	 * The function uses the {@link get()} method to obtain the location of the image version.
 	 * A HTTP redirection is made to the location of the image.
 	 *
-	 * A HTTPException exception with code 404 is thrown if the function fails to obtain the
-	 * location of the image version.
-	 *
-	 * @throws HTTPError
+	 * @throws NotFound when the method fails to obtain the location of the image version.
 	 */
 	protected function process()
 	{
@@ -334,7 +333,7 @@ class GetOperation extends Operation
 
 		if (!$path)
 		{
-			throw new HTTPError($this->format('Unable to create thumbnail for: %src', [ '%src' => $this->request['src'] ]), 404);
+			throw new NotFound($this->format('Unable to create thumbnail for: %src', [ '%src' => $this->request['src'] ]));
 		}
 
 		$request = $this->request;

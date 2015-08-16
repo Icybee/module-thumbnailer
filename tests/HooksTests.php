@@ -15,6 +15,6 @@ class HooksTests extends \PHPUnit_Framework_TestCase
 {
 	public function test_core_thumbnails_version()
 	{
-		$this->assertIntanceOf('ICanBoogie\Modules\Thumbnailer\Versions', \ICanBoogie\app()->thumbnailer_versions);
+		$this->assertInstanceOf(Versions::class, \ICanBoogie\app()->thumbnailer_versions);
 	}
 }
