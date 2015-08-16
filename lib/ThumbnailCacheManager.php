@@ -28,6 +28,7 @@ use Icybee\Modules\Cache\Module as CacheModule;
  * The cache is always active.
  *
  * @property-read \ICanBoogie\Core|\Icybee\Binding\CoreBindings $app
+ * @property-read FileCache $handler
  */
 class ThumbnailCacheManager extends Object implements CacheManager
 {
@@ -187,7 +188,7 @@ class ThumbnailCacheManager extends Object implements CacheManager
 		}
 	}
 
-	public function retrieve($key, array $callback, array $userdata)
+	public function retrieve($key, callable $callback, array $userdata = null)
 	{
 		$this->clean();
 
