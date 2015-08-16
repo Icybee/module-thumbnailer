@@ -11,12 +11,13 @@
 
 namespace ICanBoogie\Modules\Thumbnailer;
 
+use ICanBoogie\DateTime;
 use ICanBoogie\FileCache;
 use ICanBoogie\HTTP\NotFound;
 use ICanBoogie\HTTP\Request;
 use ICanBoogie\Image;
 use ICanBoogie\Operation;
-use Icybee\Binding\PrototypeBindings;
+use Icybee\Binding\ObjectBindings;
 
 /**
  * @property Module $module
@@ -25,7 +26,7 @@ use Icybee\Binding\PrototypeBindings;
  */
 class GetOperation extends Operation
 {
-	use PrototypeBindings;
+	use ObjectBindings;
 
 	const VERSION = '2.1';
 
@@ -189,6 +190,7 @@ class GetOperation extends Operation
 
 		if ($request->cache_control->cacheable != 'no-cache')
 		{
+			/* @var $if_modified_since DateTime */
 			$if_none_match = $request->headers['If-None-Match'];
 			$if_modified_since = $request->headers['If-Modified-Since'];
 

@@ -2,6 +2,8 @@
 
 namespace ICanBoogie;
 
+use ICanBoogie\Binding;
+
 /*
  * This file is part of the ICanBoogie package.
  *
@@ -18,6 +20,8 @@ require __DIR__ . '/../vendor/autoload.php';
 #
 # Create the _core_ instance used for the tests.
 #
+
+/* @var $app Core|Binding\CLDR\CoreBindings|\ICanBoogie\Module\CoreBindings */
 
 $app = new Core(array_merge_recursive(get_autoconfig(), [
 
