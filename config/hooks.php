@@ -15,12 +15,6 @@ return [
 		Icybee\ConfigOperation::class . '::properties:before' => $hooks . 'before_configoperation_properties',
 		Icybee\Modules\Cache\CacheCollection::class . '::collect' => $hooks . 'on_cache_collection_collect'
 
-	],
-
-	'prototypes' => [
-
-		ICanBoogie\Core::class . '::lazy_get_thumbnailer_versions' => Versions::class . '::prototype_get_thumbnailer_versions'
-
 	]
 
 ];
