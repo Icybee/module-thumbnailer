@@ -11,8 +11,13 @@
 
 namespace ICanBoogie\Modules\Thumbnailer;
 
+use ICanBoogie\Routing\RouteCollection;
+
 class RoutesTests extends \PHPUnit_Framework_TestCase
 {
+	/**
+	 * @var RouteCollection
+	 */
 	static private $routes;
 
 	static public function setupBeforeClass()
@@ -22,6 +27,9 @@ class RoutesTests extends \PHPUnit_Framework_TestCase
 
 	/**
 	 * @dataProvider provider_test_route
+	 *
+	 * @param string $expected
+	 * @param string $uri
 	 */
 	public function test_route($expected, $uri)
 	{
