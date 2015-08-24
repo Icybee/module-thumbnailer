@@ -11,6 +11,8 @@
 
 namespace ICanBoogie\Modules\Thumbnailer;
 
+use ICanBoogie\Accessor\AccessorTrait;
+
 use Brickrouge\Element;
 
 /**
@@ -39,8 +41,10 @@ use Brickrouge\Element;
  * @property-read string $url_base The base to build the URL of the thumbnail.
  * @property-read array $final_size The final size (width and height) of the thumbnail.
  */
-class Thumbnail extends \ICanBoogie\Prototyped
+class Thumbnail
 {
+	use AccessorTrait;
+
 	/**
 	 * The default values of the parameters that can be used to create a path.
 	 *

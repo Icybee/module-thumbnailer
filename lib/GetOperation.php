@@ -17,7 +17,7 @@ use ICanBoogie\HTTP\NotFound;
 use ICanBoogie\HTTP\Request;
 use ICanBoogie\Image;
 use ICanBoogie\Operation;
-use Icybee\Binding\ObjectBindings;
+use ICanBoogie\Binding\ObjectBindings;
 
 /**
  * @property Module $module
