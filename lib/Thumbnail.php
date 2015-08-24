@@ -12,6 +12,7 @@
 namespace ICanBoogie\Modules\Thumbnailer;
 
 use ICanBoogie\Accessor\AccessorTrait;
+use ICanBoogie\Image;
 
 use Brickrouge\Element;
 
@@ -84,7 +85,7 @@ class Thumbnail
 
 		if (!$w && !$h)
 		{
-			return;
+			return null;
 		}
 
 		$m = $options['method'];
@@ -219,7 +220,7 @@ class Thumbnail
 			return $this->get_option($property);
 		}
 
-		return parent::__get($property);
+		return $this->accessor_get($property);
 	}
 
 	/**
@@ -241,7 +242,7 @@ class Thumbnail
 			return;
 		}
 
-		parent::__set($property, $value);
+		$this->accessor_set($property, $value);
 	}
 
 	private function get_option($property)
@@ -253,7 +254,7 @@ class Thumbnail
 
 		if (!$this->version)
 		{
-			return;
+			return null;
 		}
 
 		return $this->version->$property;
@@ -282,7 +283,7 @@ class Thumbnail
 
 		if (!$this->version_name)
 		{
-			return;
+			return null;
 		}
 
 		return $this->_version = \ICanBoogie\app()->thumbnailer_versions[$this->version_name];
@@ -352,7 +353,7 @@ class Thumbnail
 
 		if (is_string($src))
 		{
-			list($w, $h) = \ICanBoogie\Image::compute_final_size($w, $h, $this->method, \ICanBoogie\DOCUMENT_ROOT . $src);
+			list($w, $h) = Image::compute_final_size($w, $h, $this->method, \ICanBoogie\DOCUMENT_ROOT . $src);
 		}
 
 		return [ $w , $h ];
@@ -366,7 +367,7 @@ class Thumbnail
 	 *
 	 * @param array $attributes Additional attributes to create the {@link Element} instance.
 	 *
-	 * @return \Brickrouge\Element
+	 * @return Element
 	 */
 	public function to_element(array $attributes=[])
 	{
