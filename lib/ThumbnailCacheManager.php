@@ -13,7 +13,7 @@ namespace ICanBoogie\Modules\Thumbnailer;
 
 use ICanBoogie\FileCache;
 use ICanBoogie\I18n;
-use ICanBoogie\Object;
+use ICanBoogie\Prototyped;
 
 use Brickrouge\Element;
 use Brickrouge\Form;
@@ -30,7 +30,7 @@ use Icybee\Modules\Cache\Module as CacheModule;
  * @property-read \ICanBoogie\Core|\Icybee\Binding\CoreBindings $app
  * @property-read FileCache $handler
  */
-class ThumbnailCacheManager extends Object implements CacheManager
+class ThumbnailCacheManager extends Prototyped implements CacheManager
 {
 	public $title = "Thumbnails";
 	public $description = "Thumbnails created on the fly by the <q>Thumbnailer</q> module.";

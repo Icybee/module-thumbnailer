@@ -39,7 +39,7 @@ use Brickrouge\Element;
  * @property-read string $url_base The base to build the URL of the thumbnail.
  * @property-read array $final_size The final size (width and height) of the thumbnail.
  */
-class Thumbnail extends \ICanBoogie\Object
+class Thumbnail extends \ICanBoogie\Prototyped
 {
 	/**
 	 * The default values of the parameters that can be used to create a path.
