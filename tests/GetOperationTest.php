@@ -12,6 +12,7 @@
 namespace ICanBoogie\Modules\Thumbnailer;
 
 use ICanBoogie\HTTP\Request;
+use ICanBoogie\Modules\Thumbnailer\Operation\GetOperation;
 
 class GetOperationTests extends \PHPUnit_Framework_TestCase
 {

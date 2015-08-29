@@ -9,13 +9,18 @@
  * file that was distributed with this source code.
  */
 
-namespace ICanBoogie\Modules\Thumbnailer;
+namespace ICanBoogie\Modules\Thumbnailer\Operation;
 
 use ICanBoogie\DateTime;
+use ICanBoogie\Errors;
 use ICanBoogie\FileCache;
 use ICanBoogie\HTTP\NotFound;
 use ICanBoogie\HTTP\Request;
 use ICanBoogie\Image;
+use ICanBoogie\Modules\Thumbnailer\CreateThumbnail;
+use ICanBoogie\Modules\Thumbnailer\Module;
+use ICanBoogie\Modules\Thumbnailer\ThumbnailCacheManager;
+use ICanBoogie\Modules\Thumbnailer\Version;
 use ICanBoogie\Operation;
 use ICanBoogie\Binding\ObjectBindings;
 
@@ -146,7 +151,7 @@ class GetOperation extends Operation
 			});
 	}
 
-	protected function validate(\ICanBoogie\Errors $errors)
+	protected function validate(Errors $errors)
 	{
 		return true;
 	}

@@ -60,7 +60,7 @@ Adds a _thumbnails_ section to the config block of modules defining thumbnail ve
 
 
 
-### `Icybee\ConfigOperation::properties:before`
+### `Icybee\Operation\Module\ConfigOperation::properties:before`
 
 Pre-parses defined thumbnail versions before the config is saved.
 

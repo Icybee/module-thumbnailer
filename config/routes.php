@@ -3,6 +3,7 @@
 namespace ICanBoogie\Modules\Thumbnailer;
 
 use ICanBoogie\HTTP\Request;
+use ICanBoogie\Modules\Thumbnailer\Operation\GetOperation;
 
 return [
 

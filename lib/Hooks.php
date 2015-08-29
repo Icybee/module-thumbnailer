@@ -105,9 +105,9 @@ class Hooks
 	/**
 	 * Clears the versions cache.
 	 *
-	 * @param \Icybee\ConfigOperation\BeforePropertiesEvent $event
+	 * @param \Icybee\Operation\Module\ConfigOperation\BeforePropertiesEvent $event
 	 */
-	static public function before_configoperation_properties(\Icybee\ConfigOperation\BeforePropertiesEvent $event)
+	static public function before_configoperation_properties(\Icybee\Operation\Module\ConfigOperation\BeforePropertiesEvent $event)
 	{
 		if (empty($event->request->params['global']['thumbnailer.versions']))
 		{
