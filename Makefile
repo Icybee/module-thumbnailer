@@ -1,7 +1,8 @@
 # customization
 
-PACKAGE_NAME = "ICanBoogie/Modules/Thumbnailer"
+PACKAGE_NAME = icanboogie/module-thumbnailer
 PACKAGE_VERSION = 3.0.0
+COMPOSER_ENV = COMPOSER_ROOT_VERSION=$(PACKAGE_VERSION)
 
 # do not edit the following lines
 
@@ -41,42 +42,39 @@ $(CSS_COMPRESSED): $(CSS_UNCOMPRESSED)
 $(CSS_UNCOMPRESSED): $(CSS_FILES)
 	cat $^ >$@
 
-test: vendor node_modules testphp testjs
-
-testphp:
-	@phpunit
-
-testjs:
-	@node_modules/mocha/bin/mocha tests/*.js
-
 vendor:
-	@composer install
-
-node_modules:
-	sudo npm install mocha chai mootools
+	@$(COMPOSER_ENV) composer install
 
 update:
-	@composer update
+	@$(COMPOSER_ENV) composer update
 
-autoload:
-	@composer dump-autoload
+autoload: vendor
+	@$(COMPOSER_ENV) composer dump-autoload
+
+test: vendor node_modules test-php test-js
+
+test-php:
+	@phpunit
+
+test-js:
+	@node_modules/mocha/bin/mocha tests/*.js
+
+test-coverage: vendor
+	@mkdir -p build/coverage
+	@phpunit --coverage-html build/coverage
 
 doc: vendor
-	@mkdir -p "docs"
-
-	@apigen \
-	--source ./ \
-	--destination docs/ --title $(PACKAGE_NAME) \
-	--exclude "*/tests/*" \
-	--exclude "*/composer/*" \
-	--template-config /usr/share/php/data/ApiGen/templates/bootstrap/config.neon
+	@mkdir -p build/docs
+	@apigen generate \
+	--source lib \
+	--destination build/docs/ \
+	--title "$(PACKAGE_NAME) v$(PACKAGE_VERSION)" \
+	--template-theme "bootstrap"
 
 clean:
-	@rm -f .README.md.html
-	@rm -fR docs
+	@rm -fR build
 	@rm -fR vendor
 	@rm -f composer.lock
-	@rm -f composer.phar
 	@rm -f public/module-uncompressed.css
 	@rm -f public/module-uncompressed.js
 	@rm -Rf tests/repository/thumbnailer
