@@ -1,6 +1,7 @@
 # customization
 
 PACKAGE_NAME = "ICanBoogie/Modules/Thumbnailer"
+PACKAGE_VERSION = 3.0.0
 
 # do not edit the following lines
 

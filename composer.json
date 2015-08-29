@@ -29,15 +29,15 @@
 		"icanboogie/event": "^1.4.0",
 		"icanboogie/image": "^0.0.2",
 		"brickrouge/brickrouge": "^2.1.4",
-		"icybee/module-registry": "^2.0.0",
+		"icybee/module-registry": "^3.0.0",
 		"olvlvl/filecache": "dev-master"
 	},
 
 	"require-dev": {
 		"icanboogie/icanboogie": "^2.4.0",
 		"icanboogie/bind-activerecord": "^0.3.0",
-		"icybee/core": "^2.1.0",
-		"icybee/module-cache": "^2.1.0"
+		"icybee/core": "^3.0.0",
+		"icybee/module-cache": "^3.0.0"
 	},
 
 	"suggest": {
