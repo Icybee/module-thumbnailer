@@ -26,7 +26,7 @@
 		"php": ">=5.5.0",
 		"ext-gd": "*",
 		"icanboogie/module-installer": "^1.2.3",
-		"icanboogie/event": "^1.4.0",
+		"icanboogie/event": "^1.4.0|^2.0.0",
 		"icanboogie/image": "^0.0.2",
 		"brickrouge/brickrouge": "^2.1.4",
 		"icybee/module-registry": "^3.0.0",
