@@ -22,7 +22,7 @@ use ICanBoogie\Modules\Thumbnailer\Module;
 use ICanBoogie\Modules\Thumbnailer\ThumbnailCacheManager;
 use ICanBoogie\Modules\Thumbnailer\Version;
 use ICanBoogie\Operation;
-use ICanBoogie\Binding\ObjectBindings;
+use ICanBoogie\Binding\PrototypedBindings;
 
 /**
  * @property Module $module
@@ -31,7 +31,7 @@ use ICanBoogie\Binding\ObjectBindings;
  */
 class GetOperation extends Operation
 {
-	use ObjectBindings;
+	use PrototypedBindings;
 
 	const VERSION = '2.1';
 
