@@ -25,16 +25,16 @@ use Icybee\Modules\Images\Image as ImageActiveRecord;
 class Hooks
 {
 	/**
-	 * Callback for the {@link Icybee\ConfigBlock::alter_children} event, adding
+	 * Callback for the {@link Icybee\Block\ConfigBlock::alter_children} event, adding
 	 * {@link PopThumbnailVersion} elements to the config block if image versions are defined for
 	 * the module.
 	 *
-	 * @param \Icybee\FormBlock\AlterChildrenEvent $event
-	 * @param \Icybee\ConfigBlock $block
+	 * @param \Icybee\Block\FormBlock\AlterChildrenEvent $event
+	 * @param \Icybee\Block\ConfigBlock $block
 	 *
 	 * @internal param Event $ev
 	 */
-	static public function on_configblock_alter_children(\Icybee\FormBlock\AlterChildrenEvent $event, \Icybee\ConfigBlock $block)
+	static public function on_configblock_alter_children(\Icybee\Block\FormBlock\AlterChildrenEvent $event, \Icybee\Block\ConfigBlock $block)
 	{
 		$app = \ICanBoogie\app();
 
