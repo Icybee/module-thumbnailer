@@ -45,7 +45,7 @@ class Module extends \ICanBoogie\Module
 			}
 			else
 			{
-				$errors[$this->id] = $errors->format('Unable to create %directory directory, its parent is not writable', [
+				$errors->add($this->id, "Unable to create %directory directory, its parent is not writable", [
 
 					'%directory' => \ICanBoogie\strip_root($path)
 
@@ -67,7 +67,7 @@ class Module extends \ICanBoogie\Module
 
 		if (!file_exists($path))
 		{
-			$errors[$this->id] = $errors->format('The %directory directory is missing.', [
+			$errors->add($this->id, "The %directory directory is missing.", [
 
 				'%directory' => \ICanBoogie\strip_root($path)
 
