@@ -1,16 +1,15 @@
 <?php
 
-namespace ICanBoogie\Modules\Thumbnailer;
+namespace ICanBoogie\Modules\Thumbnailer\Routing;
 
 use ICanBoogie\HTTP\Request;
-use ICanBoogie\Modules\Thumbnailer\Operation\GetOperation;
 
 return [
 
 	'api:thumbnail' => [
 
 		'pattern' => '/api/thumbnail',
-		'controller' => GetOperation::class,
+		'controller' => ThumbnailController::class,
 		'via' => Request::METHOD_GET
 
 	],
@@ -18,7 +17,7 @@ return [
 	'api:thumbnail/size' => [
 
 		'pattern' => '/api/thumbnail/<size:\d+x\d+|\d+x|x\d+>*',
-		'controller' => GetOperation::class,
+		'controller' => ThumbnailController::class,
 		'via' => Request::METHOD_GET
 
 	]

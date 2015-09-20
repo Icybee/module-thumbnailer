@@ -9,21 +9,20 @@
  * file that was distributed with this source code.
  */
 
-namespace ICanBoogie\Modules\Thumbnailer;
+namespace ICanBoogie\Modules\Thumbnailer\Routing;
 
 use ICanBoogie\HTTP\Request;
-use ICanBoogie\Modules\Thumbnailer\Operation\GetOperation;
 
-class GetOperationTests extends \PHPUnit_Framework_TestCase
+class ThumbnailControllerTests extends \PHPUnit_Framework_TestCase
 {
 	private function assert_successful_response($response, $expected_imagesize)
 	{
-		$rc = $response->rc;
+		$body = $response->body;
 		$this->assertTrue($response->status->is_successful);
-		$this->assertInstanceOf('Closure', $rc);
+		$this->assertInstanceOf('Closure', $body);
 
 		ob_start();
-		$rc();
+		$body();
 		$imagefile = ob_get_clean();
 
 		$imagesize = getimagesizefromstring($imagefile);
@@ -39,8 +38,8 @@ class GetOperationTests extends \PHPUnit_Framework_TestCase
 	public function test_successful($uri, $expected_imagesize)
 	{
 		$request = Request::from($uri);
-		$operation = new GetOperation;
-		$response = $operation($request);
+		$controller = new ThumbnailController;
+		$response = $controller($request);
 
 		$this->assert_successful_response($response, $expected_imagesize);
 	}

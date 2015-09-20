@@ -42,16 +42,11 @@ $(CSS_COMPRESSED): $(CSS_UNCOMPRESSED)
 $(CSS_UNCOMPRESSED): $(CSS_FILES)
 	cat $^ >$@
 
-vendor:
-	@$(COMPOSER_ENV) composer install
-
-update:
-	@$(COMPOSER_ENV) composer update
-
-autoload: vendor
-	@$(COMPOSER_ENV) composer dump-autoload
-
 test: vendor node_modules test-php test-js
+
+test-coverage: vendor
+	@mkdir -p build/coverage
+	@phpunit --coverage-html build/coverage
 
 test-php:
 	@phpunit
@@ -59,9 +54,17 @@ test-php:
 test-js:
 	@node_modules/mocha/bin/mocha tests/*.js
 
-test-coverage: vendor
-	@mkdir -p build/coverage
-	@phpunit --coverage-html build/coverage
+vendor:
+	@$(COMPOSER_ENV) composer install
+
+node_modules:
+	@npm install mocha chai mootools
+
+update:
+	@$(COMPOSER_ENV) composer update
+
+autoload: vendor
+	@$(COMPOSER_ENV) composer dump-autoload
 
 doc: vendor
 	@mkdir -p build/docs

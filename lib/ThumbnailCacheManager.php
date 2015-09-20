@@ -192,6 +192,13 @@ class ThumbnailCacheManager extends Prototyped implements CacheManager
 	{
 		$this->clean();
 
-		return call_user_func_array([ $this->handler, 'get' ], func_get_args());
+		$relative_file = call_user_func_array([ $this->handler, 'get' ], func_get_args());
+
+		if (!$relative_file)
+		{
+			return;
+		}
+
+		return \ICanBoogie\DOCUMENT_ROOT . $relative_file;
 	}
 }
