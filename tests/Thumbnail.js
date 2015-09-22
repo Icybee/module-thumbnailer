@@ -17,11 +17,19 @@ describe('Thumbnail', function() {
 
 		})
 
-		it("should use image API", function() {
+		it("should use image API with Id", function() {
 
-			var t = new Thumbnail('/api/images/123', '100x200?q=60')
+			var t = new Thumbnail('/images/123', '100x200?q=60')
 
-			expect(t.toString()).to.equal('/api/images/123/100x200?q=60')
+			expect(t.toString()).to.equal('/images/123/100x200?q=60')
+
+		})
+
+		it("should use image API with UUID", function() {
+
+			var t = new Thumbnail('/images/dc1125fa-aa48-4c1c-93d9-bd0ce001f984', '100x200?q=60')
+
+			expect(t.toString()).to.equal('/images/dc1125fa-aa48-4c1c-93d9-bd0ce001f984/100x200?q=60')
 
 		})
 
