@@ -185,7 +185,11 @@ class Thumbnail
 			}
 		}
 
-		if (is_array($options))
+		if ($options instanceof Version)
+		{
+			$this->options = $options->to_array();
+		}
+		else if (is_array($options))
 		{
 			$this->options = Version::normalize($options);
 		}
