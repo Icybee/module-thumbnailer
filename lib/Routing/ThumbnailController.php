@@ -38,7 +38,7 @@ class ThumbnailController extends Controller
 	 */
 	protected function make_key($source, Version $version)
 	{
-		return rtrim(strtr(base64_encode(hex2bin(sha1_file($source) . sha1($version))), [
+		return rtrim(strtr(base64_encode(hash_file('sha384', $source, true) . hash('sha1', $version, true)), [
 
 			'+' => '-',
 			'/' => '_'
