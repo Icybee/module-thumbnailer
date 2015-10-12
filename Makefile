@@ -77,8 +77,9 @@ doc: vendor
 clean:
 	@rm -fR build
 	@rm -fR vendor
-	@rm -f composer.lock
-	@rm -f public/module-uncompressed.css
-	@rm -f public/module-uncompressed.js
+	@rm -fR node_modules
+	@rm  -f composer.lock
+	@rm  -f public/module-uncompressed.css
+	@rm  -f public/module-uncompressed.js
 	@rm -Rf tests/repository/thumbnailer
 	@rm -f tests/repository/vars/cached_thumbnailer_versions
