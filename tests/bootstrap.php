@@ -42,20 +42,4 @@ $app = new Core(array_merge_recursive(get_autoconfig(), [
 $app->locale = 'en';
 
 $app->boot();
-
-#
-# Install modules
-#
-
-$errors = $app->modules->install(new Errors);
-
-if ($errors->count())
-{
-	foreach ($errors as $module_id => $error)
-	{
-		echo "from $module_id:\n";
-		echo $error . PHP_EOL;
-	}
-
-	exit(1);
-}
+$app->modules->install();
