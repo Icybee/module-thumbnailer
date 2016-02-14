@@ -4,8 +4,8 @@
 	margin-top: .5em;
 }
 
-.widget-adjust-thumbnail-version .control-group + .control-group--no-upscale,
-.widget-adjust-thumbnail-version .control-group + .control-group--interlace {
+.widget-adjust-thumbnail-version .form-group + .form-group--no-upscale,
+.widget-adjust-thumbnail-version .form-group + .form-group--interlace {
 	margin-top: 5px;
 }
 

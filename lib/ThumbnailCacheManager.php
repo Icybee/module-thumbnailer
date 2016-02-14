@@ -17,6 +17,7 @@ use ICanBoogie\Prototyped;
 
 use Brickrouge\Element;
 use Brickrouge\Form;
+use Brickrouge\Group;
 use Brickrouge\Text;
 
 use Icybee\Modules\Cache\CacheManager;
@@ -68,12 +69,12 @@ class ThumbnailCacheManager extends Prototyped implements CacheManager
 
 		return new Form([
 
-			Form::RENDERER => 'Simple',
+			Form::RENDERER => Form\GroupRenderer::class,
 			Element::CHILDREN => [
 
 				'cache_size' => new Text([
 
-					Form::LABEL => "Maximum cache size",
+					Group::LABEL => "Maximum cache size",
 					Text::ADDON => 'Mb',
 
 					'size' => 5,
@@ -84,7 +85,7 @@ class ThumbnailCacheManager extends Prototyped implements CacheManager
 
 				'cleanup_interval' => new Text([
 
-					Form::LABEL => "Interval between cleaning",
+					Group::LABEL => "Interval between cleaning",
 					Text::ADDON => 'minutes',
 
 					'size' => 5,
@@ -196,7 +197,7 @@ class ThumbnailCacheManager extends Prototyped implements CacheManager
 
 		if (!$relative_file)
 		{
-			return;
+			return null;
 		}
 
 		return \ICanBoogie\DOCUMENT_ROOT . $relative_file;
