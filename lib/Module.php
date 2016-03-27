@@ -11,7 +11,7 @@
 
 namespace ICanBoogie\Modules\Thumbnailer;
 
-use ICanBoogie\Errors;
+use ICanBoogie\ErrorCollection;
 
 /**
  * @property-read string $repository Path to the thumbnails repository.
@@ -31,7 +31,7 @@ class Module extends \ICanBoogie\Module
 	 *
 	 * @inheritdoc
 	 */
-	public function install(Errors $errors)
+	public function install(ErrorCollection $errors)
 	{
 		$path = $this->repository;
 
@@ -61,7 +61,7 @@ class Module extends \ICanBoogie\Module
 	 *
 	 * @inheritdoc
 	 */
-	public function is_installed(Errors $errors)
+	public function is_installed(ErrorCollection $errors)
 	{
 		$path = $this->repository;
 
