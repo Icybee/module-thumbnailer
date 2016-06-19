@@ -11,10 +11,12 @@
 
 namespace ICanBoogie\Modules\Thumbnailer;
 
+use Brickrouge\InputGroup;
 use ICanBoogie\Image;
 
 use Brickrouge\Element;
 use Brickrouge\Form;
+use Brickrouge\Group;
 use Brickrouge\Text;
 
 class AdjustThumbnailVersion extends \Brickrouge\Group
@@ -37,65 +39,78 @@ class AdjustThumbnailVersion extends \Brickrouge\Group
 
 			Element::CHILDREN => [
 
-				new Element('div', [
+				new InputGroup([
 
-					Form::LABEL => 'Dimensions',
 					Element::CHILDREN => [
+
+						"Size",
 
 						'width' => $this->elements['width'] = new Text([
 
-							Text::ADDON => 'px',
-
-							'class' => 'measure',
+							'class' => 'form-control measure',
+							'title' => "Thumbnail width in pixel",
 							'size' => 5
 
 						]),
 
-						' × ',
+						"&times",
 
 						'height' => $this->elements['height'] = new Text([
 
-							Text::ADDON => 'px',
-
-							'class' => 'measure',
+							'class' => 'form-control measure',
+							'title' => "Thumbnail height in pixel",
 							'size' => 5
+
+						]),
+
+						"px",
+					]
+
+				]),
+
+				new InputGroup([
+
+					Element::CHILDREN => [
+
+						"Method",
+
+						'method' => $this->elements['method'] = new Element('select', [
+
+							Element::OPTIONS => [
+
+								Image::RESIZE_FILL => 'Remplir',
+								Image::RESIZE_FIT => 'Ajuster',
+								Image::RESIZE_SURFACE => 'Surface',
+								Image::RESIZE_FIXED_HEIGHT => 'Hauteur fixe, largeur ajustée',
+								Image::RESIZE_FIXED_HEIGHT_CROPPED => 'Hauteur fixe, largeur respectée',
+								Image::RESIZE_FIXED_WIDTH => 'Largeur fixe, hauteur ajustée',
+								Image::RESIZE_FIXED_WIDTH_CROPPED => 'Largeur fixe, hauteur respectée',
+								Image::RESIZE_CONSTRAINED => 'Contraindre'
+
+							],
+
+							'class' => 'form-control',
+							'title' => "Resizing method"
 
 						])
 					]
 				]),
 
-				'method' => $this->elements['method'] = new Element('select', [
-
-					Form::LABEL => 'Méthode',
-					Element::OPTIONS => [
-
-						Image::RESIZE_FILL => 'Remplir',
-						Image::RESIZE_FIT => 'Ajuster',
-						Image::RESIZE_SURFACE => 'Surface',
-						Image::RESIZE_FIXED_HEIGHT => 'Hauteur fixe, largeur ajustée',
-						Image::RESIZE_FIXED_HEIGHT_CROPPED => 'Hauteur fixe, largeur respectée',
-						Image::RESIZE_FIXED_WIDTH => 'Largeur fixe, hauteur ajustée',
-						Image::RESIZE_FIXED_WIDTH_CROPPED => 'Largeur fixe, hauteur respectée',
-						Image::RESIZE_CONSTRAINED => 'Contraindre'
-
-					]
-				]),
-
 				'no-upscale' => $this->elements['no-upscale'] = new Element(Element::TYPE_CHECKBOX, [
 
-					Element::LABEL => 'Redimensionner mais ne pas agrandir'
+					Element::LABEL => 'Resize but do not upscale',
 
 				]),
 
-				new Element('div', [
+				new InputGroup([
 
-					Form::LABEL => 'Format de la miniature',
+					Element::CHILDREN => [
 
-					self::CHILDREN => [
+						"Format",
 
 						'format' => $this->elements['format'] = new Element('select', [
 
-							self::OPTIONS => [
+							Element::OPTIONS => [
 
 								null => 'auto',
 								'jpeg' => '.jpeg',
@@ -104,34 +119,37 @@ class AdjustThumbnailVersion extends \Brickrouge\Group
 
 							],
 
-							'style' => 'vertical-align: middle; width: auto'
+							'class' => 'form-control'
 
 						]),
 
-						'&nbsp;',
+						"Quality",
 
 						'quality' => $this->elements['quality'] = new Text([
 
-							Text::ADDON => 'Qualité',
-							Text::ADDON_POSITION => 'before',
-							self::DEFAULT_VALUE => Version::$defaults['quality'],
+							Element::DEFAULT_VALUE => Version::$defaults['quality'],
 
-							'class' => 'measure',
+							'class' => 'form-control measure',
 							'size' => 3
 
 						])
-					]
+					],
+
 				]),
 
 				'background' => $this->elements['background'] = new Text([
 
-					Form::LABEL => 'Remplissage'
+					Group::LABEL => 'Background',
+
+					'class' => 'form-control'
 
 				]),
 
 				'filter' => $this->elements['filter'] = new Text([
 
-					Form::LABEL => 'Filtre'
+					Group::LABEL => 'Filter',
+
+					'class' => 'form-control'
 
 
 				])

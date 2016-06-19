@@ -18,7 +18,11 @@ CSS_FILES = \
 	lib/AdjustThumbnailOptions.css \
 	lib/AdjustThumbnailVersion.css
 
-JS_COMPRESSOR = curl -X POST -s --data-urlencode 'input@$^' http://javascript-minifier.com/raw
+JS_COMPRESSOR = `which uglifyjs` $^ \
+	--compress \
+	--mangle \
+	--screw-ie8 \
+	--source-map $@.map
 #JS_COMPRESSOR = cat $^ # uncomment this line to produce an uncompressed file
 JS_COMPRESSED = public/module.js
 JS_UNCOMPRESSED = public/module-uncompressed.js

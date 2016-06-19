@@ -1,23 +1,11 @@
+.widget-adjust-thumbnail-options {
+	width: 264px;
+}
+
 .widget-adjust-thumbnail-options input[readonly] {
 	color: #ccc;
 }
 
 .contrast .widget-adjust-thumbnail-options input[readonly] {
 	color: #454545;
-}
-
-.widget-adjust-thumbnail-options select[name="method"] {
-	width: 100%;
-}
-
-.widget-adjust-thumbnail-options input[name="background"] {
-	width: calc(100% - 14px);
-}
-
-.widget-adjust-thumbnail-options .format-combo {
-	display: inline-block;
-}
-
-.widget-adjust-thumbnail-options .format-combo + .reset-default-value {
-	margin-left: .5ex;
 }

@@ -128,8 +128,6 @@ class AdjustThumbnailOptions extends Group
 						])
 					],
 
-//					'class' => 'format-combo'
-
 				]),
 
 				'background' => $this->elements['background'] = new Text([
