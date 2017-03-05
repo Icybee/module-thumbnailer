@@ -11,6 +11,7 @@
 
 namespace ICanBoogie\Modules\Thumbnailer;
 
+use ICanBoogie\AppConfig;
 use ICanBoogie\ErrorCollection;
 
 /**
@@ -23,7 +24,7 @@ class Module extends \ICanBoogie\Module
 	 */
 	protected function get_repository()
 	{
-		return \ICanBoogie\REPOSITORY . 'thumbnailer' . DIRECTORY_SEPARATOR;
+		return $this->app->config[AppConfig::REPOSITORY] . DIRECTORY_SEPARATOR . 'thumbnailer' . DIRECTORY_SEPARATOR;
 	}
 
 	/**
@@ -45,9 +46,9 @@ class Module extends \ICanBoogie\Module
 			}
 			else
 			{
-				$errors->add($this->id, "Unable to create %directory directory, its parent is not writable", [
+				$errors->add($this->id, "Unable to create %dir directory, its parent is not writable", [
 
-					'%directory' => \ICanBoogie\strip_root($path)
+					'%dir' => $path
 
 				]);
 			}
@@ -67,9 +68,9 @@ class Module extends \ICanBoogie\Module
 
 		if (!file_exists($path))
 		{
-			$errors->add($this->id, "The %directory directory is missing.", [
+			$errors->add($this->id, "The %dir directory is missing.", [
 
-				'%directory' => \ICanBoogie\strip_root($path)
+				'%dir' => $path
 
 			]);
 		}

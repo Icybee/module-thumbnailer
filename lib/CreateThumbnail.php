@@ -48,9 +48,7 @@ class CreateThumbnail
 	 * @param string $destination Pathname of the thumbnail.
 	 * @param Version $version
 	 *
-	 * @return string Pathname of the thumbnail.
-	 *
-	 * @throws \Exception
+	 * @throws \Exception if the thumbnail cannot be created
 	 */
 	public function __invoke($source, $destination, $version)
 	{
@@ -70,8 +68,6 @@ class CreateThumbnail
 		$this->apply_format($image, $version, $destination, $fill_callback);
 
 		imagedestroy($image);
-
-		return $destination;
 	}
 
 	/**
@@ -225,7 +221,7 @@ class CreateThumbnail
 	 */
 	protected function apply_format($image, Version $version, $destination, callable $fill_callback = null)
 	{
-		static $functions = [
+		static $writers = [
 
 			'gif' => 'imagegif',
 			'jpeg' => 'imagejpeg',
@@ -234,7 +230,7 @@ class CreateThumbnail
 		];
 
 		$format = $version->format;
-		$function = $functions[$format];
+		$write = $writers[$format];
 		$args = [ $image, $destination ];
 
 		if ($format == 'jpeg')
@@ -256,7 +252,7 @@ class CreateThumbnail
 			imagesavealpha($image, true);
 		}
 
-		if (!call_user_func_array($function, $args))
+		if (!$write(...$args))
 		{
 			throw new \Exception('Unable to save thumbnail');
 		}

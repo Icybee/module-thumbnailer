@@ -1,8 +1,8 @@
-require('./bootstrap.js')
+require('./../bootstrap.js')
 
 var chai = require('chai')
 , expect = chai.expect
-, thumbnailer = require('../lib/Module.js')
+, thumbnailer = require('../../lib/Module.js')
 , Thumbnail = thumbnailer.Thumbnail
 
 describe('Thumbnail', function() {

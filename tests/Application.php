@@ -9,16 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace ICanBoogie\Modules\Thumbnailer\Binding;
+namespace ICanBoogie;
 
-use ICanBoogie\Modules\Thumbnailer\Versions;
+use ICanBoogie\Modules\Thumbnailer\Binding\ApplicationBindings;
 
-/**
- * {@link \ICanBoogie\Core} prototype bindings.
- *
- * @property Versions $thumbnailer_versions
- */
-trait CoreBindings
+class Application extends Core
 {
-
+	use ApplicationBindings;
 }

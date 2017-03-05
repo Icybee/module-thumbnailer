@@ -11,6 +11,8 @@
 
 namespace ICanBoogie\Modules\Thumbnailer;
 
+use ICanBoogie\Application;
+
 const CACHE_VERSIONS = true;
 
 class Versions implements \ArrayAccess, \IteratorAggregate
@@ -24,11 +26,11 @@ class Versions implements \ArrayAccess, \IteratorAggregate
 	 * {@link ICanBoogie\Modules\Thumbnailer\Versions\AlterEvent} is fired to allow third parties
 	 * to alter the instance.
 	 *
-	 * @param \ICanBoogie\Core $app
+	 * @param Application $app
 	 *
 	 * @return Versions
 	 */
-	static public function prototype_get_thumbnailer_versions(\ICanBoogie\Core $app)
+	static public function prototype_get_thumbnailer_versions(Application $app)
 	{
 		if (CACHE_VERSIONS)
 		{
@@ -54,11 +56,11 @@ class Versions implements \ArrayAccess, \IteratorAggregate
 	/**
 	 * Collects versions.
 	 *
-	 * @param \ICanBoogie\Core $app
+	 * @param Application $app
 	 *
 	 * @return array [string]array
 	 */
-	static private function collect(\ICanBoogie\Core $app)
+	static private function collect(Application $app)
 	{
 		$versions = [];
 		$definitions = $app->registry

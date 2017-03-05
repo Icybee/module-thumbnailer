@@ -50,13 +50,13 @@ test: vendor node_modules test-php test-js
 
 test-coverage: vendor
 	@mkdir -p build/coverage
-	@phpunit --coverage-html build/coverage
+	@phpunit --coverage-html ../build/coverage
 
-test-php:
+test-php: vendor
 	@phpunit
 
-test-js:
-	@node_modules/mocha/bin/mocha tests/*.js
+test-js: node_modules
+	@node_modules/mocha/bin/mocha tests/*.js tests/lib/*.js
 
 vendor:
 	@$(COMPOSER_ENV) composer install
@@ -86,4 +86,4 @@ clean:
 	@rm  -f public/module-uncompressed.css
 	@rm  -f public/module-uncompressed.js
 	@rm -Rf tests/repository/thumbnailer
-	@rm -f tests/repository/vars/cached_thumbnailer_versions
+	@rm -Rf tests/repository/var

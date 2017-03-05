@@ -11,8 +11,7 @@
 
 namespace ICanBoogie\Modules\Thumbnailer;
 
-use ICanBoogie\FileCache;
-use ICanBoogie\I18n;
+use ICanBoogie\AppConfig;
 use ICanBoogie\Prototyped;
 
 use Brickrouge\Element;
@@ -28,8 +27,7 @@ use Icybee\Modules\Cache\Module as CacheModule;
  *
  * The cache is always active.
  *
- * @property-read \ICanBoogie\Core|\Icybee\Binding\CoreBindings $app
- * @property-read FileCache $handler
+ * @property-read ThumbnailCache $handler
  */
 class ThumbnailCacheManager extends Prototyped implements CacheManager
 {
@@ -101,28 +99,36 @@ class ThumbnailCacheManager extends Prototyped implements CacheManager
 	}
 
 	/**
+	 * @var string
+	 */
+	private $path;
+
+	/**
 	 * Path to the cache's directory.
 	 *
 	 * @return string
 	 */
 	protected function get_path()
 	{
-		return \ICanBoogie\REPOSITORY . 'thumbnailer' . DIRECTORY_SEPARATOR;
+		return $this->path;
 	}
 
 	/**
 	 * Handler for the cache entries.
 	 *
-	 * @return FileCache
+	 * @return ThumbnailCache
 	 */
 	protected function get_handler()
 	{
-		return new FileCache([
+		return new ThumbnailCache($this->path, self::$config['repository_size']);
+	}
 
-			FileCache::T_REPOSITORY => $this->path,
-			FileCache::T_REPOSITORY_SIZE => self::$config['repository_size'] * 1024
-
-		]);
+	/**
+	 * Initialize the `path` property.
+	 */
+	public function __construct()
+	{
+		$this->path = $this->app->config[AppConfig::REPOSITORY] . 'thumbnailer' . DIRECTORY_SEPARATOR;
 	}
 
 	public function enable()
@@ -137,12 +143,12 @@ class ThumbnailCacheManager extends Prototyped implements CacheManager
 
 	public function stat()
 	{
-		return CacheModule::get_files_stat(\ICanBoogie\REPOSITORY . 'thumbnailer');
+		return CacheModule::get_files_stat($this->path);
 	}
 
 	public function clear()
 	{
-		$files = glob(\ICanBoogie\REPOSITORY . 'thumbnailer/*');
+		$files = glob("$this->path/*");
 
 		foreach ($files as $file)
 		{
@@ -158,7 +164,7 @@ class ThumbnailCacheManager extends Prototyped implements CacheManager
 	 */
 	public function clean()
 	{
-		$marker = \ICanBoogie\REPOSITORY . 'thumbnailer/.cleanup';
+		$marker = "$this->path/.cleanup";
 
 		$time = file_exists($marker) ? filemtime($marker) : 0;
 		$interval = self::$config['cleanup_interval'] * 60;
@@ -189,17 +195,17 @@ class ThumbnailCacheManager extends Prototyped implements CacheManager
 		}
 	}
 
+	/**
+	 * @param $key
+	 * @param callable $callback
+	 * @param array|null $userdata
+	 *
+	 * @return string
+	 */
 	public function retrieve($key, callable $callback, array $userdata = null)
 	{
 		$this->clean();
 
-		$relative_file = call_user_func_array([ $this->handler, 'get' ], func_get_args());
-
-		if (!$relative_file)
-		{
-			return null;
-		}
-
-		return \ICanBoogie\DOCUMENT_ROOT . $relative_file;
+		return $this->handler->get(...func_get_args());
 	}
 }

@@ -20,6 +20,8 @@ with the `thumbnail_versions` lazy getter.
 
 namespace ICanBoogie\Modules\Thumbnailer;
 
+/* @var \ICanBoogie\Application $app */
+
 $versions = $app->thumbnailer_versions;
 $versions['popover'] = [ 'width' => 420, 'height' => 340 ];
 # or
@@ -81,7 +83,7 @@ Pre-parses defined thumbnail versions before the config is saved.
 
 
 
-### `ICanBoogie\Core\get_thumbnail_versions`
+### `ICanBoogie\Application\get_thumbnail_versions`
 
 Adds the `thumbnail_versions` lazy getter to the _core_ object. The getter returns a version
 collection configured with the versions saved in the registry. Third parties may alter this
@@ -101,7 +103,7 @@ event.
 
 ## Requirements
 
-The package requires PHP 5.5 or later.
+The package requires PHP 5.6 or later.
 
 
 

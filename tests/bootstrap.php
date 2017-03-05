@@ -2,8 +2,6 @@
 
 namespace ICanBoogie;
 
-use ICanBoogie\Binding;
-
 /*
  * This file is part of the ICanBoogie package.
  *
@@ -13,7 +11,9 @@ use ICanBoogie\Binding;
  * file that was distributed with this source code.
  */
 
-$_SERVER['DOCUMENT_ROOT'] = __DIR__;
+$_SERVER['DOCUMENT_ROOT'] = __DIR__ . DIRECTORY_SEPARATOR . 'web';
+
+chdir(__DIR__);
 
 require __DIR__ . '/../vendor/autoload.php';
 
@@ -21,25 +21,6 @@ require __DIR__ . '/../vendor/autoload.php';
 # Create the _core_ instance used for the tests.
 #
 
-/* @var $app Core|Binding\CLDR\CoreBindings|\ICanBoogie\Module\CoreBindings */
-
-$app = new Core(array_merge_recursive(get_autoconfig(), [
-
-	'config-path' => [
-
-		__DIR__ . DIRECTORY_SEPARATOR . 'config' => 10
-
-	],
-
-	'module-path' => [
-
-		realpath(__DIR__ . '/../')
-
-	]
-
-]));
-
+$app = boot();
 $app->locale = 'en';
-
-$app->boot();
 $app->modules->install();

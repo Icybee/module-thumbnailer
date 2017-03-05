@@ -36,7 +36,7 @@ class Update20140918 extends Update
 		{
 			$version = new Version(json_decode($value, true));
 
-			if ($version->q = 80)
+			if ($version->q == 80)
 			{
 				$version->q = Version::$defaults['quality'];
 			}

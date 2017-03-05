@@ -16,17 +16,38 @@ use ICanBoogie\HTTP\FileResponse;
 use ICanBoogie\HTTP\NotFound;
 use ICanBoogie\HTTP\Request;
 use ICanBoogie\Image;
-use ICanBoogie\Modules\Thumbnailer\Binding\CoreBindings;
+use ICanBoogie\Modules\Thumbnailer\Binding\ApplicationBindings;
 use ICanBoogie\Modules\Thumbnailer\CreateThumbnail;
 use ICanBoogie\Modules\Thumbnailer\ThumbnailCacheManager;
 use ICanBoogie\Modules\Thumbnailer\Version;
-use ICanBoogie\Operation;
 use ICanBoogie\Binding\PrototypedBindings;
 use ICanBoogie\Routing\Controller;
 
 class ThumbnailController extends Controller
 {
-	use PrototypedBindings, CoreBindings, ForwardUndefinedPropertiesToApplication;
+	use PrototypedBindings, ApplicationBindings, ForwardUndefinedPropertiesToApplication;
+
+	/**
+	 * @inheritdoc
+	 */
+	protected function action(Request $request)
+	{
+		$version = $this->resolve_version($request);
+		$source = $this->resolve_source($version);
+		$pathname = $this->resolve_thumbnail($source, $version);
+
+		if (!$pathname)
+		{
+			return null;
+		}
+
+		return new FileResponse($pathname, $this->request, [
+
+			FileResponse::OPTION_ETAG => basename($pathname),
+			FileResponse::OPTION_EXPIRES => '+3 month'
+
+		]);
+	}
 
 	/**
 	 * Creates a unique key for a thumbnail, using the source information and version options.
@@ -164,39 +185,12 @@ class ThumbnailController extends Controller
 
 		$key = $this->make_key($location, $version);
 
-		#
-		# Use the cache object to get the file
-		#
-
 		return (new ThumbnailCacheManager)
-			->retrieve($key, function($cache, $destination) use ($location, $version) {
+			->retrieve($key, function ($destination) use ($location, $version) {
 
 				$create = new CreateThumbnail;
-
-				return $create($location, $destination, $version);
+				$create($location, $destination, $version);
 
 			});
-	}
-
-	/**
-	 * @inheritdoc
-	 */
-	protected function action(Request $request)
-	{
-		$version = $this->resolve_version($request);
-		$source = $this->resolve_source($version);
-		$pathname = $this->resolve_thumbnail($source, $version);
-
-		if (!$pathname)
-		{
-			return null;
-		}
-
-		return new FileResponse($pathname, $this->request, [
-
-			FileResponse::OPTION_ETAG => basename($pathname),
-			FileResponse::OPTION_EXPIRES => '+3 month'
-
-		]);
 	}
 }

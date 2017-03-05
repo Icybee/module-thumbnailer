@@ -48,7 +48,7 @@ String.implement({
 
 });
 
-var thumbnailer = require('../lib/Module.js')
+var thumbnailer = require('../../lib/Module.js')
 , Version = thumbnailer.Version
 
 /*

@@ -2,11 +2,11 @@
  * setup
  */
 
-require('./bootstrap.js')
+require('./../bootstrap.js')
 
 var chai = require('chai')
 , expect = chai.expect
-, thumbnailer = require('../lib/Module.js')
+, thumbnailer = require('../../lib/Module.js')
 , Version = thumbnailer.Version
 
 /*
