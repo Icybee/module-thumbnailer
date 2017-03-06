@@ -1,4 +1,11 @@
-# Thumbnailer [![Build Status](https://travis-ci.org/Icybee/module-thumbnailer.png?branch=2.0)](https://travis-ci.org/Icybee/module-thumbnailer)
+# Thumbnailer 
+
+[![Packagist](https://img.shields.io/packagist/v/icybee/module-thumbnailer.svg)](https://packagist.org/packages/icybee/module-thumbnailer)
+[![Build Status](https://img.shields.io/travis/Icybee/module-thumbnailer.svg)](http://travis-ci.org/Icybee/module-thumbnailer)
+[![HHVM](https://img.shields.io/hhvm/Icybee/module-thumbnailer.svg)](http://hhvm.h4cc.de/package/Icybee/module-thumbnailer)
+[![Code Quality](https://img.shields.io/scrutinizer/g/Icybee/module-thumbnailer.svg)](https://scrutinizer-ci.com/g/Icybee/module-thumbnailer)
+[![Code Coverage](https://img.shields.io/coveralls/Icybee/module-thumbnailer.svg)](https://coveralls.io/r/Icybee/module-thumbnailer)
+[![Downloads](https://img.shields.io/packagist/dt/icybee/module-thumbnailer.svg)](https://packagist.org/packages/icybee/module-thumbnailer/stats)
 
 The Thumbnailer module (`thumbnailer`) creates thumbnails from images and managed
 images using options or configured versions.
@@ -131,7 +138,8 @@ directory can later be cleaned with the `make clean` command.
 
 The package is continuously tested by [Travis CI](http://about.travis-ci.org/).
 
-[![Build Status](https://travis-ci.org/Icybee/module-thumbnailer.png?branch=2.0)](https://travis-ci.org/Icybee/module-thumbnailer)
+[![Build Status](https://img.shields.io/travis/Icybee/module-thumbnailer.svg)](http://travis-ci.org/Icybee/module-thumbnailer)
+[![Code Coverage](https://img.shields.io/coveralls/Icybee/module-thumbnailer.svg)](https://coveralls.io/r/Icybee/module-thumbnailer)
 
 
 
