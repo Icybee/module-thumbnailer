@@ -11,10 +11,12 @@
 
 namespace ICanBoogie\Modules\Thumbnailer;
 
+use function ICanBoogie\app;
+
 class HooksTests extends \PHPUnit_Framework_TestCase
 {
 	public function test_core_thumbnails_version()
 	{
-		$this->assertInstanceOf(Versions::class, \ICanBoogie\app()->thumbnailer_versions);
+		$this->assertInstanceOf(Versions::class, app()->thumbnailer_versions);
 	}
 }

@@ -11,6 +11,7 @@
 
 namespace ICanBoogie\Modules\Thumbnailer;
 
+use function ICanBoogie\app;
 use ICanBoogie\Accessor\AccessorTrait;
 use ICanBoogie\Image;
 
@@ -290,7 +291,7 @@ class Thumbnail
 			return null;
 		}
 
-		return $this->_version = \ICanBoogie\app()->thumbnailer_versions[$this->version_name];
+		return $this->_version = app()->thumbnailer_versions[$this->version_name];
 	}
 
 	/**

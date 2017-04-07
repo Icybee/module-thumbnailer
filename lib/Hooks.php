@@ -11,6 +11,7 @@
 
 namespace ICanBoogie\Modules\Thumbnailer;
 
+use function ICanBoogie\app;
 use ICanBoogie\ActiveRecord;
 use ICanBoogie\Event;
 use ICanBoogie\Operation;
@@ -36,7 +37,7 @@ class Hooks
 	 */
 	static public function on_configblock_alter_children(\Icybee\Block\FormBlock\AlterChildrenEvent $event, \Icybee\Block\ConfigBlock $block)
 	{
-		$app = \ICanBoogie\app();
+		$app = app();
 
 		$module_id = (string) $event->module->id;
 
@@ -114,7 +115,7 @@ class Hooks
 			return;
 		}
 
-		unset(\ICanBoogie\app()->vars['cached_thumbnailer_versions']);
+		unset(app()->vars['cached_thumbnailer_versions']);
 	}
 
 	/**

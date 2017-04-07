@@ -11,6 +11,7 @@
 
 namespace ICanBoogie\Modules\Thumbnailer;
 
+use function ICanBoogie\app;
 use ICanBoogie\Application;
 
 const CACHE_VERSIONS = true;
@@ -118,7 +119,7 @@ class Versions implements \ArrayAccess, \IteratorAggregate
 	 */
 	public function save_version($name, $version)
 	{
-		$app = \ICanBoogie\app();
+		$app = app();
 
 		if (!($version instanceof Versions))
 		{
