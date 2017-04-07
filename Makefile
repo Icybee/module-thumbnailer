@@ -1,8 +1,10 @@
 # customization
 
 PACKAGE_NAME = icanboogie/module-thumbnailer
-PACKAGE_VERSION = 3.0.0
-COMPOSER_ENV = COMPOSER_ROOT_VERSION=$(PACKAGE_VERSION)
+PACKAGE_VERSION = 4.0
+PHPUNIT_VERSION = phpunit-5.7.phar
+PHPUNIT_FILENAME = build/$(PHPUNIT_VERSION)
+PHPUNIT = php $(PHPUNIT_FILENAME)
 
 # do not edit the following lines
 
@@ -32,7 +34,7 @@ CSS_COMPRESSOR = curl -X POST -s --data-urlencode 'input@$^' http://cssminifier.
 CSS_COMPRESSED = public/module.css
 CSS_UNCOMPRESSED = public/module-uncompressed.css
 
-all: $(JS_COMPRESSED) $(JS_UNCOMPRESSED) $(CSS_COMPRESSED) $(CSS_UNCOMPRESSED)
+all: vendor node_modules $(PHPUNIT_FILENAME) $(JS_COMPRESSED) $(JS_UNCOMPRESSED) $(CSS_COMPRESSED) $(CSS_UNCOMPRESSED)
 
 $(JS_COMPRESSED): $(JS_UNCOMPRESSED)
 	$(JS_COMPRESSOR) >$@
@@ -46,29 +48,39 @@ $(CSS_COMPRESSED): $(CSS_UNCOMPRESSED)
 $(CSS_UNCOMPRESSED): $(CSS_FILES)
 	cat $^ >$@
 
-test: vendor node_modules test-php test-js
+vendor:
+	@COMPOSER_ROOT_VERSION=$(PACKAGE_VERSION) composer install
 
-test-coverage: vendor
+update:
+	@COMPOSER_ROOT_VERSION=$(PACKAGE_VERSION) composer update
+
+autoload: vendor
+	@composer dump-autoload
+
+test-dependencies: vendor $(PHPUNIT_FILENAME)
+
+$(PHPUNIT_FILENAME):
+	mkdir -p build
+	wget https://phar.phpunit.de/$(PHPUNIT_VERSION) -O $(PHPUNIT_FILENAME)
+
+test: test-dependencies
+	@$(PHPUNIT)
+
+test-coverage: test-dependencies
 	@mkdir -p build/coverage
-	@phpunit --coverage-html ../build/coverage
+	@$(PHPUNIT) --coverage-html ../build/coverage
 
-test-php: vendor
-	@phpunit
+test-coveralls: test-dependencies
+	@mkdir -p build/logs
+	COMPOSER_ROOT_VERSION=$(PACKAGE_VERSION) composer require satooshi/php-coveralls
+	@$(PHPUNIT) --coverage-clover ../build/logs/clover.xml
+	php vendor/bin/coveralls -v
 
 test-js: node_modules
 	@node_modules/mocha/bin/mocha tests/*.js tests/lib/*.js
 
-vendor:
-	@$(COMPOSER_ENV) composer install
-
 node_modules:
-	@npm install mocha chai mootools
-
-update:
-	@$(COMPOSER_ENV) composer update
-
-autoload: vendor
-	@$(COMPOSER_ENV) composer dump-autoload
+	npm install mocha mootools chai
 
 doc: vendor
 	@mkdir -p build/docs
@@ -87,3 +99,5 @@ clean:
 	@rm  -f public/module-uncompressed.js
 	@rm -Rf tests/repository/thumbnailer
 	@rm -Rf tests/repository/var
+
+.PHONY: all autoload doc clean test test-coverage test-coveralls update
