@@ -13,7 +13,7 @@ namespace ICanBoogie;
 
 use ICanBoogie\Modules\Thumbnailer\Binding\ApplicationBindings;
 
-class Application extends Core
+class Application extends ApplicationAbstract
 {
 	use ApplicationBindings;
 }
