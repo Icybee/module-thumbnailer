@@ -9,6 +9,7 @@ use ICanBoogie\ToArray;
  *
  * @property string $background Thumbnail background. Defaults to "transparent".
  * @property string $default Thumbnail fallback image. Defaults to `null`.
+ * @property string $device_pixel_ratio Device pixel ratio. Defaults to `null`.
  * @property string $format Thumbnail format. Defaults to "jpeg".
  * @property string $filter Thumbnail filter. Defaults to `null`.
  * @property int $height Thumbnail height. Defaults to `null`.
@@ -23,6 +24,7 @@ use ICanBoogie\ToArray;
  *
  * @property string $b Alias to {@link $background}.
  * @property string $d Alias to {@link $default}.
+ * @property string $dpr Alias to {@link $device_pixel_ratio}.
  * @property string $f Alias to {@link $format}.
  * @property string $ft Alias to {@link $filter}.
  * @property int $h Alias to {@link $height}.
@@ -53,6 +55,7 @@ class Version implements ToArray
 
 	const OPTION_BACKGROUND = 'background';
 	const OPTION_DEFAULT = 'default';
+	const OPTION_DEVICE_PIXEL_RATIO = 'device-pixel-ratio';
 	const OPTION_FORMAT = 'format';
 	const OPTION_FILTER = 'filter';
 	const OPTION_HEIGHT = 'height';
@@ -74,6 +77,7 @@ class Version implements ToArray
 
 		self::OPTION_BACKGROUND => null,
 		self::OPTION_DEFAULT => null,
+		self::OPTION_DEVICE_PIXEL_RATIO => null,
 		self::OPTION_FILTER => null,
 		self::OPTION_FORMAT => null,
 		self::OPTION_HEIGHT => null,
@@ -95,20 +99,21 @@ class Version implements ToArray
 	 */
 	static public $shorthands = [
 
-		'b'  => self::OPTION_BACKGROUND,
-		'd'  => self::OPTION_DEFAULT,
-		'ft' => self::OPTION_FILTER,
-		'f'  => self::OPTION_FORMAT,
-		'h'  => self::OPTION_HEIGHT,
-		'm'  => self::OPTION_METHOD,
-		'ni' => self::OPTION_NO_INTERLACE,
-		'nu' => self::OPTION_NO_UPSCALE,
-		'o'  => self::OPTION_OVERLAY,
-		'p'  => self::OPTION_PATH,
-		'q'  => self::OPTION_QUALITY,
-		's'  => self::OPTION_SRC,
-		'v'  => 'version', // FIXME-20130507: remove this
-		'w'  => self::OPTION_WIDTH
+		'b'   => self::OPTION_BACKGROUND,
+		'd'   => self::OPTION_DEFAULT,
+		'dpr' => self::OPTION_DEVICE_PIXEL_RATIO,
+		'ft'  => self::OPTION_FILTER,
+		'f'   => self::OPTION_FORMAT,
+		'h'   => self::OPTION_HEIGHT,
+		'm'   => self::OPTION_METHOD,
+		'ni'  => self::OPTION_NO_INTERLACE,
+		'nu'  => self::OPTION_NO_UPSCALE,
+		'o'   => self::OPTION_OVERLAY,
+		'p'   => self::OPTION_PATH,
+		'q'   => self::OPTION_QUALITY,
+		's'   => self::OPTION_SRC,
+		'v'   => 'version', // FIXME-20130507: remove this
+		'w'   => self::OPTION_WIDTH
 
 	];
 
@@ -484,20 +489,21 @@ class Version implements ToArray
 	 */
 	static private function property_name_to_option_name($property)
 	{
+		static $mapping = [
+
+			'no_interlace' => self::OPTION_NO_INTERLACE,
+			'no_upscale' => self::OPTION_NO_UPSCALE,
+			'device_pixel_ratio' => self::OPTION_DEVICE_PIXEL_RATIO,
+
+		];
+
 		if (isset(self::$shorthands[$property]))
 		{
 			$property = self::$shorthands[$property];
 		}
-		else
+		else if (isset($mapping[$property]))
 		{
-			if ($property === 'no_interlace')
-			{
-				$property = self::OPTION_NO_INTERLACE;
-			}
-			else if ($property === 'no_upscale')
-			{
-				$property = self::OPTION_NO_UPSCALE;
-			}
+			$property = $mapping[$property];
 		}
 
 		return $property;

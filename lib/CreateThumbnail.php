@@ -59,6 +59,14 @@ class CreateThumbnail
 			throw new \Exception($this->format('Unable to load image from file %path', [ '%path' => $source ]));
 		}
 
+		if ($version->device_pixel_ratio > 1)
+		{
+			$dpr = $version->device_pixel_ratio;
+			$version = clone $version;
+			$version->width *= $dpr;
+			$version->height *= $dpr;
+		}
+
 		$fill_callback = $this->resolve_fill_callback($version);
 
 		$this->apply_resize($image, $version, $info, $fill_callback);

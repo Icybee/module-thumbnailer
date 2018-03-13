@@ -94,12 +94,11 @@ class ThumbnailController extends Controller
 
 		Image::assert_sizes($version->method, $version->width, $version->height);
 
-		$dpr = (float) ($request['pixel-ratio'] ?: $request['pr'] ?: 1);
+		$device_pixel_ratio = (float) ($request[Version::OPTION_DEVICE_PIXEL_RATIO] ?: $request['dpr']);
 
-		if ($dpr !== 1)
+		if ($device_pixel_ratio)
 		{
-			$version->width = round($version->width * $dpr);
-			$version->height = round($version->height * $dpr);
+			$version->device_pixel_ratio = $device_pixel_ratio;
 		}
 
 		return $version;
