@@ -32,7 +32,11 @@ class ThumbnailController extends Controller
 	 */
 	protected function action(Request $request)
 	{
-		$version = $this->resolve_version($request);
+		$version = $this->with_device_pixel_ratio(
+			$this->resolve_version($request),
+			$request
+		);
+
 		$source = $this->resolve_source($version);
 		$pathname = $this->resolve_thumbnail($source, $version);
 
@@ -94,13 +98,21 @@ class ThumbnailController extends Controller
 
 		Image::assert_sizes($version->method, $version->width, $version->height);
 
-		$dpr = (float) ($request['pixel-ratio'] ?: $request['pr'] ?: 1);
+		return $version;
+	}
 
-		if ($dpr !== 1)
+	private function with_device_pixel_ratio(Version $version, Request $request)
+	{
+		$dpr = (float) ($request['device-pixel-ratio'] ?: $request['dpr'] ?: 1);
+
+		if ($dpr === 1)
 		{
-			$version->width = round($version->width * $dpr);
-			$version->height = round($version->height * $dpr);
+			return $version;
 		}
+
+		$version = clone $version;
+		$version->width = (int) round($version->width * $dpr);
+		$version->height = (int) round($version->height * $dpr);
 
 		return $version;
 	}
